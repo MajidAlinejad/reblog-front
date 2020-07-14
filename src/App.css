@@ -1,5 +1,32 @@
+@font-face {
+  font-family: 'Yekan';
+  font-style: normal;
+  font-weight: 400;
+  src: url(../src/assets/fonts/Yekan/Yekan.eot);
+  /* IE9 Compat Modes */
+  src: local('Yekan'), local('Yekan'),
+    url(../src/assets/fonts/Yekan/Yekan.eot) format('embedded-opentype'),
+    /* IE6-IE8 */
+    /* Super Modern Browsers */
+    url(../src/assets/fonts/Yekan/Yekan.woff) format('woff'),
+    /* Modern Browsers */
+    url(../src/assets/fonts/Yekan/Yekan.ttf) format('truetype'),
+    /* Safari, Android, iOS */
+    url(../src/assets/fonts/Yekan/Yekan.svg) format('svg');
+  /* url(../src/assets/fonts/Yekan/Yekan.woff) */
+  /* Legacy iOS */
+}
+
+
+body {
+
+  font-family: 'Yekan', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji' !important;
+
+}
+
 .App {
   text-align: center;
+
 }
 
 .App-logo {
@@ -32,7 +59,75 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
+  }
+}
+
+.baseMenu .ant-menu-item {
+  border-left: 1px solid #e9e9e9;
+}
+
+.baseMenu .ant-menu-item:nth-last-child(2) {
+  border-right: 1px solid #e9e9e9;
+}
+
+.baseMenu .ant-badge-rtl .ant-badge-count {
+  left: 8px !important;
+}
+
+.baseMenu .ant-menu-item-disabled {
+  cursor: initial;
+}
+
+.ant-layout-footer {
+  border-top: 1px dashed gainsboro;
+}
+
+.ant-layout-header {
+  padding: 0 50px;
+  height: 69px !important;
+  border-bottom: 3px #dfdfdf solid;
+}
+
+.myrow .ant-col {
+  background-color: gainsboro;
+  padding: 16px 0;
+  text-align: center;
+}
+
+.logoSm {
+  display: none;
+}
+
+.logoWide {
+  display: initial;
+}
+
+@media only screen and (max-width: 610px) {
+  .ant-layout-header {
+    padding: 0 !important;
+
+  }
+
+  .logoSm {
+    display: initial;
+  }
+
+  .logoWide {
+    display: none;
+  }
+
+  .baseMenu .ant-menu-item {
+    border-left: none;
+  }
+
+  .baseMenu .ant-menu-item:nth-last-child(2) {
+    border-right: none;
+  }
+
+  .baseMenu .ant-badge-rtl .ant-badge-count {
+    left: 8px !important;
   }
 }
