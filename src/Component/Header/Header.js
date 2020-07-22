@@ -2,16 +2,24 @@
 import React, { Component } from "react";
 import logo from "../../logo.svg";
 import logoWide from "../../logo-wide.svg";
-import { Affix, Badge } from "antd";
+import {
+  Affix,
+  Badge,
+  Modal,
+  Button,
+  Input,
+  Checkbox,
+  Form,
+  Row,
+  Col
+} from "antd";
 // import "antd/dist/antd.css";
 import { Link } from "react-router-dom";
 import { Layout, Menu } from "antd";
-import {
-  UserOutlined,
-  TrademarkCircleFilled,
-  BellOutlined
-} from "@ant-design/icons";
+import { UserOutlined, BellOutlined, LockOutlined } from "@ant-design/icons";
 import Icon from "@ant-design/icons";
+import { Login } from "../../Auth/Login/Login";
+import { Register } from "../../Auth/Register/Register";
 // const { Header } = Layout;
 const CustomSVG1 = () => (
   <svg width="1em" height="1em" fill="currentColor" viewBox="0 0 1024 1024">
@@ -35,24 +43,48 @@ const CustomIcon1 = props => <Icon component={CustomSVG1} {...props} />;
 const CustomIcon2 = props => <Icon component={CustomSVG2} {...props} />;
 const CustomIcon3 = props => <Icon component={CustomSVG3} {...props} />;
 
-class Header extends Component {
-  //   state = {
-  //     persons: [1, 2]
-  //   };
-  //   constructor(props) {
-  //     super(props);
-  //   }
-  //   async getItems() {
-  //     axios.get(`https://jsonplaceholder.typicode.com/users`).then(res => {
-  //       const persons = res.data;
-  //       this.setState({ persons });
-  //     });
-  //   }
+const layout = {
+  labelCol: {
+    span: 8
+  },
+  wrapperCol: {
+    span: 16
+  }
+};
+const tailLayout = {
+  wrapperCol: {
+    offset: 8,
+    span: 16
+  }
+};
 
-  //   componentDidMount() {
-  //     this.getItems();
-  //   }
+class Header extends Component {
+  state = {
+    loading: false,
+    visible: false,
+    register: false
+  };
+
+  showModal = () => {
+    this.setState({
+      visible: true
+    });
+  };
+
+  handleCancel = () => {
+    this.setState({ visible: false });
+  };
+
+  onFinish = values => {
+    console.log("Success:", values);
+  };
+
+  toggleRegister = () => {
+    this.setState({ register: this.state.register ? false : true });
+  };
+
   render() {
+    const { visible, loading } = this.state;
     return (
       <Affix>
         <Layout.Header
@@ -75,12 +107,13 @@ class Header extends Component {
             </Menu.Item>
             <Menu.Item
               key="1"
+              onClick={this.showModal}
               style={{
                 float: "left"
               }}
             >
               <Link to="/User">
-                <TrademarkCircleFilled
+                <UserOutlined
                   style={{
                     fontSize: "15pt"
                   }}
@@ -172,6 +205,27 @@ class Header extends Component {
               </Link>
             </Menu.Item>
           </Menu>
+          <Modal
+            className="login-modal"
+            visible={visible}
+            title={this.state.register ? "ثبت نام" : "ورود"}
+            onOk={this.handleOk}
+            onCancel={this.handleCancel}
+            footer={[
+              <Button
+                block={1}
+                key="back"
+                type="link"
+                onClick={this.toggleRegister}
+              >
+                {this.state.register
+                  ? "حساب کاربری دارید؟ وارد شوید"
+                  : "حساب کاربری ندارید ؟ ثبت نام"}
+              </Button>
+            ]}
+          >
+            {this.state.register ? <Register /> : <Login />}
+          </Modal>
         </Layout.Header>
       </Affix>
     );

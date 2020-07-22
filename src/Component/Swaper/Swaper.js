@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { Skeleton, Space, Divider, Switch, Form, Radio } from "antd";
+import { Skeleton, Space, Tooltip, message } from "antd";
 
 function SampleNextArrow(props) {
   const { className, onClick } = props;
@@ -23,36 +23,125 @@ const settings = {
   className: "center",
   infinite: false,
   centerPadding: "60px",
-  slidesToScroll: 3,
+
   variableWidth: true,
-  infinite: true,
-  initialSlide: 3,
-  // slidesToShow: 8,
   nextArrow: <SampleNextArrow />,
   prevArrow: <SamplePrevArrow />,
-  rtl: true,
-  swipeToSlide: true
+  responsive: [
+    {
+      breakpoint: 1366,
+      settings: {
+        slidesToScroll: 3,
+        slidesToShow: 8
+      }
+    },
+    {
+      breakpoint: 1000,
+      settings: {
+        slidesToScroll: 3,
+        slidesToShow: 5
+      }
+    },
+    {
+      breakpoint: 900,
+      settings: {
+        slidesToScroll: 3,
+        slidesToShow: 4
+      }
+    },
+    {
+      breakpoint: 700,
+      settings: {
+        slidesToScroll: 2,
+        slidesToShow: 1
+      }
+    },
+    {
+      breakpoint: 480,
+      settings: {
+        slidesToScroll: 1,
+        slidesToShow: 1
+      }
+    }
+  ]
 };
 
 class Swaper extends Component {
   state = {
-    categories: [],
-    loading: true
+    tags: [],
+    loading: true,
+    selectedTags: [],
+    originsTag: [],
+    optClass: ""
   };
 
-  constructor(props) {
-    super(props);
-  }
+  addMessage = name => {
+    message.success(
+      {
+        content: name + " انتخاب شد",
+        className: "custom-class",
+        duration: 0.5,
+        style: {
+          marginTop: "15vh"
+        }
+      },
+      12
+    );
+  };
 
-  handleActiveChange = checked => {
-    this.setState({ active: checked });
+  removeMessage = name => {
+    message.warning(
+      {
+        content: name + " حذف شد",
+        className: "custom-class",
+        duration: 0.5,
+        style: {
+          marginTop: "15vh"
+        }
+      },
+      12
+    );
+  };
+
+  selectTag = (clicked, e) => {
+    let tags = [];
+    let result = [];
+    let tempTag = [];
+    let select = {
+      ...clicked,
+      className: "selected-tag"
+    };
+
+    tags = tags.concat(this.state.originsTag);
+    let selectedTags = this.state.selectedTags.concat(select);
+    if (this.state.selectedTags.filter(item => item.id === select.id).length) {
+      selectedTags = this.state.selectedTags.filter(
+        item => item.id !== select.id
+      );
+      this.removeMessage(clicked.title);
+    } else {
+      this.addMessage(clicked.title);
+    }
+
+    tempTag = tags;
+    selectedTags.map(tag => {
+      tempTag = tempTag.filter(item => item.id !== tag.id);
+      return null; //just for remove warning in console :))))
+    });
+
+    result = selectedTags.concat(tempTag);
+    this.setState({
+      selectedTags: selectedTags,
+      tags: result
+    });
   };
 
   async getItems() {
-    axios.get(`https://jsonplaceholder.typicode.com/users`).then(res => {
-      const categories = res.data;
+    axios.get(process.env.REACT_APP_API_URL + "cats").then(res => {
+      const tags = res.data;
       this.setState({
-        categories,
+        originsTag: tags,
+        tags: tags,
         loading: false
       });
     });
@@ -60,25 +149,52 @@ class Swaper extends Component {
 
   componentDidMount() {
     this.getItems();
+    this.setState({
+      optClass: "with-opacity"
+    });
   }
   render() {
     const { loading } = this.state;
     return (
-      <div className="categorySlider">
-        {loading ? (
-          <CatSketon />
-        ) : (
-          <Slider {...settings}>
-            {this.state.categories.map(function(slide) {
-              return (
-                <div className="category-slide" key={slide}>
-                  <strong> {slide.website} </strong>
-                </div>
-              );
-            })}
-          </Slider>
-        )}
-      </div>
+      <React.Fragment>
+        <div className="categorySlider ">
+          {loading ? (
+            <CatSketon />
+          ) : (
+            <Slider {...settings}>
+              {this.state.tags.map(tag => {
+                return (
+                  <React.Fragment>
+                    {tag.className ? (
+                      <Tooltip placement="bottom" title="حذف؟">
+                        <div
+                          className={"category-slide " + tag.className}
+                          key={tag.id}
+                          onClickCapture={e => {
+                            this.selectTag(tag, e.target);
+                          }}
+                        >
+                          {tag.title}
+                        </div>
+                      </Tooltip>
+                    ) : (
+                      <div
+                        className="category-slide "
+                        key={tag.id}
+                        onClickCapture={e => {
+                          this.selectTag(tag, e.target);
+                        }}
+                      >
+                        {tag.title}
+                      </div>
+                    )}
+                  </React.Fragment>
+                );
+              })}
+            </Slider>
+          )}
+        </div>
+      </React.Fragment>
     );
   }
 }

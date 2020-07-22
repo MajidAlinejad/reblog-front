@@ -19,9 +19,6 @@ class PaginateGrid extends Component {
     current: 1,
     perPage: 10
   };
-  constructor(props) {
-    super(props);
-  }
 
   getItems = () => {
     axios
@@ -115,7 +112,7 @@ class PaginateGrid extends Component {
           onShowSizeChange={this.onShowSizeChange}
           defaultCurrent={1}
           defaultPageSize={30}
-          // total={500}
+          total={200}
         />
       </div>
     );

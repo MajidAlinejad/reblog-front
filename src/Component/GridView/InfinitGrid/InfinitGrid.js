@@ -19,9 +19,6 @@ class InfiniteGrid extends Component {
     items: 5,
     hasMore: true
   };
-  constructor(props) {
-    super(props);
-  }
 
   getItems = () => {
     axios

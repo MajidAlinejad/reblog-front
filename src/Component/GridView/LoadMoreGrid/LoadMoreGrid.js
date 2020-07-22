@@ -1,6 +1,7 @@
 import React, { Component } from "react";
-import axios from "axios";
 import sizeMe from "react-sizeme";
+import noPic from "../../../assets/picture/nopic.svg";
+import axios from "axios";
 import { Card, Avatar, Divider, Button } from "antd";
 import {
   EditOutlined,
@@ -10,21 +11,21 @@ import {
 } from "@ant-design/icons";
 import StackGrid from "react-stack-grid";
 const { Meta } = Card;
-class PaginateGrid extends Component {
+class LoadMoreGrid extends Component {
   state = {
     loading: true,
     data: [],
     pageNumber: 1,
     items: 30
   };
-  constructor(props) {
-    super(props);
-  }
 
   getItems = () => {
     axios
       .get(
-        `https://jsonplaceholder.typicode.com/photos?_page=${this.state.pageNumber}&_limit=${this.state.items}`
+        process.env.REACT_APP_API_URL + "posts/" + 1 // firstblog
+        // +`?_page=${this.state.pageNumber}&_limit=${this.state.items}`
+
+        // `https://jsonplaceholder.typicode.com/photos?_page=${this.state.pageNumber}&_limit=${this.state.items}`
       )
       .then(res =>
         this.setState({
@@ -65,6 +66,7 @@ class PaginateGrid extends Component {
         <StackGrid
           gutterWidth={10}
           gutterHeight={10}
+          className="stack-grid-comp"
           columnWidth={width <= 500 ? 220 : 236}
           rtl={true}
         >
@@ -77,11 +79,7 @@ class PaginateGrid extends Component {
                   cover={
                     <img
                       alt="example"
-                      src={
-                        item.thumbnailUrl
-                          ? item.thumbnailUrl
-                          : "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-                      }
+                      src={item.thumbnailUrl ? item.thumbnailUrl : noPic}
                     />
                   }
                   actions={[
@@ -91,11 +89,9 @@ class PaginateGrid extends Component {
                   ]}
                 >
                   <Meta
-                    avatar={
-                      <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-                    }
+                    avatar={<Avatar src={item.img ? item.img : noPic} />}
                     title={item.title}
-                    description={"This is from Album number" + item.albumId}
+                    description={item.caption}
                   />
                 </Card>
               </div>
@@ -106,7 +102,7 @@ class PaginateGrid extends Component {
 
         <div className="text-center">
           {this.state.loading ? (
-            <button className="spin-holder" disabled="true">
+            <button className="spin-holder" disabled={true}>
               <span>
                 <LoadingOutlined
                   className="custom-fast-spin"
@@ -131,4 +127,4 @@ class PaginateGrid extends Component {
   }
 }
 
-export default sizeMe()(PaginateGrid);
+export default sizeMe()(LoadMoreGrid);
