@@ -86,13 +86,13 @@ class App extends Component {
         <ConfigProvider direction="rtl" locale={fa_IR}>
           <Layout>
             <Header blogs={this.state.data} />
-            <SimpleBar style={{ maxHeight: 660 }}>
-              <Content>
-                <Routes blogs={this.state.data} />
-              </Content>
-              <BackTop />
-              <Footer />
-            </SimpleBar>
+            {/* <SimpleBar style={{ maxHeight: 660 }}> */}
+            <Content>
+              <Routes blogs={this.state.data} />
+            </Content>
+            <BackTop />
+            <Footer />
+            {/* </SimpleBar> */}
           </Layout>
         </ConfigProvider>
       </Router>

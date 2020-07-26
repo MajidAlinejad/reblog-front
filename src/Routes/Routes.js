@@ -16,7 +16,7 @@ export default class Routes extends Component {
                   view="Grid"
                   base={blog.base}
                   toolbar="search"
-                  loader="loadMore"
+                  loader="paginate"
                   switcher={true}
                   filters={false}
                   drawer={false}
