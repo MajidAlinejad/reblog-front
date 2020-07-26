@@ -4,7 +4,10 @@ import { Form, Input, Checkbox, Button, message } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { forgot, login, setAccessToken } from "../Auth";
 
-export class Login extends Component {
+// redux import
+import { getUser } from "../../Redux/Action/User";
+
+class Login extends Component {
   state = {
     loading: false,
     username: "",
@@ -23,15 +26,18 @@ export class Login extends Component {
   };
   validateFields = () => {
     if ((this.state.username === "") & !this.state.forgot) {
-      this.setState({
-        error: "نام کاربری خود را وارد کنید"
+      message.error({
+        content: "نام کاربری خود را وارد کنید",
+        duration: 2
       });
       return false;
     }
     if ((this.state.password === "") & !this.state.forgot) {
-      this.setState({
-        error: "رمز عبور خود را وارد کنید"
+      message.error({
+        content: "رمز عبور خود را وارد کنید",
+        duration: 2
       });
+
       return false;
     }
 
@@ -76,6 +82,8 @@ export class Login extends Component {
         login(username, password).then(
           res => {
             setAccessToken(res.data.token);
+            this.props.getUser();
+
             message.success({
               content: "خوش آمدید" + res.data.user.name,
               duration: 2
@@ -98,6 +106,16 @@ export class Login extends Component {
       }
     }
   };
+
+  // componentDidUpdate(prevProps) {
+  //   if (prevProps.user !== this.props.user) {
+
+  //     });
+  //   }
+  // }
+  componentDidMount() {
+    // this.props.getUser();
+  }
 
   render() {
     return (
@@ -172,9 +190,19 @@ export class Login extends Component {
   }
 }
 
-const mapStateToProps = state => ({});
+const mapStateToProps = state => {
+  return {
+    user: state.user.user
+  };
+};
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = dispatch => {
+  return {
+    getUser: () => {
+      dispatch(getUser());
+    }
+  };
+};
 
 export default connect(
   mapStateToProps,

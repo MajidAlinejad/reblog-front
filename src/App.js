@@ -3,9 +3,9 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { BackTop, ConfigProvider, Layout } from "antd";
 import { BrowserRouter as Router } from "react-router-dom";
-import { Provider } from "react-redux";
-import { createStore } from "redux";
 import SimpleBar from "simplebar-react";
+import Axios from "axios";
+
 // css import
 import "./App.css";
 import "antd/dist/antd.css";
@@ -18,8 +18,9 @@ import moment from "moment";
 import Header from "./Component/Header/Header";
 import Footer from "./Component/Footer/Footer";
 import Routes from "./Routes/Routes";
+
 // redux import
-// import { getUser } from "./Redux/Action/User";
+import { getUser } from "./Redux/Action/User";
 // import rootReducer from "./Redux/Reducer/User";
 // import { getCities } from './actions/city';
 // import { getCart } from './actions/cart';
@@ -28,10 +29,52 @@ import Routes from "./Routes/Routes";
 moment.locale("fa");
 
 const { Content } = Layout;
+var styleArray = [
+  'background-image:    url("https://colinbendell.cloudinary.com/image/upload/c_crop,f_auto,g_auto,h_350,w_400/v1512090971/Wizard-Clap-by-Markus-Magnusson.gif")',
+  "background-size: cover",
+  "color: #000",
+  "padding: 10px 20px",
+  "line-height: 50px",
+  "width : 150px",
+  "height : 150px",
+  "border : 2px solid #ccc"
+];
 
-// const store = createStore();
-
+var logoConsole = [
+  'background-image:    url("https://upload.wikimedia.org/wikipedia/commons/b/be/Lineage_OS_Logo.png")',
+  "background-size: cover",
+  "line-height: 80px",
+  "width : 150px",
+  "height : 150px"
+];
 class App extends Component {
+  state = {
+    data: [],
+    loading: false
+  };
+
+  async getItems(items) {
+    this.setState({ loading: true });
+    Axios.get(process.env.REACT_APP_API_URL + items).then(res => {
+      const data = res.data;
+      this.setState({
+        data: data,
+        loading: false
+      });
+    });
+  }
+
+  componentDidMount() {
+    this.props.getUser();
+    this.getItems("blogs");
+    console.log("%c                          ", logoConsole.join(";"));
+    console.log(
+      "%cWelcome to NegarAfar , We are Happy for you 😍 and wish you Good luck 😘",
+      "font-weight: lighter; font-size: 13px; font-family : tahoma "
+    );
+
+    console.log("%cBe Happy", styleArray.join(";"));
+  }
   render() {
     return (
       // <Provider>
@@ -42,10 +85,10 @@ class App extends Component {
         )} */}
         <ConfigProvider direction="rtl" locale={fa_IR}>
           <Layout>
-            <Header />
+            <Header blogs={this.state.data} />
             <SimpleBar style={{ maxHeight: 660 }}>
               <Content>
-                <Routes />
+                <Routes blogs={this.state.data} />
               </Content>
               <BackTop />
               <Footer />
@@ -58,18 +101,21 @@ class App extends Component {
   }
 }
 
-// const mapDispatchToProps = dispatch => {
-//   return {
-//     // getCities: () => dispatch(getCities()),
-//     // getCart: () => dispatch(getCart()),
-//     getUser: () => dispatch(getUser())
-//     // getMessage: () => dispatch(getMessage())
-//   };
-// };
+const mapStateToProps = state => {
+  return {
+    user: state.user.user
+  };
+};
 
-export default //  connect(
-//   null,
-//   mapDispatchToProps
-// )(App);
+const mapDispatchToProps = dispatch => {
+  return {
+    getUser: () => {
+      dispatch(getUser());
+    }
+  };
+};
 
-App;
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App);

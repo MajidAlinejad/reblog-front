@@ -4,6 +4,10 @@ import { Row, Col, Drawer } from "antd";
 import Icon from "@ant-design/icons";
 import Swaper from "../Swaper/Swaper";
 import SearchBar from "../SearchBar/SearchBar";
+import { getUser } from "../../Redux/Action/User";
+import { connect } from "react-redux";
+import Sidebar from "../Sidebar/Sidebar";
+import { toggleSidebar } from "../../Redux/Action/View";
 
 const FilterSVG = () => (
   <div>
@@ -119,18 +123,28 @@ const HashtagIcon = props => <Icon component={HashtagSVG} {...props} />;
 class Toolbar extends Component {
   state = {
     searchMode: true,
-    visible: false,
     switcher: true,
-    filters: true
+    filters: true,
+    visible: false,
+    sidebar: {
+      hide: false
+    }
   };
 
-  toggleDrawer = () => {
+  toggleSider = () => {
     // document.body.classList.add("no-sroll");
-    this.setState({
-      visible: this.state.visible ? false : true
-    });
+    const { hide } = this.state.sidebar;
+    if (this.props.drawer) {
+      this.setState({
+        visible: !this.state.visible
+      });
+    } else {
+      this.props.toggleSidebar(!hide);
+      this.setState({
+        hide: !hide
+      });
+    }
   };
-
   onClose = () => {
     this.setState({
       visible: false
@@ -149,6 +163,11 @@ class Toolbar extends Component {
         searchMode: this.props.toolbar === "search" ? true : false,
         switcher: this.props.switcher ? true : false,
         filters: this.props.filters ? true : false
+      });
+    }
+    if (prevProps.sidebar !== this.props.sidebar) {
+      this.setState({
+        sidebar: this.props.sidebar
       });
     }
   }
@@ -177,7 +196,7 @@ class Toolbar extends Component {
               >
                 <FiltersIcon
                   className="swaper-filter "
-                  onClick={this.toggleDrawer}
+                  onClick={this.toggleSider}
                 />
               </Col>
               {this.state.switcher ? (
@@ -280,24 +299,48 @@ class Toolbar extends Component {
             </React.Fragment>
           )}
         </Row>
-        <div className="site-drawer-render-in-current-wrapper">
+        {this.props.drawer ? (
           <Drawer
-            title="Basic Drawer"
+            // title="Basic Drawer"
             placement="right"
             className="filter-drawer"
             closable={true}
+            mask={false}
             onClose={this.onClose}
             // closeIcon={true}
             visible={this.state.visible}
             getContainer={false}
             // style={{ position: "absolute" }}
           >
-            <p>Some contents...</p>
+            <p>
+              <Sidebar />
+            </p>
           </Drawer>
-        </div>
+        ) : null}
       </React.Fragment>
     );
   }
 }
 
-export default Toolbar;
+const mapStateToProps = state => {
+  return {
+    user: state.user.user,
+    sidebar: state.view.sidebar
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    getUser: () => {
+      dispatch(getUser());
+    },
+    toggleSidebar: param => {
+      dispatch(toggleSidebar(param));
+    }
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Toolbar);

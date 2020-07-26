@@ -22,10 +22,10 @@ class LoadMoreGrid extends Component {
   getItems = () => {
     axios
       .get(
-        process.env.REACT_APP_API_URL + "posts/" + 1 // firstblog
+        // process.env.REACT_APP_API_URL + "posts/" + 1 // firstblog
         // +`?_page=${this.state.pageNumber}&_limit=${this.state.items}`
 
-        // `https://jsonplaceholder.typicode.com/photos?_page=${this.state.pageNumber}&_limit=${this.state.items}`
+        `https://jsonplaceholder.typicode.com/photos?_page=${this.state.pageNumber}&_limit=${this.state.items}`
       )
       .then(res =>
         this.setState({

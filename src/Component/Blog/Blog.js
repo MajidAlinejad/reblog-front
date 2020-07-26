@@ -1,12 +1,19 @@
 import React, { Component } from "react";
 
-import { Affix } from "antd";
+import { Affix, Layout } from "antd";
 import GridView from "../GridView/GridView";
 import Toolbar from "../Toolbar/Toolbar";
 import ListView from "../ListView/ListView";
-export default class FirstBlog extends Component {
+import Sidebar from "../Sidebar/Sidebar";
+import { connect } from "react-redux";
+// import { getSidebar } from "../../Redux/Action/View";
+
+const { Content } = Layout;
+
+class Blog extends Component {
   state = {
-    view: "List"
+    view: "List",
+    hide: true
   };
 
   viewSwitcher(view) {
@@ -34,14 +41,42 @@ export default class FirstBlog extends Component {
   }
 
   render() {
-    const { view, toolbar, filters, switcher } = this.props;
+    const { view, toolbar, filters, switcher, drawer } = this.props;
     return (
       <div>
         <Affix offsetTop={66}>
-          <Toolbar toolbar={toolbar} switcher={switcher} filters={filters} />
+          <Toolbar
+            toolbar={toolbar}
+            switcher={switcher}
+            filters={filters}
+            drawer={drawer}
+          />
         </Affix>
-        <div>{this.viewSwitcher(view)}</div>
+        <Layout className="full-content">
+          {drawer ? null : <Sidebar />}
+
+          <Content className="view-content"> {this.viewSwitcher(view)}</Content>
+        </Layout>
       </div>
     );
   }
 }
+
+// const mapStateToProps = state => {
+//   return {
+//     sidebar: state.sidebar
+//     // user: state.user.user
+//   };
+// };
+
+// const mapDispatchToProps = dispatch => {
+//   return {
+//     getSidebar: () => {
+//       dispatch(getSidebar());
+//     }
+//   };
+// };
+
+export default connect()(Blog);
+// mapStateToProps,
+// mapDispatchToProps

@@ -96,6 +96,15 @@ export function login(email, password) {
   });
 }
 
+export function register(email, password, name) {
+  //chenge to username
+  return AXIOS.post("auth/register", {
+    email,
+    password,
+    name
+  });
+}
+
 export function forgot(mobile, token) {
   const payload = token ? { mobile, token } : { mobile };
   return AXIOS.post("auth/forgot", payload);
