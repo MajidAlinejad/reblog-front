@@ -18,7 +18,8 @@ import moment from "moment";
 import Header from "./Component/Header/Header";
 import Footer from "./Component/Footer/Footer";
 import Routes from "./Routes/Routes";
-
+import Lottie from "react-lottie";
+import * as animationData from "./assets/lottie/car.json";
 // redux import
 import { getUser } from "./Redux/Action/User";
 // import rootReducer from "./Redux/Reducer/User";
@@ -47,10 +48,21 @@ var logoConsole = [
   "width : 150px",
   "height : 150px"
 ];
+
+const defaultOptions = {
+  loop: true,
+  autoplay: true,
+  animationData: animationData.default,
+  rendererSettings: {
+    preserveAspectRatio: "xMidYMid slice"
+  }
+};
+
 class App extends Component {
   state = {
     data: [],
-    loading: false
+    loading: true
+    // apploading: true
   };
 
   async getItems(items) {
@@ -64,6 +76,14 @@ class App extends Component {
     });
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.user !== this.props.user) {
+      this.setState({
+        loading: this.props.user.loading
+      });
+    }
+  }
+
   componentDidMount() {
     this.props.getUser();
     this.getItems("blogs");
@@ -75,6 +95,7 @@ class App extends Component {
 
     console.log("%cBe Happy", styleArray.join(";"));
   }
+
   render() {
     return (
       // <Provider>
@@ -84,6 +105,25 @@ class App extends Component {
           "font-weight: bold; font-size: 50px;color: red; text-shadow: 3px 3px 0 rgb(217,31,38) , 6px 6px 0 rgb(226,91,14) , 9px 9px 0 rgb(245,221,8) , 12px 12px 0 rgb(5,148,68) , 15px 15px 0 rgb(2,135,206) , 18px 18px 0 rgb(4,77,145) , 21px 21px 0 rgb(42,21,113)"
         )} */}
         <ConfigProvider direction="rtl" locale={fa_IR}>
+          <div
+            className={
+              this.state.loading ? "abs-loading active" : "abs-loading"
+            }
+          >
+            {/* <div class="lds-ellipsis">
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div> */}
+            <Lottie
+              options={defaultOptions}
+              height={400}
+              width={400}
+              // isStopped={this.state.isStopped}
+              // isPaused={this.state.isPaused}
+            />
+          </div>
           <Layout>
             <Header blogs={this.state.data} />
             {/* <SimpleBar style={{ maxHeight: 660 }}> */}

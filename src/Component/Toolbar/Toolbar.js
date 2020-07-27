@@ -8,6 +8,7 @@ import { getUser } from "../../Redux/Action/User";
 import { connect } from "react-redux";
 import Sidebar from "../Sidebar/Sidebar";
 import { toggleSidebar } from "../../Redux/Action/View";
+import SidebarContent from "../Sidebar/SidebarContent/SidebarContent";
 
 const FilterSVG = () => (
   <div>
@@ -125,25 +126,30 @@ class Toolbar extends Component {
     searchMode: true,
     switcher: true,
     filters: true,
+    drawer: false,
     visible: false,
-    sidebar: {
-      hide: false
-    }
+    mobile: undefined
+    // sidebar: {
+    //   hide: false
+    // }
   };
 
   toggleSider = () => {
     // document.body.classList.add("no-sroll");
-    const { hide } = this.state.sidebar;
-    if (this.props.drawer) {
-      this.setState({
-        visible: !this.state.visible
-      });
-    } else {
-      this.props.toggleSidebar(!hide);
-      this.setState({
-        hide: !hide
-      });
-    }
+    this.setState({
+      visible: !this.state.visible
+    });
+    // const { hide } = this.state.sidebar;
+    // if (this.props.drawer) {
+    //   this.setState({
+    //     visible: !this.state.visible
+    //   });
+    // } else {
+    //   this.props.toggleSidebar(!hide);
+    //   this.setState({
+    //     hide: !hide
+    //   });
+    // }
   };
   onClose = () => {
     this.setState({
@@ -161,8 +167,8 @@ class Toolbar extends Component {
     if (prevProps.toolbar !== this.props.toolbar) {
       this.setState({
         searchMode: this.props.toolbar === "search" ? true : false,
-        switcher: this.props.switcher ? true : false,
-        filters: this.props.filters ? true : false
+        switcher: this.props.switcher ? true : false
+        // filters: this.props.filters ? true : false
       });
     }
     if (prevProps.sidebar !== this.props.sidebar) {
@@ -172,11 +178,43 @@ class Toolbar extends Component {
     }
   }
 
+  handleResize = () => {
+    // console.log(window.innerWidth);
+    if (window.innerWidth < 869) {
+      this.setState(
+        {
+          mobile: true
+        },
+        () => this.handleDrawer()
+      );
+    } else {
+      this.setState(
+        {
+          mobile: false
+        },
+        () => this.handleDrawer()
+      );
+    }
+  };
+
+  handleDrawer = () => {
+    // console.log(this.props.leftSide, this.state.mobile);
+    if (this.props.leftSide === "sider" && this.state.mobile) {
+      this.setState({ drawer: true, filters: true });
+    } else if (this.props.leftSide === "drawer") {
+      this.setState({ drawer: true, filters: true });
+    } else {
+      this.setState({ drawer: false, filters: false });
+    }
+  };
+
   componentDidMount() {
+    this.handleResize();
+    window.addEventListener("resize", this.handleResize, true);
     this.setState({
       searchMode: this.props.toolbar === "search" ? true : false,
-      switcher: this.props.switcher ? true : false,
-      filters: this.props.filters ? true : false
+      switcher: this.props.switcher ? true : false
+      // filters: this.props.filters ? true : false
     });
   }
 
@@ -299,7 +337,8 @@ class Toolbar extends Component {
             </React.Fragment>
           )}
         </Row>
-        {this.props.drawer ? (
+
+        {this.state.drawer ? (
           <Drawer
             // title="Basic Drawer"
             placement="right"
@@ -313,7 +352,7 @@ class Toolbar extends Component {
             // style={{ position: "absolute" }}
           >
             <p>
-              <Sidebar />
+              <SidebarContent />
             </p>
           </Drawer>
         ) : null}
@@ -324,8 +363,8 @@ class Toolbar extends Component {
 
 const mapStateToProps = state => {
   return {
-    user: state.user.user,
-    sidebar: state.view.sidebar
+    user: state.user.user
+    // sidebar: state.view.sidebar
   };
 };
 
@@ -333,10 +372,10 @@ const mapDispatchToProps = dispatch => {
   return {
     getUser: () => {
       dispatch(getUser());
-    },
-    toggleSidebar: param => {
-      dispatch(toggleSidebar(param));
     }
+    // toggleSidebar: param => {
+    //   dispatch(toggleSidebar(param));
+    // }
   };
 };
 

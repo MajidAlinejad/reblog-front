@@ -13,8 +13,27 @@ const { Content } = Layout;
 class Blog extends Component {
   state = {
     view: "List",
-    hide: true
+    hide: true,
+    desktop: false
   };
+
+  handleResize = () => {
+    // console.log(window.innerWidth);
+    if (window.innerWidth > 869) {
+      this.setState({
+        desktop: true
+      });
+    } else {
+      this.setState({
+        desktop: false
+      });
+    }
+  };
+
+  componentDidMount() {
+    this.handleResize();
+    window.addEventListener("resize", this.handleResize, true);
+  }
 
   viewSwitcher(view) {
     switch (view) {
@@ -41,19 +60,14 @@ class Blog extends Component {
   }
 
   render() {
-    const { view, toolbar, filters, switcher, drawer } = this.props;
+    const { view, toolbar, switcher, sidebar } = this.props;
     return (
       <div>
         <Affix offsetTop={66}>
-          <Toolbar
-            toolbar={toolbar}
-            switcher={switcher}
-            filters={filters}
-            drawer={drawer}
-          />
+          <Toolbar toolbar={toolbar} switcher={switcher} leftSide={sidebar} />
         </Affix>
         <Layout className="full-content">
-          {drawer ? null : <Sidebar />}
+          {sidebar === "sider" && this.state.desktop ? <Sidebar /> : null}
 
           <Content className="view-content"> {this.viewSwitcher(view)}</Content>
         </Layout>

@@ -18,8 +18,7 @@ export default class Routes extends Component {
                   toolbar="search"
                   loader="paginate"
                   switcher={true}
-                  filters={false}
-                  drawer={false}
+                  sidebar={false} //drawer/sider/{false}
                 />
               </Route>
             );
