@@ -7,7 +7,7 @@ export default class extends Component {
     switch (mode) {
       case "paginate":
         return <PaginateList />;
-      case "loadMore":
+      case "loadmore":
         return <LoadMoreList />;
       default:
         return <PaginateList />;

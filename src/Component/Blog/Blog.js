@@ -40,27 +40,27 @@ class Blog extends Component {
       case "Grid":
         return (
           <div className="grid-container">
-            <GridView loader={this.props.loader} />
+            <GridView loader={this.props.loader} base={this.props.base} />
           </div>
         );
       case "List":
         return (
           <div className="grid-container">
-            <ListView loader={this.props.loader} />
+            <ListView loader={this.props.loader} base={this.props.base} />
           </div>
         );
 
       default:
         return (
           <div className="grid-container">
-            <ListView loader={this.props.loader} />
+            <ListView loader={this.props.loader} base={this.props.base} />
           </div>
         );
     }
   }
 
   render() {
-    const { view, toolbar, switcher, sidebar } = this.props;
+    const { view, toolbar, switcher, sidebar, base } = this.props;
     return (
       <div>
         <Affix offsetTop={66}>

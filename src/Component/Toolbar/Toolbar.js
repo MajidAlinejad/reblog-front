@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import { Row, Col, Drawer } from "antd";
 import Icon from "@ant-design/icons";
 import Swaper from "../Swaper/Swaper";
-import SearchBar from "../SearchBar/SearchBar";
+import SearchBar from "./SearchBar/SearchBar";
 import { getUser } from "../../Redux/Action/User";
 import { connect } from "react-redux";
 import Sidebar from "../Sidebar/Sidebar";
@@ -340,20 +340,20 @@ class Toolbar extends Component {
 
         {this.state.drawer ? (
           <Drawer
-            // title="Basic Drawer"
+            title="فیلتر و دسته بندی"
             placement="right"
             className="filter-drawer"
             closable={true}
-            mask={false}
+            // mask={false}
             onClose={this.onClose}
             // closeIcon={true}
             visible={this.state.visible}
             getContainer={false}
             // style={{ position: "absolute" }}
           >
-            <p>
-              <SidebarContent />
-            </p>
+            {/* <p> */}
+            <SidebarContent />
+            {/* </p> */}
           </Drawer>
         ) : null}
       </React.Fragment>

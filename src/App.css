@@ -342,6 +342,13 @@ body {
 
 .filter-drawer {
   margin-top: 124px;
+  right: -10px !important;
+}
+
+
+.filter-drawer.ant-drawer-open {
+  z-index: -1;
+  right: 0;
 }
 
 .filter-drawer .ant-drawer-content-wrapper {
@@ -492,9 +499,19 @@ body {
   transition-duration: 0.2s;
 }
 
+.ant-drawer-mask {
+  background-color: rgb(255 255 255 / 61%) !important;
+}
+
 .fixed-mask {
   position: fixed;
 
+}
+
+.centerize-nav {
+  /* left: calc(50%); */
+  /* transform: translateX(50%); */
+  float: left;
 }
 
 
@@ -800,6 +817,11 @@ hr {
     padding: 5px;
     flex: 0 0 240px;
   }
+
+  /* .centerize-nav {
+    left: calc(50% - 137px);
+    float: left;
+  } */
 
   .stack-grid {
     padding: 0px 10px;

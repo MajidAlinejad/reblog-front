@@ -64,7 +64,7 @@ class PaginateGrid extends Component {
   }
   render() {
     const {
-      size: { width }
+      size: { width, base }
     } = this.props;
     return (
       <div className="stack-grid">

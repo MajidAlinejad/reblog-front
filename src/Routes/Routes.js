@@ -10,15 +10,25 @@ export default class Routes extends Component {
         <Switch>
           {blogs.map((blog, i) => {
             return (
-              <Route exact path={i == 0 ? "/" : "B" + i + 1}>
+              <Route
+                exact={i == 0 ? true : false}
+                path={i == 0 ? "/" : "B" + (i + 1)}
+              >
                 <Blog
-                  view={blog.view}
-                  view="Grid"
-                  base={blog.base}
-                  toolbar="search"
-                  loader="paginate"
-                  switcher={true}
-                  sidebar={false} //drawer/sider/{false}
+                  // view={blog.view}
+                  view="Grid" //    Grid / List
+                  // base={blog.base} //
+                  base="img" //
+                  // "base":    video    /        cms        /   play     /
+                  // img    /  free   /  info     / home
+
+                  // "view" : list-Grid /  list-Grid-custom /  list-Grid /
+                  // Grid   /   All   / table-chart/ --
+
+                  toolbar="search" //search/ null --> hashtag
+                  loader="paginate" //loadmore/paginate/infinit
+                  switcher={true} //toolbar btn for search/hashtag
+                  sidebar="drawer" //drawer/sider/{false}
                 />
               </Route>
             );

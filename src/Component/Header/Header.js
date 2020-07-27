@@ -265,16 +265,16 @@ class Header extends Component {
                 {/* </Link> */}
               </Menu.Item>
             )}
-
             {blogs.map((blog, i) => {
               return (
                 <Menu.Item
                   key={i + 2}
-                  style={{
-                    float: "left"
-                  }}
+                  className="centerize-nav"
+                  // style={{
+                  //   transform: "translateX(" + -180 + "px)"
+                  // }}
                 >
-                  <Link to={i == 0 ? "/" : "B" + i + 1}>
+                  <Link to={i == 0 ? "/" : "B" + (i + 1)}>
                     <Badge
                       count={1}
                       style={{
@@ -287,12 +287,12 @@ class Header extends Component {
                 </Menu.Item>
               );
             })}
-
             <Menu.Item
               key="5"
-              style={{
-                float: "left"
-              }}
+              className="centerize-nav"
+              // style={{
+              //   transform: "translateX(" + -210 + "px)"
+              // }}
             >
               <Link to="/Notify">
                 <Badge
