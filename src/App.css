@@ -256,13 +256,6 @@ body {
   background: #d8d8d8;
 }
 
-.baseMenu .ant-menu-item {
-  /* border-left: 1px solid #e9e9e9; */
-}
-
-.baseMenu .ant-menu-item:nth-last-child(2) {
-  /* border-right: 1px solid #e9e9e9; */
-}
 
 .baseMenu .ant-badge-rtl .ant-badge-count {
   left: 8px !important;
@@ -639,9 +632,7 @@ hr {
   margin: 0 6px;
 }
 
-.ant-layout-content {
-  /* padding: 20px; */
-}
+
 
 .stack-grid {
   padding: 0px 50px;
@@ -666,12 +657,7 @@ hr {
   flex: 0 0 250px;
 }
 
-.grid-blog-card .ant-card-cover {
-  /* height: 235px;
-  background: linear-gradient(90deg, #f2f2f2 25%, #e6e6e6 37%, #f2f2f2 63%);
-  background-size: 400% 100%;
-  animation: ant-skeleton-loading 1.4s ease infinite; */
-}
+
 
 .center-paginate {
   text-align: center;
