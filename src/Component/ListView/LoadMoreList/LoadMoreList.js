@@ -2,14 +2,10 @@ import React, { Component } from "react";
 
 import axios from "axios";
 import { List, Avatar, Divider, Button, Space } from "antd";
-import {
-  MessageOutlined,
-  LikeOutlined,
-  StarOutlined,
-  LoadingOutlined,
-  CaretUpFilled,
-  CaretDownFilled
-} from "@ant-design/icons";
+import { LoadingOutlined } from "@ant-design/icons";
+import ListItem from "../../ItemBase/ListItem/ListItem";
+import { connect } from "react-redux";
+import FreeForm from "../../ItemBase/Post/FreeForm";
 
 const IconText = ({ icon, text }) => (
   <Space>
@@ -17,7 +13,7 @@ const IconText = ({ icon, text }) => (
     {text}
   </Space>
 );
-export default class LoadMoreList extends Component {
+class LoadMoreList extends Component {
   state = {
     loading: true,
     data: [],
@@ -60,69 +56,34 @@ export default class LoadMoreList extends Component {
     this.getItems();
   }
   render() {
+    const { custom, base, user, product } = this.props;
+
     return (
       <div className="stack-list">
-        <List
-          itemLayout="vertical"
-          size="large"
-          dataSource={this.state.data}
-          renderItem={item => (
-            <List.Item
-              className={
-                this.state.block ? "list-block-larg" : "list-custom-larg"
-              }
-              key={item.id}
-              actions={
-                this.state.social
-                  ? [
-                      <IconText
-                        icon={StarOutlined}
-                        text="156"
-                        key="list-vertical-star-o"
-                      />,
-                      <IconText
-                        icon={LikeOutlined}
-                        text="156"
-                        key="list-vertical-like-o"
-                      />,
-                      <IconText
-                        icon={MessageOutlined}
-                        text="2"
-                        key="list-vertical-message"
-                      />
-                    ]
-                  : ""
-              }
-              //if
-              extra={
-                this.state.img ? (
-                  <img alt="logo" src={item.thumbnailUrl} />
-                ) : this.state.optInfo ? (
-                  <div className="opt-info">
-                    <span className="up">
-                      <CaretUpFilled />
-                      <span> 20%</span>
-                    </span>
-                    <span className="down">
-                      <CaretDownFilled />
-                      <span>5%</span>
-                    </span>
-                  </div>
-                ) : null
-              }
-            >
-              <List.Item.Meta
-                avatar={
-                  this.state.avatar ? <Avatar src={item.thumbnailUrl} /> : ""
-                }
-                title={<a href={item.href}>{item.title}</a>}
-                description={this.state.description ? item.title : ""}
-              />
-
-              {this.state.simpleList ? "" : item.title}
-            </List.Item>
-          )}
-        />
+        <div className="list-container-loadmore">
+          {this.state.data.map(function(item) {
+            return (
+              <div key={item.id}>
+                {base == "post" && (
+                  <ListItem
+                    item={item}
+                    base={base}
+                    user={user}
+                    custom={custom}
+                  />
+                )}
+                {base == "free" && (
+                  <FreeForm
+                    item={item}
+                    base={base}
+                    user={user}
+                    custom={custom}
+                  />
+                )}
+              </div>
+            );
+          })}
+        </div>
 
         <Divider />
 
@@ -152,3 +113,12 @@ export default class LoadMoreList extends Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    user: state.user.user
+  };
+};
+
+export default connect(mapStateToProps)(LoadMoreList);
+// export default sizeMe()(PaginateGrid);

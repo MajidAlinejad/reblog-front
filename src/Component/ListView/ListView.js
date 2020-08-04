@@ -6,17 +6,35 @@ export default class extends Component {
   ModSwitcher(mode) {
     switch (mode) {
       case "paginate":
-        return <PaginateList />;
+        return (
+          <PaginateList
+            custom={this.props.custom}
+            base={this.props.base}
+            user={this.props.user}
+          />
+        );
       case "loadmore":
-        return <LoadMoreList />;
+        return (
+          <LoadMoreList
+            custom={this.props.custom}
+            base={this.props.base}
+            user={this.props.user}
+          />
+        );
       default:
-        return <PaginateList />;
+        return (
+          <PaginateList
+            custom={this.props.custom}
+            base={this.props.base}
+            user={this.props.user}
+          />
+        );
     }
   }
 
   componentDidMount() {}
   render() {
-    const { loader } = this.props;
+    const { loader, custom, base, user } = this.props;
     return <div className="list-view">{this.ModSwitcher(loader)}</div>;
   }
 }

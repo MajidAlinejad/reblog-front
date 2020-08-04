@@ -2,7 +2,7 @@
 import React, { Component } from "react";
 import { Row, Col, Drawer } from "antd";
 import Icon from "@ant-design/icons";
-import Swaper from "../Swaper/Swaper";
+import Swaper from "./Swaper/Swaper";
 import SearchBar from "./SearchBar/SearchBar";
 import { getUser } from "../../Redux/Action/User";
 import { connect } from "react-redux";
@@ -180,7 +180,7 @@ class Toolbar extends Component {
 
   handleResize = () => {
     // console.log(window.innerWidth);
-    if (window.innerWidth < 869) {
+    if (window.innerWidth < 1100) {
       this.setState(
         {
           mobile: true

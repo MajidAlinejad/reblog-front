@@ -7,13 +7,37 @@ export default class GridView extends Component {
   ModSwitcher(mode) {
     switch (mode) {
       case "infinit":
-        return <InfinitGrid base={this.props.base} />;
+        return (
+          <InfinitGrid
+            custom={this.props.custom}
+            base={this.props.base}
+            product={this.props.product}
+          />
+        );
       case "paginate":
-        return <PaginateGrid base={this.props.base} />;
+        return (
+          <PaginateGrid
+            custom={this.props.custom}
+            base={this.props.base}
+            product={this.props.product}
+          />
+        );
       case "loadmore":
-        return <LoadMoreGrid base={this.props.base} />;
+        return (
+          <LoadMoreGrid
+            custom={this.props.custom}
+            base={this.props.base}
+            product={this.props.product}
+          />
+        );
       default:
-        return <PaginateGrid base={this.props.base} />;
+        return (
+          <PaginateGrid
+            custom={this.props.custom}
+            base={this.props.base}
+            product={this.props.product}
+          />
+        );
     }
   }
 

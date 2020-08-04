@@ -16,50 +16,83 @@ export default class Routes extends Component {
               >
                 <Blog
                   // view={blog.view}
-                  view="Grid" //    Grid / List
+                  view="List" //    Grid / List / freeForm
                   // base={blog.base} //
-                  base="img" //
-                  // "base":    video    /        cms        /   play     /
-                  // img    /  free   /  info     / home
+                  base="free" //video /music/podcast/product / img  / post /free     info  / home
+                  // ---------------------if you want custom  productbase  ----------------->
+
+                  // product={{
+                  //   time: true,
+                  //   modern: false,
+                  //   discount: false
+                  // }}
+
+                  // ------------if  you want custom img/video/music/podcast/base --------------->
+
+                  // custom={{
+                  //   overlay: true,
+                  //   time: true,
+                  //   rate: true,
+                  //   text: false,
+                  //   //
+                  //   footer: true,
+                  //   //
+                  //   leftFooter: true,
+                  //   like: true,
+                  //   view: false,
+                  //   comment: true,
+                  //   save: true,
+                  //   date: false,
+                  //   //
+                  //   rightFooter: true,
+                  //   avatar: true,
+                  //   autor: true,
+                  //   //
+                  //   title: false,
+                  //   //
+                  //   type: false,
+                  //   setting: true
+                  // }}
+                  // ----------------------------------------------------->
+
+                  // "base":
 
                   // "view" : list-Grid /  list-Grid-custom /  list-Grid /
                   // Grid   /   All   / table-chart/ --
 
                   toolbar="search" //search/ null --> hashtag
-                  loader="paginate" //loadmore/paginate/infinit
+                  loader="loadmore" //loadmore/paginate/infinit
                   switcher={true} //toolbar btn for search/hashtag
-                  sidebar="drawer" //drawer/sider/{false}
+                  sidebar="sider" //drawer/sider/{false}
                 />
               </Route>
             );
           })}
-          {/* <Route exact path="/">
-            <Blog
-              view="list"
-              toolbar="search"
-              loader="paginate"
-              switcher={false}
-              filters={false}
-            />
-          </Route>
           <Route path="/B2">
             <Blog
               view="Grid"
-              loader="loadMore"
-              toolbar="hashtags"
-              switcher={true}
-              filters={true}
+              base="product"
+              product={{
+                modern: true,
+                time: true
+              }}
+              toolbar="search" //search/ null --> hashtag
+              loader="paginate" //loadmore/paginate/infinit
+              switcher={true} //toolbar btn for search/hashtag
+              sidebar="drawer" //drawer/sider/{false}
             />
           </Route>
           <Route path="/B3">
             <Blog
               view="Grid"
-              loader="infinit"
-              toolbar="search"
-              switcher={false}
-              filters={true}
+              base="music"
+              toolbar="hashtag" //search/ null --> hashtag
+              loader="loadmore" //loadmore/paginate/infinit
+              switcher={true} //toolbar btn for search/hashtag
+              sidebar="drawer" //drawer/sider/{false}
             />
-          </Route> */}
+          </Route>
+
           <Route path="/notify">{/* <Notify /> */}</Route>
           <Route path="/contact">{/* <Contact /> */}</Route>
         </Switch>

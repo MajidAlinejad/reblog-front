@@ -3,7 +3,6 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { BackTop, ConfigProvider, Layout } from "antd";
 import { BrowserRouter as Router } from "react-router-dom";
-import SimpleBar from "simplebar-react";
 import Axios from "axios";
 
 // css import
@@ -98,7 +97,6 @@ class App extends Component {
 
   render() {
     return (
-      // <Provider>
       <Router>
         {/* {console.log(
           "%c JavaScript!!",
@@ -116,27 +114,18 @@ class App extends Component {
               <div></div>
               <div></div>
             </div> */}
-            <Lottie
-              options={defaultOptions}
-              height={400}
-              width={400}
-              // isStopped={this.state.isStopped}
-              // isPaused={this.state.isPaused}
-            />
+            <Lottie options={defaultOptions} height={400} width={400} />
           </div>
           <Layout>
             <Header blogs={this.state.data} />
-            {/* <SimpleBar style={{ maxHeight: 660 }}> */}
             <Content>
               <Routes blogs={this.state.data} />
             </Content>
             <BackTop />
             <Footer />
-            {/* </SimpleBar> */}
           </Layout>
         </ConfigProvider>
       </Router>
-      // </Provider>
     );
   }
 }

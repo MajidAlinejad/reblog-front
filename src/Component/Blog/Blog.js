@@ -19,7 +19,7 @@ class Blog extends Component {
 
   handleResize = () => {
     // console.log(window.innerWidth);
-    if (window.innerWidth > 869) {
+    if (window.innerWidth >= 1100) {
       this.setState({
         desktop: true
       });
@@ -40,20 +40,35 @@ class Blog extends Component {
       case "Grid":
         return (
           <div className="grid-container">
-            <GridView loader={this.props.loader} base={this.props.base} />
+            <GridView
+              custom={this.props.custom}
+              loader={this.props.loader}
+              base={this.props.base}
+              product={this.props.product}
+            />
           </div>
         );
       case "List":
         return (
           <div className="grid-container">
-            <ListView loader={this.props.loader} base={this.props.base} />
+            <ListView
+              custom={this.props.custom}
+              loader={this.props.loader}
+              base={this.props.base}
+              product={this.props.product}
+            />
           </div>
         );
 
       default:
         return (
           <div className="grid-container">
-            <ListView loader={this.props.loader} base={this.props.base} />
+            <ListView
+              custom={this.props.custom}
+              loader={this.props.loader}
+              base={this.props.base}
+              product={this.props.product}
+            />
           </div>
         );
     }
