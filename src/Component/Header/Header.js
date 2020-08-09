@@ -179,7 +179,7 @@ class Header extends Component {
             }}
             className="baseMenu"
             mode="horizontal"
-            defaultSelectedKeys={["2"]}
+            // defaultSelectedKeys={["2"]}
           >
             <Menu.Item key="0" disabled>
               <img alt="-" className="logoSm" src={logo} width={40} />
@@ -265,30 +265,8 @@ class Header extends Component {
                 {/* </Link> */}
               </Menu.Item>
             )}
-            {blogs.map((blog, i) => {
-              return (
-                <Menu.Item
-                  key={i + 2}
-                  className="centerize-nav"
-                  // style={{
-                  //   transform: "translateX(" + -180 + "px)"
-                  // }}
-                >
-                  <Link to={i == 0 ? "/" : "B" + (i + 1)}>
-                    <Badge
-                      count={1}
-                      style={{
-                        backgroundColor: "#eb2f96"
-                      }}
-                    >
-                      {this.iconSelector(i)}
-                    </Badge>
-                  </Link>
-                </Menu.Item>
-              );
-            })}
             <Menu.Item
-              key="5"
+              key="2"
               className="centerize-nav"
               // style={{
               //   transform: "translateX(" + -210 + "px)"
@@ -309,6 +287,28 @@ class Header extends Component {
                 </Badge>
               </Link>
             </Menu.Item>
+            {blogs.map((blog, i) => {
+              return (
+                <Menu.Item
+                  key={i + 3}
+                  className="centerize-nav"
+                  // style={{
+                  //   transform: "translateX(" + -180 + "px)"
+                  // }}
+                >
+                  <Link to={"/blog/" + blog.id}>
+                    <Badge
+                      count={1}
+                      style={{
+                        backgroundColor: "#eb2f96"
+                      }}
+                    >
+                      {this.iconSelector(i)}
+                    </Badge>
+                  </Link>
+                </Menu.Item>
+              );
+            })}
           </Menu>
           <Modal
             className="login-modal"

@@ -92,7 +92,7 @@ export default class ProductItem extends Component {
                     }
                     onLoad={this.handleImageLoaded.bind(this)}
                     onError={this.handleImageErrored.bind(this)}
-                    src={apple}
+                    src={perfume}
                     // src={item.thumbnailUrl}
                   />
                 </ColorExtractor>

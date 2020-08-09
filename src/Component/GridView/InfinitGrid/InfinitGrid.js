@@ -16,7 +16,7 @@ class InfiniteGrid extends Component {
     loading: true,
     data: [],
     pageNumber: 1,
-    items: 5,
+    items: 30,
     hasMore: true,
     className: "my-masonry-grid",
     width: {
@@ -44,6 +44,11 @@ class InfiniteGrid extends Component {
   };
 
   getWidth = w => {
+    let siderOn = 0;
+    let innerWin = this.props.size.width;
+    let screenWin = window.innerWidth;
+    if (innerWin + 4 < screenWin) siderOn = 1;
+    console.log(innerWin, screenWin, siderOn);
     let columnWidth;
     let className;
     if (this.props.custom) {
@@ -52,32 +57,42 @@ class InfiniteGrid extends Component {
       className = "my-masonry-grid-video";
       columnWidth = {
         default: 4,
-        1100: 3,
+        1440: 4 - siderOn,
+        1100: 3 - siderOn,
+        1099: 3,
         700: 2,
-        500: 2
+        500: 2,
+        400: 1
       };
     } else if (this.props.base == "music") {
       className = "my-masonry-grid-music";
       columnWidth = {
         default: 5,
-        1440: 4,
+        1440: 4 - siderOn,
+        1100: 3 - siderOn,
+        1099: 3,
         1024: 3,
-        700: 2
+        500: 2,
+        400: 1
       };
     } else if (this.props.base == "podcast") {
       className = "my-masonry-grid-podcast";
       columnWidth = {
         default: 5,
-        1440: 4,
+        1440: 4 - siderOn,
+        1100: 3 - siderOn,
+        1099: 3,
         1024: 3,
-        700: 2
+        500: 2,
+        400: 1
       };
     } else if (this.props.base == "post") {
       className = "my-masonry-grid-post";
       columnWidth = {
         default: 5,
-        1440: 4,
-        1100: 3,
+        1440: 4 - siderOn,
+        1100: 3 - siderOn,
+        1099: 3,
         850: 2,
         600: 1
       };
@@ -85,18 +100,23 @@ class InfiniteGrid extends Component {
       className = "my-masonry-grid-product";
       columnWidth = {
         default: 5,
-        1440: 4,
-        1100: 3,
+        1440: 4 - siderOn,
+        1100: 3 - siderOn,
+        1099: 3,
         850: 2,
-        600: 1
+        600: 1,
+        320: 1
       };
     } else {
       className = "my-masonry-grid-img";
       columnWidth = {
         default: 4,
-        1100: 3,
+        1440: 4 - siderOn,
+        1100: 3 - siderOn,
+        1099: 3,
         700: 2,
-        500: 2
+        500: 2,
+        320: 1
       };
     }
     this.setState({
@@ -108,6 +128,13 @@ class InfiniteGrid extends Component {
   componentDidMount() {
     this.getWidth();
   }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.size !== this.props.size) {
+      this.getWidth();
+    }
+  }
+
   render() {
     const { custom, base, user, product } = this.props;
 

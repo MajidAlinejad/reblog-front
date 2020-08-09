@@ -54,7 +54,13 @@ class LoadMoreGrid extends Component {
       this.getItems
     );
   };
+
   getWidth = w => {
+    let siderOn = 0;
+    let innerWin = this.props.size.width;
+    let screenWin = window.innerWidth;
+    if (innerWin + 4 < screenWin) siderOn = 1;
+    // console.log(innerWin, screenWin, siderOn);
     let columnWidth;
     let className;
     if (this.props.custom) {
@@ -63,67 +69,66 @@ class LoadMoreGrid extends Component {
       className = "my-masonry-grid-video";
       columnWidth = {
         default: 4,
-        1100: 3,
+        1440: 4 - siderOn,
+        1100: 3 - siderOn,
+        1099: 3,
         700: 2,
-        500: 2
+        500: 2,
+        400: 1
       };
     } else if (this.props.base == "music") {
       className = "my-masonry-grid-music";
       columnWidth = {
         default: 5,
-        1440: 4,
+        1440: 4 - siderOn,
+        1100: 3 - siderOn,
+        1099: 3,
         1024: 3,
-        700: 2
+        500: 2,
+        400: 1
       };
     } else if (this.props.base == "podcast") {
       className = "my-masonry-grid-podcast";
       columnWidth = {
         default: 5,
-        1440: 4,
+        1440: 4 - siderOn,
+        1100: 3 - siderOn,
+        1099: 3,
         1024: 3,
-        700: 2
+        500: 2,
+        400: 1
       };
     } else if (this.props.base == "post") {
       className = "my-masonry-grid-post";
       columnWidth = {
         default: 5,
-        1440: 4,
-        1100: 3,
+        1440: 4 - siderOn,
+        1100: 3 - siderOn,
+        1099: 3,
         850: 2,
         600: 1
       };
     } else if (this.props.base == "product") {
       className = "my-masonry-grid-product";
-      if (window.innerWidth >= 1100) {
-        if (this.props.sidebar.hide) {
-          columnWidth = {
-            default: 5,
-            1440: 5,
-            1100: 3
-          };
-        } else {
-          columnWidth = {
-            default: 4,
-            1440: 4,
-            1100: 3
-          };
-        }
-      } else {
-        columnWidth = {
-          default: 3,
-          1100: 3,
-          900: 2,
-          600: 1
-        };
-      }
+      columnWidth = {
+        default: 5,
+        1440: 4 - siderOn,
+        1100: 3 - siderOn,
+        1099: 3,
+        850: 2,
+        600: 1,
+        320: 1
+      };
     } else {
       className = "my-masonry-grid-img";
-
       columnWidth = {
         default: 4,
-        1100: 3,
+        1440: 4 - siderOn,
+        1100: 3 - siderOn,
+        1099: 3,
         700: 2,
-        500: 2
+        500: 2,
+        320: 1
       };
     }
     this.setState({
@@ -131,6 +136,12 @@ class LoadMoreGrid extends Component {
       className: className
     });
   };
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.size !== this.props.size) {
+      this.getWidth();
+    }
+  }
 
   componentDidMount() {
     this.getItems();

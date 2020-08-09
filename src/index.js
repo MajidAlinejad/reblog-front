@@ -4,9 +4,13 @@ import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import { Provider } from "react-redux";
+
 import rootReducer from "./Redux/Reducer/index";
 import { createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
+
+import { ApolloProvider } from "@apollo/client";
+import { client } from "./Apollo";
 
 // const store = applyMiddleware(thunk)(createStore);
 const store = createStore(rootReducer, applyMiddleware(thunk));
@@ -14,9 +18,11 @@ const store = createStore(rootReducer, applyMiddleware(thunk));
 // const { store } = createStore(reducers);
 // console.log(store);
 ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
+  <ApolloProvider client={client}>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </ApolloProvider>,
   document.getElementById("root")
 );
 
