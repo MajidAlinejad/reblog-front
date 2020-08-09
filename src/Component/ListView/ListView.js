@@ -34,7 +34,7 @@ export default class extends Component {
 
   componentDidMount() {}
   render() {
-    const { loader, custom, base, user } = this.props;
+    const { loader } = this.props;
     return <div className="list-view">{this.ModSwitcher(loader)}</div>;
   }
 }

@@ -1,19 +1,14 @@
 import React, { Component } from "react";
 
 import axios from "axios";
-import { List, Avatar, Divider, Button, Space } from "antd";
+import { Divider, Button } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import ListItem from "../../ItemBase/ListItem/ListItem";
 import { connect } from "react-redux";
 import FreeForm from "../../ItemBase/Post/FreeForm";
 
-const IconText = ({ icon, text }) => (
-  <Space>
-    {React.createElement(icon)}
-    {text}
-  </Space>
-);
 class LoadMoreList extends Component {
+  _isMounted = false;
   state = {
     loading: true,
     data: [],
@@ -32,14 +27,16 @@ class LoadMoreList extends Component {
       .get(
         `https://jsonplaceholder.typicode.com/photos?_page=${this.state.pageNumber}&_limit=${this.state.items}`
       )
-      .then(res =>
-        this.setState({
-          //updating data
-          data: [...this.state.data, ...res.data],
-          //updating page numbers
-          loading: false
-        })
-      );
+      .then(res => {
+        if (this._isMounted) {
+          this.setState({
+            //updating data
+            data: [...this.state.data, ...res.data],
+            //updating page numbers
+            loading: false
+          });
+        }
+      });
   };
 
   onChange = () => {
@@ -52,11 +49,16 @@ class LoadMoreList extends Component {
     );
   };
 
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
   componentDidMount() {
+    this._isMounted = true;
     this.getItems();
   }
   render() {
-    const { custom, base, user, product } = this.props;
+    const { custom, base, user } = this.props;
 
     return (
       <div className="stack-list">
@@ -64,7 +66,7 @@ class LoadMoreList extends Component {
           {this.state.data.map(function(item) {
             return (
               <div key={item.id}>
-                {base == "post" && (
+                {base === "post" && (
                   <ListItem
                     item={item}
                     base={base}
@@ -72,7 +74,7 @@ class LoadMoreList extends Component {
                     custom={custom}
                   />
                 )}
-                {base == "free" && (
+                {base === "free" && (
                   <FreeForm
                     item={item}
                     base={base}
@@ -89,7 +91,7 @@ class LoadMoreList extends Component {
 
         <div className="text-center">
           {this.state.loading ? (
-            <button className="spin-holder" disabled="true">
+            <button className="spin-holder" disabled={true}>
               <span>
                 <LoadingOutlined
                   className="custom-fast-spin"

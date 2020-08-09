@@ -21,10 +21,6 @@ import Lottie from "react-lottie";
 import * as animationData from "./assets/lottie/car.json";
 // redux import
 import { getUser } from "./Redux/Action/User";
-// import rootReducer from "./Redux/Reducer/User";
-// import { getCities } from './actions/city';
-// import { getCart } from './actions/cart';
-// import { getMessage } from './actions/message';
 
 moment.locale("fa");
 
@@ -41,11 +37,9 @@ var styleArray = [
 ];
 
 var logoConsole = [
-  'background-image:    url("https://upload.wikimedia.org/wikipedia/commons/b/be/Lineage_OS_Logo.png")',
+  'background-image:    url("http://smarblog.mamp:8050/logo-wide.png")',
   "background-size: cover",
-  "line-height: 80px",
-  "width : 150px",
-  "height : 150px"
+  "line-height: 30px"
 ];
 
 const defaultOptions = {
@@ -86,10 +80,10 @@ class App extends Component {
   componentDidMount() {
     this.props.getUser();
     this.getItems("blogs");
-    console.log("%c                          ", logoConsole.join(";"));
+    console.log("%c            ", logoConsole.join(";"));
     console.log(
       "%cWelcome to NegarAfar , We are Happy for you 😍 and wish you Good luck 😘",
-      "font-weight: lighter; font-size: 13px; font-family : tahoma "
+      "font-weight: lighter;color:#999999; font-size: 13px; font-family : cursive "
     );
 
     console.log("%cBe Happy", styleArray.join(";"));
@@ -98,10 +92,6 @@ class App extends Component {
   render() {
     return (
       <Router>
-        {/* {console.log(
-          "%c JavaScript!!",
-          "font-weight: bold; font-size: 50px;color: red; text-shadow: 3px 3px 0 rgb(217,31,38) , 6px 6px 0 rgb(226,91,14) , 9px 9px 0 rgb(245,221,8) , 12px 12px 0 rgb(5,148,68) , 15px 15px 0 rgb(2,135,206) , 18px 18px 0 rgb(4,77,145) , 21px 21px 0 rgb(42,21,113)"
-        )} */}
         <ConfigProvider direction="rtl" locale={fa_IR}>
           <div
             className={

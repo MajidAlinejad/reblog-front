@@ -3,9 +3,9 @@ import { FieldTimeOutlined, StarOutlined } from "@ant-design/icons";
 import Countdown from "react-countdown";
 import { Link } from "react-router-dom";
 import { ColorExtractor } from "react-color-extractor";
-import apple from "../../../assets/picture/example/apple.png";
+// import apple from "../../../assets/picture/example/apple.png";
 import perfume from "../../../assets/picture/example/perfume.png";
-import perfume2 from "../../../assets/picture/example/perfume2.png";
+// import perfume2 from "../../../assets/picture/example/perfume2.png";
 
 const defaultConf = {
   discount: false,
@@ -60,7 +60,7 @@ export default class ProductItem extends Component {
     }
   }
   render() {
-    const { item, base } = this.props;
+    const { item } = this.props;
     const { loading, conf, colors } = this.state;
     return (
       <React.Fragment>

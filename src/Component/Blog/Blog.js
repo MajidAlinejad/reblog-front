@@ -90,7 +90,7 @@ class Blog extends Component {
         <Layout className="full-content">
           {sidebar === "sider" && this.state.desktop ? <Sidebar /> : null}
           <Content className="view-content">
-            {view == "grid" ? (
+            {view === "grid" ? (
               <div className="grid-container">
                 <GridView
                   custom={this.props.custom}

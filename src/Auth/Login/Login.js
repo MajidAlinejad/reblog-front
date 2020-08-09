@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Form, Input, Checkbox, Button, message } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
-import { forgot, login, setAccessToken } from "../Auth";
+import { login, setAccessToken } from "../Auth";
 
 // redux import
 import { getUser } from "../../Redux/Action/User";
@@ -53,7 +53,7 @@ class Login extends Component {
   };
 
   onSubmit = () => {
-    const { username, password, token } = this.state;
+    const { username, password } = this.state;
 
     if (this.validateFields()) {
       this.setState({ loading: true });
@@ -123,7 +123,6 @@ class Login extends Component {
         <Form
           name="Login"
           className="login-form"
-          onsu
           initialValues={{
             remember: true
           }}
@@ -169,9 +168,7 @@ class Login extends Component {
               <Checkbox>مرا به یاد داشته باش</Checkbox>
             </Form.Item>
 
-            <a className="login-form-forgot" href="">
-              فراموشی رمز عبور؟
-            </a>
+            <p className="login-form-forgot">فراموشی رمز عبور؟</p>
           </Form.Item>
           <Form.Item name="submit">
             <Button

@@ -1,33 +1,7 @@
 import React, { Component } from "react";
-import { Card, Avatar, Button, Popover, Menu, message, Badge, Tag } from "antd";
-import {
-  LikeOutlined,
-  FieldTimeOutlined,
-  CloudDownloadOutlined,
-  ShareAltOutlined,
-  StopOutlined,
-  SaveOutlined,
-  SaveFilled,
-  EllipsisOutlined,
-  EyeOutlined,
-  PictureOutlined,
-  PlayCircleFilled,
-  MessageOutlined,
-  VideoCameraFilled,
-  EditOutlined,
-  SettingOutlined,
-  StarOutlined,
-  HeartOutlined
-} from "@ant-design/icons";
-
-import heart from "../../../assets/picture/heart.png";
-import { Link } from "react-router-dom";
-import { ColorExtractor } from "react-color-extractor";
-import apple from "../../../assets/picture/example/apple.png";
-import perfume from "../../../assets/picture/example/perfume.png";
-import perfume2 from "../../../assets/picture/example/perfume2.png";
+import { Avatar, message } from "antd";
+import { EyeOutlined, MessageOutlined, HeartOutlined } from "@ant-design/icons";
 import { toggleLike, toggleSave } from "../../../GlobalFunc/GlobalFunc";
-const { Meta } = Card;
 
 const defaultConf = {
   like: true,
@@ -169,7 +143,7 @@ export default class ListItem extends Component {
       this.setState({
         conf: this.props.custom
       });
-    } else if (this.props.base == "post") {
+    } else if (this.props.base === "post") {
       this.setState({
         conf: postConf
       });
@@ -180,8 +154,7 @@ export default class ListItem extends Component {
     }
   }
   render() {
-    const { item, base } = this.props;
-    const { loading, conf, colors } = this.state;
+    const { conf } = this.state;
     return (
       <React.Fragment>
         <div className="li-bs-itm container">
@@ -224,7 +197,7 @@ export default class ListItem extends Component {
               </p>
               <div className="li-bs-itm footer-section">
                 {conf.like && (
-                  <div class="btn comment">
+                  <div className="btn comment">
                     <span>
                       <div
                       // onClick={this.handleSave}
@@ -236,7 +209,7 @@ export default class ListItem extends Component {
                   </div>
                 )}
                 {conf.comment && (
-                  <div class="btn comment">
+                  <div className="btn comment">
                     <span>
                       <div
                       // onClick={this.handleSave}
@@ -248,7 +221,7 @@ export default class ListItem extends Component {
                   </div>
                 )}
                 {conf.view && (
-                  <div class="btn view">
+                  <div className="btn view">
                     <span>
                       <div
                       // onClick={this.handleSave}

@@ -67,6 +67,8 @@ const settings = {
 };
 
 class Swaper extends Component {
+  _isMounted = false;
+
   state = {
     tags: [],
     loading: true,
@@ -139,15 +141,22 @@ class Swaper extends Component {
   async getItems() {
     axios.get(process.env.REACT_APP_API_URL + "cats").then(res => {
       const tags = res.data;
-      this.setState({
-        originsTag: tags,
-        tags: tags,
-        loading: false
-      });
+      if (this._isMounted) {
+        this.setState({
+          originsTag: tags,
+          tags: tags,
+          loading: false
+        });
+      }
     });
   }
 
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
   componentDidMount() {
+    this._isMounted = true;
     this.getItems();
     this.setState({
       optClass: "with-opacity"

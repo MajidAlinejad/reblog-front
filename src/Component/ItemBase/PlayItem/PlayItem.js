@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Card, Avatar, Button, Popover, Menu, message } from "antd";
+import { Avatar, Button, Popover, Menu, message } from "antd";
 import {
   LikeOutlined,
   FieldTimeOutlined,
@@ -173,11 +173,11 @@ export default class PlayItem extends Component {
       this.setState({
         conf: this.props.custom
       });
-    } else if (this.props.base == "music") {
+    } else if (this.props.base === "music") {
       this.setState({
         conf: playConf
       });
-    } else if (this.props.base == "podcast") {
+    } else if (this.props.base === "podcast") {
       this.setState({
         conf: podConf
       });
@@ -240,7 +240,7 @@ export default class PlayItem extends Component {
               />
               {conf.type && (
                 <div className="img-base-over-icon">
-                  {item.type == "video" ? (
+                  {item.type === "video" ? (
                     <VideoCameraFilled />
                   ) : (
                     <PictureOutlined />
@@ -249,10 +249,10 @@ export default class PlayItem extends Component {
               )}
               {conf.overlay && (
                 <div className="img-base-overlay">
-                  {base == "music" && (
+                  {base === "music" && (
                     <PlayCircleFilled className="play-sound-icon" />
                   )}
-                  {base == "podcast" && (
+                  {base === "podcast" && (
                     <PlayCircleFilled className="play-sound-icon" />
                   )}
                   <div className="img-base-overlay-content">
@@ -296,12 +296,16 @@ export default class PlayItem extends Component {
 
               <div
                 className={
-                  this.state.saved ? "overlay-saved animated" : "overlay-saved"
+                  this.state.saved
+                    ? "overlay-saved animated play-base"
+                    : "overlay-saved play-base"
                 }
               >
                 <div
                   className={
-                    this.state.saved ? "saved-txt animated" : "saved-txt"
+                    this.state.saved
+                      ? "saved-txt animated play-base"
+                      : "saved-txt play-base"
                   }
                 >
                   Saved
@@ -329,7 +333,7 @@ export default class PlayItem extends Component {
                         <li>
                           <div
                             onClick={this.handleSave}
-                            class={
+                            className={
                               this.state.saved
                                 ? "bubbly-button animate"
                                 : "bubbly-button"
@@ -340,7 +344,7 @@ export default class PlayItem extends Component {
                             ) : (
                               <SaveOutlined className="save-img-line" />
                             )}
-                            <span class="tooltiptext">Save</span>
+                            <span className="tooltiptext">Save</span>
                           </div>
                         </li>
                       )}
@@ -350,11 +354,11 @@ export default class PlayItem extends Component {
                             <div
                               onClick={this.handleLiked}
                               style={{ background: `url(${heart})` }}
-                              class={
+                              className={
                                 this.state.liked ? "heart is-active" : "heart"
                               }
                             >
-                              {/* <span class="tooltiptext">like</span> */}
+                              {/* <span className="tooltiptext">like</span> */}
                             </div>
                           </span>
                           <strong> {this.state.liker}</strong>
@@ -365,7 +369,7 @@ export default class PlayItem extends Component {
                           <span>
                             <div
                               // onClick={this.handleSave}
-                              class="comment"
+                              className="comment"
                             >
                               <MessageOutlined className="cmnt-img-line" />
                             </div>
@@ -378,7 +382,7 @@ export default class PlayItem extends Component {
                           <span>
                             <div
                               // onClick={this.handleSave}
-                              class="view"
+                              className="view"
                             >
                               <EyeOutlined className="views-img-line" />
                             </div>

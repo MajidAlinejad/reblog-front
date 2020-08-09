@@ -11,6 +11,7 @@ export default class Routes extends Component {
   render() {
     return (
       <React.Fragment>
+        <Router></Router>
         <Switch>
           <Route exact path="/">
             <p>

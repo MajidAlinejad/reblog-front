@@ -1164,9 +1164,24 @@ button.default-overwrite:hover {
   background: #0000003b;
   top: 0;
   height: 100%;
-  margin-top: -15vw;
+  margin-top: -410px;
   border-radius: 16px;
 }
+
+
+
+.overlay-saved.play-base {
+  visibility: hidden;
+  opacity: 0;
+  position: relative;
+  width: 100%;
+  background: #00000000;
+  top: 0;
+  height: 100%;
+  margin-top: -184%;
+  border-radius: 16px;
+}
+
 
 .overlay-saved.animated {
   animation-name: saved-overlay-anime;
@@ -2100,16 +2115,19 @@ button.default-overwrite:hover {
 /* ///////////////////////////////////L:ist view */
 @media only screen and (max-width: 869px) {
 
-  /* border-radius: 15px;
-  padding: 20px;
-  display: flex;
-  cursor: zoom-in;
-  align-items: flex-end;
-  content: "";
-  position: relative;
-  width: 254px;
-  width: auto;
-  bottom: 250px; */
+
+  .overlay-saved.play-base {
+    visibility: hidden;
+    opacity: 0;
+    position: relative;
+    width: 100%;
+    background: #00000000;
+    top: 0;
+    height: 100%;
+    margin-top: -215%;
+    border-radius: 16px;
+  }
+
   .img-base-overlay {
     border-radius: 15px;
     padding: 20px;
@@ -2127,6 +2145,18 @@ button.default-overwrite:hover {
     background: linear-gradient(to top, #0000003b, #00000000);
     position: relative;
     top: -205px;
+  }
+
+  .overlay-saved {
+    visibility: hidden;
+    opacity: 0;
+    position: relative;
+    width: 100%;
+    background: #0000003b;
+    top: 0;
+    height: 100%;
+    margin-top: -410px;
+    border-radius: 16px;
   }
 
   .container-base-item-play .img-base-cover {
@@ -2287,6 +2317,18 @@ button.default-overwrite:hover {
     padding: 10px;
     object-fit: cover;
     height: auto;
+  }
+
+  .overlay-saved.play-base {
+    visibility: hidden;
+    opacity: 0;
+    position: relative;
+    width: 100%;
+    background: #00000000;
+    top: 0;
+    height: 100%;
+    margin-top: -200%;
+    border-radius: 16px;
   }
 }
 
@@ -2458,6 +2500,18 @@ button.default-overwrite:hover {
     height: 100%;
     zoom: 0.8;
     min-width: 400px;
+  }
+
+  .overlay-saved.play-base {
+    visibility: hidden;
+    opacity: 0;
+    position: relative;
+    width: 100%;
+    background: #00000000;
+    top: 0;
+    height: 100%;
+    margin-top: -100%;
+    border-radius: 16px;
   }
 
   .grid-product-card .grid-card-footer {

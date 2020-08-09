@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import sizeMe from "react-sizeme";
 import axios from "axios";
-import { Card, Divider, Button } from "antd";
+import { Divider, Button } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import Masonry from "react-masonry-css";
 import ProductItem from "../../ItemBase/ProductItem/ProductItem";
@@ -9,7 +9,6 @@ import PostItem from "../../ItemBase/Post/PostItem";
 import PlayItem from "../../ItemBase/PlayItem/PlayItem";
 import GridItem from "../../ItemBase/GridItem/GridItem";
 import { connect } from "react-redux";
-import Sidebar from "../../Sidebar/Sidebar";
 class LoadMoreGrid extends Component {
   state = {
     loading: true,
@@ -65,7 +64,7 @@ class LoadMoreGrid extends Component {
     let className;
     if (this.props.custom) {
       columnWidth = w <= 870 ? 220 : 300;
-    } else if (this.props.base == "video") {
+    } else if (this.props.base === "video") {
       className = "my-masonry-grid-video";
       columnWidth = {
         default: 4,
@@ -76,7 +75,7 @@ class LoadMoreGrid extends Component {
         500: 2,
         400: 1
       };
-    } else if (this.props.base == "music") {
+    } else if (this.props.base === "music") {
       className = "my-masonry-grid-music";
       columnWidth = {
         default: 5,
@@ -84,10 +83,11 @@ class LoadMoreGrid extends Component {
         1100: 3 - siderOn,
         1099: 3,
         1024: 3,
+        700: 2,
         500: 2,
         400: 1
       };
-    } else if (this.props.base == "podcast") {
+    } else if (this.props.base === "podcast") {
       className = "my-masonry-grid-podcast";
       columnWidth = {
         default: 5,
@@ -98,7 +98,7 @@ class LoadMoreGrid extends Component {
         500: 2,
         400: 1
       };
-    } else if (this.props.base == "post") {
+    } else if (this.props.base === "post") {
       className = "my-masonry-grid-post";
       columnWidth = {
         default: 5,
@@ -108,7 +108,7 @@ class LoadMoreGrid extends Component {
         850: 2,
         600: 1
       };
-    } else if (this.props.base == "product") {
+    } else if (this.props.base === "product") {
       className = "my-masonry-grid-product";
       columnWidth = {
         default: 5,
@@ -165,7 +165,7 @@ class LoadMoreGrid extends Component {
           {this.state.data.map(function(item) {
             return (
               <div key={item.id}>
-                {base == "img" && (
+                {base === "img" && (
                   <GridItem
                     item={item}
                     base={base}
@@ -173,7 +173,7 @@ class LoadMoreGrid extends Component {
                     custom={custom}
                   />
                 )}
-                {base == "video" && (
+                {base === "video" && (
                   <GridItem
                     item={item}
                     base={base}
@@ -181,7 +181,7 @@ class LoadMoreGrid extends Component {
                     custom={custom}
                   />
                 )}
-                {base == "music" && (
+                {base === "music" && (
                   <PlayItem
                     item={item}
                     base={base}
@@ -189,7 +189,7 @@ class LoadMoreGrid extends Component {
                     custom={custom}
                   />
                 )}
-                {base == "podcast" && (
+                {base === "podcast" && (
                   <PlayItem
                     item={item}
                     base={base}
@@ -197,7 +197,7 @@ class LoadMoreGrid extends Component {
                     custom={custom}
                   />
                 )}
-                {base == "post" && (
+                {base === "post" && (
                   <PostItem
                     item={item}
                     base={base}
@@ -205,7 +205,7 @@ class LoadMoreGrid extends Component {
                     custom={custom}
                   />
                 )}
-                {base == "product" && (
+                {base === "product" && (
                   <ProductItem
                     item={item}
                     product={product}

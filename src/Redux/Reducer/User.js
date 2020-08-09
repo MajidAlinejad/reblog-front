@@ -11,7 +11,7 @@ const initialState = {
 const UserReducer = (state = initialState, actions) => {
   //   console.log("reducer started");
   //   console.log(actions);
-  if (actions.type == "GET_USER_PROFILE") {
+  if (actions.type === "GET_USER_PROFILE") {
     state = {
       ...state,
       user: {
@@ -21,7 +21,7 @@ const UserReducer = (state = initialState, actions) => {
       }
     };
     return state;
-  } else if (actions.type == "LOGOUT_USER") {
+  } else if (actions.type === "LOGOUT_USER") {
     return initialState;
   } else return state;
   // switch (actions.type) {

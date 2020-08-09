@@ -6,8 +6,6 @@ import Swaper from "./Swaper/Swaper";
 import SearchBar from "./SearchBar/SearchBar";
 import { getUser } from "../../Redux/Action/User";
 import { connect } from "react-redux";
-import Sidebar from "../Sidebar/Sidebar";
-import { toggleSidebar } from "../../Redux/Action/View";
 import SidebarContent from "../Sidebar/SidebarContent/SidebarContent";
 
 const FilterSVG = () => (

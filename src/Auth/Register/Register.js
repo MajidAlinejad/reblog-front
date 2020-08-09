@@ -233,13 +233,11 @@ class Register extends Component {
           <Form.Item>
             <Form.Item name="remember" valuePropName="checked" noStyle>
               <Checkbox>
-                با <a href="">توافق نامه </a> این سایت موافق هستم
+                با <p>توافق نامه </p> این سایت موافق هستم
               </Checkbox>
             </Form.Item>
 
-            <a className="login-form-forgot" href="">
-              فراموشی رمز عبور؟
-            </a>
+            <p className="login-form-forgot">فراموشی رمز عبور؟</p>
           </Form.Item>
           <Form.Item name="submit">
             <Button

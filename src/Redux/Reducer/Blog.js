@@ -12,7 +12,7 @@ const initialState = {
 
 const BlogReducer = (state = initialState, actions) => {
   //   console.log(actions);
-  if (actions.type == "UPDATE_BLOG") {
+  if (actions.type === "UPDATE_BLOG") {
     // console.log(actions.payload);
     state = {
       ...state.blog,

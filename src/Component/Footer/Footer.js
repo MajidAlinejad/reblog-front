@@ -1,10 +1,9 @@
 import React, { Component } from "react";
-import { Layout, Affix } from "antd";
+import { Layout } from "antd";
 
 export default class Header extends Component {
   render() {
     return (
-      // <Affix offsetBottom={0}>
       <Layout.Footer
         style={{
           textAlign: "center"
@@ -12,7 +11,6 @@ export default class Header extends Component {
       >
         "Made with ❤ by Negar Afar"
       </Layout.Footer>
-      // </Affix>
     );
   }
 }

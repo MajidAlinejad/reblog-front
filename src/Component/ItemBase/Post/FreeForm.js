@@ -1,44 +1,14 @@
 import React, { Component } from "react";
+import { Avatar, message, Carousel, Typography } from "antd";
 import {
-  Card,
-  Avatar,
-  Button,
-  Popover,
-  Menu,
-  message,
-  Badge,
-  Carousel,
-  Radio,
-  Tag,
-  Typography
-} from "antd";
-import {
-  LikeOutlined,
-  FieldTimeOutlined,
-  CloudDownloadOutlined,
-  ShareAltOutlined,
-  StopOutlined,
   SaveOutlined,
   SaveFilled,
-  EllipsisOutlined,
   EyeOutlined,
-  PictureOutlined,
-  PlayCircleFilled,
   MessageOutlined,
-  VideoCameraFilled,
-  EditOutlined,
-  SettingOutlined,
-  CalendarOutlined,
-  StarOutlined,
-  HeartOutlined
+  CalendarOutlined
 } from "@ant-design/icons";
 
 import heart from "../../../assets/picture/heart.png";
-import { Link } from "react-router-dom";
-import { ColorExtractor } from "react-color-extractor";
-import apple from "../../../assets/picture/example/apple.png";
-import perfume from "../../../assets/picture/example/perfume.png";
-import perfume2 from "../../../assets/picture/example/perfume2.png";
 import { toggleLike, toggleSave } from "../../../GlobalFunc/GlobalFunc";
 const { Paragraph } = Typography;
 const defaultConf = {
@@ -181,7 +151,7 @@ export default class FreeForm extends Component {
       this.setState({
         conf: this.props.custom
       });
-    } else if (this.props.base == "post") {
+    } else if (this.props.base === "post") {
       this.setState({
         conf: postConf
       });
@@ -193,7 +163,6 @@ export default class FreeForm extends Component {
   }
 
   render() {
-    const { item, base } = this.props;
     const { conf, loading } = this.state;
     return (
       <React.Fragment>
@@ -260,7 +229,7 @@ export default class FreeForm extends Component {
                 <div className="btn">
                   <div
                     onClick={this.handleSave}
-                    class={
+                    className={
                       this.state.saved
                         ? "bubbly-button animate"
                         : "bubbly-button"
@@ -279,7 +248,7 @@ export default class FreeForm extends Component {
                   <span>
                     <div
                       // onClick={this.handleSave}
-                      class="comment"
+                      className="comment"
                     >
                       <MessageOutlined className="cmnt-img-line" />
                     </div>
@@ -292,7 +261,7 @@ export default class FreeForm extends Component {
                   <span>
                     <div
                       // onClick={this.handleSave}
-                      class="view"
+                      className="view"
                     >
                       <EyeOutlined className="views-img-line" />
                     </div>
@@ -306,9 +275,9 @@ export default class FreeForm extends Component {
                     <div
                       onClick={this.handleLiked}
                       style={{ background: `url(${heart})` }}
-                      class={this.state.liked ? "heart is-active" : "heart"}
+                      className={this.state.liked ? "heart is-active" : "heart"}
                     >
-                      {/* <span class="tooltiptext">like</span> */}
+                      {/* <span className="tooltiptext">like</span> */}
                     </div>
                   </span>
                   <strong> {this.state.liker}</strong>

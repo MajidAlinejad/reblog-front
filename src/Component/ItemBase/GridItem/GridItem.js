@@ -179,11 +179,11 @@ export default class GridItem extends Component {
       this.setState({
         conf: this.props.custom
       });
-    } else if (this.props.base == "img") {
+    } else if (this.props.base === "img") {
       this.setState({
         conf: imgConf
       });
-    } else if (this.props.base == "video") {
+    } else if (this.props.base === "video") {
       this.setState({
         conf: videoConf
       });
@@ -246,7 +246,7 @@ export default class GridItem extends Component {
               />
               {conf.type && (
                 <div className="img-base-over-icon">
-                  {item.type == "video" ? (
+                  {item.type === "video" ? (
                     <VideoCameraFilled />
                   ) : (
                     <PictureOutlined />
@@ -255,7 +255,7 @@ export default class GridItem extends Component {
               )}
               {conf.overlay && (
                 <div className="img-base-overlay">
-                  {base == "video" && (
+                  {base === "video" && (
                     <PlayCircleFilled className="play-icon" />
                   )}
                   <div className="img-base-overlay-content">
@@ -332,7 +332,7 @@ export default class GridItem extends Component {
                         <li>
                           <div
                             onClick={this.handleSave}
-                            class={
+                            className={
                               this.state.saved
                                 ? "bubbly-button animate"
                                 : "bubbly-button"
@@ -343,7 +343,7 @@ export default class GridItem extends Component {
                             ) : (
                               <SaveOutlined className="save-img-line" />
                             )}
-                            <span class="tooltiptext">Save</span>
+                            <span className="tooltiptext">Save</span>
                           </div>
                         </li>
                       )}
@@ -353,7 +353,7 @@ export default class GridItem extends Component {
                             <div
                               onClick={this.handleLiked}
                               style={{ background: `url(${heart})` }}
-                              class={
+                              className={
                                 this.state.liked ? "heart is-active" : "heart"
                               }
                             >
@@ -368,7 +368,7 @@ export default class GridItem extends Component {
                           <span>
                             <div
                               // onClick={this.handleSave}
-                              class="comment"
+                              className="comment"
                             >
                               <MessageOutlined className="cmnt-img-line" />
                             </div>
@@ -381,7 +381,7 @@ export default class GridItem extends Component {
                           <span>
                             <div
                               // onClick={this.handleSave}
-                              class="view"
+                              className="view"
                             >
                               <EyeOutlined className="views-img-line" />
                             </div>

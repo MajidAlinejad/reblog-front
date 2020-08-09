@@ -13,6 +13,7 @@ const { Sider } = Layout;
 
 class Sidebar extends Component {
   // sider = React.createRef();
+  _isMounted = false;
 
   state = {
     sidebar: {
@@ -23,32 +24,36 @@ class Sidebar extends Component {
   };
 
   handleScroll = () => {
-    if (
-      window.scrollY + window.innerHeight + 75 >=
-      document.documentElement.scrollHeight
-    ) {
-      // console.log("end");
-      this.setState({
-        endPage: true,
-        startPage: false
-      });
-    } else if (window.scrollY <= 30) {
-      // console.log("start");
-      this.setState({
-        endPage: false,
-        startPage: true
-      });
-    } else {
-      // console.log("still scrolling");
+    if (this._isMounted) {
+      if (
+        window.scrollY + window.innerHeight + 75 >=
+        document.documentElement.scrollHeight
+      ) {
+        // console.log("end");
+        this.setState({
+          endPage: true,
+          startPage: false
+        });
+      } else if (window.scrollY <= 30) {
+        // console.log("start");
+        this.setState({
+          endPage: false,
+          startPage: true
+        });
+      } else {
+        // console.log("still scrolling");
+      }
     }
   };
 
   componentDidMount() {
+    this._isMounted = true;
     this.props.getSidebar();
     window.addEventListener("scroll", this.handleScroll, true);
   }
 
   componentWillUnmount() {
+    this._isMounted = false;
     window.removeEventListener("scroll", this.handleScroll);
   }
 

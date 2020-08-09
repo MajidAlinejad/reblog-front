@@ -53,7 +53,7 @@ class InfiniteGrid extends Component {
     let className;
     if (this.props.custom) {
       columnWidth = w <= 870 ? 220 : 300;
-    } else if (this.props.base == "video") {
+    } else if (this.props.base === "video") {
       className = "my-masonry-grid-video";
       columnWidth = {
         default: 4,
@@ -64,7 +64,7 @@ class InfiniteGrid extends Component {
         500: 2,
         400: 1
       };
-    } else if (this.props.base == "music") {
+    } else if (this.props.base === "music") {
       className = "my-masonry-grid-music";
       columnWidth = {
         default: 5,
@@ -75,7 +75,7 @@ class InfiniteGrid extends Component {
         500: 2,
         400: 1
       };
-    } else if (this.props.base == "podcast") {
+    } else if (this.props.base === "podcast") {
       className = "my-masonry-grid-podcast";
       columnWidth = {
         default: 5,
@@ -86,7 +86,7 @@ class InfiniteGrid extends Component {
         500: 2,
         400: 1
       };
-    } else if (this.props.base == "post") {
+    } else if (this.props.base === "post") {
       className = "my-masonry-grid-post";
       columnWidth = {
         default: 5,
@@ -96,7 +96,7 @@ class InfiniteGrid extends Component {
         850: 2,
         600: 1
       };
-    } else if (this.props.base == "product") {
+    } else if (this.props.base === "product") {
       className = "my-masonry-grid-product";
       columnWidth = {
         default: 5,
@@ -151,7 +151,7 @@ class InfiniteGrid extends Component {
             {this.state.data.map(function(item) {
               return (
                 <div key={item.id}>
-                  {base == "img" && (
+                  {base === "img" && (
                     <GridItem
                       item={item}
                       base={base}
@@ -159,7 +159,7 @@ class InfiniteGrid extends Component {
                       custom={custom}
                     />
                   )}
-                  {base == "video" && (
+                  {base === "video" && (
                     <GridItem
                       item={item}
                       base={base}
@@ -167,7 +167,7 @@ class InfiniteGrid extends Component {
                       custom={custom}
                     />
                   )}
-                  {base == "music" && (
+                  {base === "music" && (
                     <PlayItem
                       item={item}
                       base={base}
@@ -176,7 +176,7 @@ class InfiniteGrid extends Component {
                     />
                     // <DataItem />
                   )}
-                  {base == "podcast" && (
+                  {base === "podcast" && (
                     <PlayItem
                       item={item}
                       base={base}
@@ -184,7 +184,7 @@ class InfiniteGrid extends Component {
                       custom={custom}
                     />
                   )}
-                  {base == "post" && (
+                  {base === "post" && (
                     <PostItem
                       item={item}
                       base={base}
@@ -192,7 +192,7 @@ class InfiniteGrid extends Component {
                       custom={custom}
                     />
                   )}
-                  {base == "product" && (
+                  {base === "product" && (
                     <ProductItem
                       item={item}
                       product={product}

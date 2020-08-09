@@ -1,23 +1,9 @@
 import React, { Component } from "react";
-import { Spin, Pagination, Divider, List, Avatar, Space } from "antd";
-import noPic from "../../../assets/picture/nopic.svg";
+import { Spin, Pagination, Divider } from "antd";
 import axios from "axios";
-import {
-  MessageOutlined,
-  LikeOutlined,
-  StarOutlined,
-  CaretUpFilled,
-  CaretDownFilled
-} from "@ant-design/icons";
+
 import ListItem from "../../ItemBase/ListItem/ListItem";
 import { connect } from "react-redux";
-
-const IconText = ({ icon, text }) => (
-  <Space>
-    {React.createElement(icon)}
-    {text}
-  </Space>
-);
 
 class PaginateList extends Component {
   state = {
@@ -81,8 +67,7 @@ class PaginateList extends Component {
     this.getItems();
   }
   render() {
-    const { data } = this.state;
-    const { custom, base, user, product } = this.props;
+    const { custom, base, user } = this.props;
 
     return (
       <div className="stack-list">
@@ -95,7 +80,7 @@ class PaginateList extends Component {
           {this.state.data.map(function(item) {
             return (
               <div key={item.id}>
-                {base == "post" && (
+                {base === "post" && (
                   <ListItem
                     item={item}
                     base={base}
