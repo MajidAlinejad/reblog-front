@@ -43,7 +43,7 @@ class Blog extends Component {
 
   componentDidMount() {
     this.handleResize();
-    // console.log("blog mounted");
+    this.props.getBlog(this.props.match.params.id);
     window.addEventListener("resize", this.handleResize, true);
   }
 
