@@ -20,7 +20,6 @@ import {
   UserOutlined,
   BellOutlined,
   DownOutlined,
-  AppstoreOutlined,
   MailOutlined,
   SettingOutlined
 } from "@ant-design/icons";

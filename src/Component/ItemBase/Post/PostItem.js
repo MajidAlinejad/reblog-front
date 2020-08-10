@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Avatar, Button, message } from "antd";
+import noPic from "../../../assets/picture/nopic.svg";
 import {
   LikeOutlined,
   SaveOutlined,
@@ -59,6 +60,7 @@ export default class PostItem extends Component {
     liked: false,
     like_id: "",
     saved: false,
+    err: false,
     liker: 0,
     saved_id: "",
     imageStatus: "loading",
@@ -137,7 +139,7 @@ export default class PostItem extends Component {
   }
 
   handleImageErrored() {
-    this.setState({ imageStatus: "failed to load", loading: true });
+    this.setState({ imageStatus: "failed to load", loading: true, err: true });
   }
   hide = () => {
     this.setState({
@@ -207,7 +209,14 @@ export default class PostItem extends Component {
               </div>
             )}
             <Link to={item.url}>
-              <div className="grid-card-cover">
+              <div
+                className="grid-card-cover"
+                style={
+                  this.state.err
+                    ? { background: `url(${noPic})` }
+                    : { background: `none` }
+                }
+              >
                 <img
                   style={loading ? { opacity: 0 } : { opacity: 1 }}
                   onLoad={this.handleImageLoaded.bind(this)}

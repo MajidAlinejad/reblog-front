@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Avatar, message } from "antd";
 import { EyeOutlined, MessageOutlined, HeartOutlined } from "@ant-design/icons";
 import { toggleLike, toggleSave } from "../../../GlobalFunc/GlobalFunc";
+import noPic from "../../../assets/picture/nopic.svg";
 
 const defaultConf = {
   like: true,
@@ -50,6 +51,7 @@ export default class ListItem extends Component {
     like_id: "",
     saved: false,
     liker: 0,
+    err: false,
     saved_id: "",
     imageStatus: "loading",
     conf: {},
@@ -121,14 +123,14 @@ export default class ListItem extends Component {
           duration: 2
         });
   };
-
   handleImageLoaded() {
     this.setState({ imageStatus: "loaded", loading: false });
   }
 
   handleImageErrored() {
-    this.setState({ imageStatus: "failed to load", loading: true });
+    this.setState({ imageStatus: "failed to load", loading: true, err: true });
   }
+
   hide = () => {
     this.setState({
       visible: false
@@ -154,16 +156,29 @@ export default class ListItem extends Component {
     }
   }
   render() {
-    const { conf } = this.state;
+    const { conf, loading } = this.state;
     return (
       <React.Fragment>
         <div className="li-bs-itm container">
-          <div className="li-bs-itm right-section">
+          <div
+            className="li-bs-itm right-section"
+            style={
+              this.state.err
+                ? { background: `url(${noPic})` }
+                : { background: `none` }
+            }
+          >
             <img
+              style={loading ? { opacity: 0 } : { opacity: 1 }}
+              onLoad={this.handleImageLoaded.bind(this)}
+              onError={this.handleImageErrored.bind(this)}
               src="https://cdn.zoomg.ir/2020/8/fa2f0d22-c463-4c48-932b-82a3bb250ec7.jpg"
               alt=""
             />
-            <div className="li-bs-itm overlay">
+            <div
+              className="li-bs-itm overlay"
+              style={loading ? { display: "none" } : { display: "inherit" }}
+            >
               <div className="tag-container">
                 <span className="li-itm-tag">تکنولوژی #</span>
                 <span className="li-itm-tag">بازی آنلاین #</span>

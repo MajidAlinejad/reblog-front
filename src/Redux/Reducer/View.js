@@ -7,7 +7,7 @@ const initialState = {
 
 const ViewReducer = (state = initialState, actions) => {
   //   console.log("reducer started");
-  console.log(actions);
+  // console.log(actions);
   switch (actions.type) {
     case "TOGGLE_SIDEBAR":
       state = {

@@ -1302,6 +1302,12 @@ button.default-overwrite:hover {
   padding: 4px 14px;
 }
 
+.grid-post-card .grid-card-cover,
+.li-bs-itm.right-section {
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+}
+
 .my-masonry-grid-podcast {
   display: -webkit-box;
   /* Not needed if autoprefixing */
