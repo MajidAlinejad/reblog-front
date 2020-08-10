@@ -12,7 +12,8 @@ import {
   Popover,
   Layout,
   Menu,
-  message
+  message,
+  Switch
 } from "antd";
 import { Link } from "react-router-dom";
 import {
@@ -27,6 +28,7 @@ import Icon from "@ant-design/icons";
 import Login from "../../Auth/Login/Login";
 import Register from "../../Auth/Register/Register";
 import { getUser, deleteUser } from "../../Redux/Action/User";
+import { toggleNightMode, getNightMode } from "../../Redux/Action/View";
 
 const CustomSVG1 = () => (
   <svg width="1em" height="1em" fill="currentColor" viewBox="0 0 1024 1024">
@@ -58,6 +60,7 @@ class Header extends Component {
     popover: false,
     letter: false,
     name: false,
+    nightMode: false,
     user: {
       email: ""
     }
@@ -107,6 +110,14 @@ class Header extends Component {
     });
   };
 
+  handleNightMode = () => {
+    let nightMode = !this.state.nightMode;
+    this.props.toggleNightMode(nightMode);
+    // this.setState({
+    //   nightMode: !this.state.nightMode
+    // });
+  };
+
   handleCancel = () => {
     this.setState({ visible: false });
   };
@@ -144,6 +155,15 @@ class Header extends Component {
         user: this.props.user
       });
     }
+    if (prevProps.night !== this.props.night) {
+      this.setState({
+        nightMode: this.props.night
+      });
+    }
+  }
+
+  componentDidMount() {
+    this.props.getNightMode();
   }
 
   render() {
@@ -188,12 +208,22 @@ class Header extends Component {
                   content={
                     <Menu
                       style={{ width: 180 }}
-                      defaultSelectedKeys={["1"]}
+                      // defaultSelectedKeys={["1"]}
                       mode="vertical"
                       className="login-menu"
                     >
-                      <Menu.Item key="1" icon={<AppstoreOutlined />}>
-                        خروج
+                      <Menu.Item
+                        className="night-mode"
+                        onClick={this.handleNightMode}
+                        key="1"
+                        // icon={<AppstoreOutlined />}
+                      >
+                        حالت شب
+                        <Switch
+                          checked={this.state.nightMode}
+                          checkedChildren="🌙"
+                          unCheckedChildren="☀️"
+                        />
                       </Menu.Item>
                       <Menu.Item key="2" icon={<MailOutlined />}>
                         خروج
@@ -304,7 +334,8 @@ class Header extends Component {
 
 const mapStateToProps = state => {
   return {
-    user: state.user.user
+    user: state.user.user,
+    night: state.view.night
   };
 };
 
@@ -315,6 +346,12 @@ const mapDispatchToProps = dispatch => {
     },
     deleteUser: () => {
       dispatch(deleteUser());
+    },
+    toggleNightMode: mode => {
+      dispatch(toggleNightMode(mode));
+    },
+    getNightMode: () => {
+      dispatch(getNightMode());
     }
   };
 };

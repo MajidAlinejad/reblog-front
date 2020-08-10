@@ -69,7 +69,7 @@ export default class ProductItem extends Component {
             <div
               className="grid-product-card"
               style={{
-                background: `linear-gradient(to bottom, white 92%, ${
+                background: `linear-gradient(to bottom, #ffffff30 92%, ${
                   colors[0]
                 } 8%)`
               }}

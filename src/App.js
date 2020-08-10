@@ -21,6 +21,7 @@ import Lottie from "react-lottie";
 import * as animationData from "./assets/lottie/car.json";
 // redux import
 import { getUser } from "./Redux/Action/User";
+import { getNightMode } from "./Redux/Action/View";
 
 moment.locale("fa");
 
@@ -54,7 +55,8 @@ const defaultOptions = {
 class App extends Component {
   state = {
     data: [],
-    loading: true
+    loading: true,
+    night: false
     // apploading: true
   };
 
@@ -75,10 +77,16 @@ class App extends Component {
         loading: this.props.user.loading
       });
     }
+    if (prevProps.night !== this.props.night) {
+      this.setState({
+        night: this.props.night
+      });
+    }
   }
 
   componentDidMount() {
     this.props.getUser();
+    this.props.getNightMode();
     this.getItems("blogs");
     console.log("%c            ", logoConsole.join(";"));
     console.log(
@@ -106,7 +114,7 @@ class App extends Component {
             </div> */}
             <Lottie options={defaultOptions} height={400} width={400} />
           </div>
-          <Layout>
+          <Layout className={this.state.night && "dark-mode"}>
             <Header blogs={this.state.data} />
             <Content>
               <Routes blogs={this.state.data} />
@@ -122,7 +130,8 @@ class App extends Component {
 
 const mapStateToProps = state => {
   return {
-    user: state.user.user
+    user: state.user.user,
+    night: state.view.night
   };
 };
 
@@ -130,6 +139,9 @@ const mapDispatchToProps = dispatch => {
   return {
     getUser: () => {
       dispatch(getUser());
+    },
+    getNightMode: () => {
+      dispatch(getNightMode());
     }
   };
 };
