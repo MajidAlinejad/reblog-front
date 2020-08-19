@@ -24,6 +24,11 @@ export const getSidebar = () => {
 export const getNightMode = () => {
   let night = localStorage.getItem("night");
   night = night === "true" ? true : false;
+  if (night) {
+    document.body.classList.add("dark-mode");
+  } else {
+    document.body.classList.remove("dark-mode");
+  }
   return {
     type: "NIGHT_MODE",
     payload: night
@@ -32,6 +37,11 @@ export const getNightMode = () => {
 
 export const toggleNightMode = payload => {
   localStorage.setItem("night", payload);
+  if (payload) {
+    document.body.classList.add("dark-mode");
+  } else {
+    document.body.classList.remove("dark-mode");
+  }
   return {
     type: "NIGHT_MODE",
     payload: payload

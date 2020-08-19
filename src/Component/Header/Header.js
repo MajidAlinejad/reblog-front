@@ -289,18 +289,20 @@ class Header extends Component {
             </Menu.Item>
             {blogs.map((blog, i) => {
               return (
-                <Menu.Item key={i + 3} className="centerize-nav">
-                  <Link to={"/blog/" + blog.id}>
-                    <Badge
-                      count={1}
-                      style={{
-                        backgroundColor: "#eb2f96"
-                      }}
-                    >
-                      {this.iconSelector(i)}
-                    </Badge>
-                  </Link>
-                </Menu.Item>
+                blog.status === "active" && (
+                  <Menu.Item key={i + 3} className="centerize-nav">
+                    <Link to={"/blog/" + blog.id}>
+                      <Badge
+                        count={1}
+                        style={{
+                          backgroundColor: "#eb2f96"
+                        }}
+                      >
+                        {this.iconSelector(i)}
+                      </Badge>
+                    </Link>
+                  </Menu.Item>
+                )
               );
             })}
           </Menu>

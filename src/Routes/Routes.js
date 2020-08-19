@@ -6,6 +6,7 @@ import {
   useParams
 } from "react-router-dom";
 import Blog from "../Component/Blog/Blog";
+import ViewPost from "../Component/ViewPort/ViewPost";
 
 export default class Routes extends Component {
   render() {
@@ -32,6 +33,11 @@ export default class Routes extends Component {
           <Route
             path="/blog/:id"
             component={Blog}
+            // children={<Child blogs={blogs} />}
+          />
+          <Route
+            path="/post/:id"
+            component={ViewPost}
             // children={<Child blogs={blogs} />}
           />
           <Route path="*">

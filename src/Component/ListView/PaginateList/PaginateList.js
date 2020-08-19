@@ -98,7 +98,11 @@ class PaginateList extends Component {
           <Divider />
           <Pagination
             onChange={this.onChange}
-            className="center-paginate"
+            className={
+              this.state.loading ? "center-paginate hide" : "center-paginate"
+            }
+            hideOnSinglePage={true}
+            responsive={true}
             onShowSizeChange={this.onShowSizeChange}
             defaultCurrent={1}
             defaultPageSize={20}

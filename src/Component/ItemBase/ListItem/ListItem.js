@@ -3,6 +3,7 @@ import { Avatar, message } from "antd";
 import { EyeOutlined, MessageOutlined, HeartOutlined } from "@ant-design/icons";
 import { toggleLike, toggleSave } from "../../../GlobalFunc/GlobalFunc";
 import noPic from "../../../assets/picture/nopic.svg";
+import { Link } from "react-router-dom";
 
 const defaultConf = {
   like: true,
@@ -157,6 +158,7 @@ export default class ListItem extends Component {
   }
   render() {
     const { conf, loading } = this.state;
+    const { item } = this.props;
     return (
       <React.Fragment>
         <div className="li-bs-itm container">
@@ -168,27 +170,33 @@ export default class ListItem extends Component {
                 : { background: `none` }
             }
           >
-            <img
-              style={loading ? { opacity: 0 } : { opacity: 1 }}
-              onLoad={this.handleImageLoaded.bind(this)}
-              onError={this.handleImageErrored.bind(this)}
-              src="https://cdn.zoomg.ir/2020/8/fa2f0d22-c463-4c48-932b-82a3bb250ec7.jpg"
-              alt=""
-            />
-            <div
-              className="li-bs-itm overlay"
-              style={loading ? { display: "none" } : { display: "inherit" }}
-            >
-              <div className="tag-container">
-                <span className="li-itm-tag">تکنولوژی #</span>
-                <span className="li-itm-tag">بازی آنلاین #</span>
+            <Link to={"/post/" + item.id}>
+              <img
+                style={loading ? { opacity: 0 } : { opacity: 1 }}
+                onLoad={this.handleImageLoaded.bind(this)}
+                onError={this.handleImageErrored.bind(this)}
+                src="https://cdn.zoomg.ir/2020/8/fa2f0d22-c463-4c48-932b-82a3bb250ec7.jpg"
+                alt=""
+              />
+            </Link>
+            <Link to={"/post/" + item.id}>
+              <div
+                className="li-bs-itm overlay"
+                // style={loading ? { display: "none" } : { display: "inherit" }}
+              >
+                <div className="tag-container">
+                  <span className="li-itm-tag-disable">تکنولوژی #</span>
+                  <span className="li-itm-tag-disable">بازی آنلاین #</span>
+                </div>
               </div>
-            </div>
+            </Link>
           </div>
           <div className="li-bs-itm left-section">
-            <h2 className="li-bs-itm title">
-              تاریخ انتشار بسته Heart of Deimos بازی Warframe مشخص شد
-            </h2>
+            <Link to={"/post/" + item.id}>
+              <h2 className="li-bs-itm title">
+                تاریخ انتشار بسته Heart of Deimos بازی Warframe مشخص شد
+              </h2>
+            </Link>
             <div className="li-bs-itm meta">
               <div className="righted">
                 <Avatar src="https://cdn.zoomg.ir/2020/8/fa2f0d22-c463-4c48-932b-82a3bb250ec7.jpg" />

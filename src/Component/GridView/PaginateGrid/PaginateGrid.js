@@ -31,7 +31,8 @@ class PaginateGrid extends Component {
   getItems = () => {
     axios
       .get(
-        `https://jsonplaceholder.typicode.com/photos?_page=${this.state.pageNumber}&_limit=${this.state.items}`
+        process.env.REACT_APP_API_URL + "posts/1"
+        // `https://jsonplaceholder.typicode.com/photos?_page=${this.state.pageNumber}&_limit=${this.state.items}`
       )
       .then(
         res =>
@@ -234,8 +235,12 @@ class PaginateGrid extends Component {
         <Divider />
         <Pagination
           onChange={this.onChange}
-          className="center-paginate"
+          className={
+            this.state.loading ? "center-paginate hide" : "center-paginate"
+          }
           onShowSizeChange={this.onShowSizeChange}
+          hideOnSinglePage={true}
+          responsive={true}
           defaultCurrent={1}
           defaultPageSize={30}
           total={200}

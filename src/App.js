@@ -114,7 +114,7 @@ class App extends Component {
             </div> */}
             <Lottie options={defaultOptions} height={400} width={400} />
           </div>
-          <Layout className={this.state.night && "dark-mode"}>
+          <Layout>
             <Header blogs={this.state.data} />
             <Content>
               <Routes blogs={this.state.data} />

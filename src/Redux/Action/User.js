@@ -8,6 +8,20 @@ export const updateUser = payload => {
   };
 };
 
+export const updateLikes = payload => {
+  return {
+    type: "USER_LIKES",
+    payload: payload
+  };
+};
+
+export const updateSaves = payload => {
+  return {
+    type: "USER_SAVES",
+    payload: payload
+  };
+};
+
 export const getUser = () => {
   const token = localStorage.getItem("token");
   return dispatch => {

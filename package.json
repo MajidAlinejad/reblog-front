@@ -12,6 +12,7 @@
     "antd-jalali-moment": "^3.3.2",
     "apollo-boost": "^0.4.9",
     "axios": "^0.19.2",
+    "cors": "^2.8.5",
     "graphql": "^15.3.0",
     "helvatica-neue-lt": "^1.0.1",
     "perfect-scrollbar": "^1.5.0",

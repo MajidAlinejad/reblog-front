@@ -18,6 +18,8 @@ import {
 import heart from "../../../assets/picture/heart.png";
 import { Link } from "react-router-dom";
 import { toggleLike, toggleSave } from "../../../GlobalFunc/GlobalFunc";
+import { connect } from "react-redux";
+import { isLoggedIn } from "../../../Auth/Auth";
 const defaultConf = {
   like: true,
   view: true,
@@ -76,7 +78,7 @@ const videoConf = {
   setting: true
 };
 
-export default class GridItem extends Component {
+class GridItem extends Component {
   state = {
     active: false,
     loading: true,
@@ -87,6 +89,24 @@ export default class GridItem extends Component {
     saved_id: "",
     imageStatus: "loading",
     conf: {}
+  };
+
+  isLiked = () => {
+    let id = this.props.item.id;
+    if (this.props.user.likes.find(element => id === element)) {
+      this.setState({
+        liked: true
+      });
+    }
+  };
+
+  isSaved = () => {
+    let id = this.props.item.id;
+    if (this.props.user.saves.find(element => id === element)) {
+      this.setState({
+        saved: true
+      });
+    }
   };
 
   handleLiked = () => {
@@ -109,7 +129,7 @@ export default class GridItem extends Component {
           },
           err => {
             message.error({
-              content: "عملیات با مشکل مواجه شد",
+              content: "عملیات با مشکل مواجه شد، آیا وارد شده اید؟",
               duration: 2
             });
             this.setState({
@@ -121,7 +141,7 @@ export default class GridItem extends Component {
           }
         )
       : message.error({
-          content: "لطفا ابتدا وارد شوید",
+          content: "لطفا ابتدا وارد شوید؟",
           duration: 2
         });
   };
@@ -144,7 +164,7 @@ export default class GridItem extends Component {
           },
           err => {
             message.error({
-              content: "عملیات با مشکل مواجه شد",
+              content: "عملیات با مشکل مواجه شد، آیا وارد شده اید؟",
               duration: 2
             });
             this.setState({
@@ -174,7 +194,22 @@ export default class GridItem extends Component {
   handleVisibleChange = visible => {
     this.setState({ visible });
   };
+
+  componentDidUpdate(prevProps) {
+    if (isLoggedIn()) {
+      if (prevProps.user !== this.props.user) {
+        this.isLiked();
+        this.isSaved();
+      }
+    }
+  }
+
   componentDidMount() {
+    if (isLoggedIn()) {
+      this.isLiked();
+      this.isSaved();
+    }
+
     if (this.props.custom) {
       this.setState({
         conf: this.props.custom
@@ -233,7 +268,7 @@ export default class GridItem extends Component {
             </Popover>
           )}
 
-          <Link to="/postItem">
+          <Link to={"/post/" + item.id}>
             <div className="img-base-item">
               <img
                 className="img-base-cover"
@@ -241,8 +276,8 @@ export default class GridItem extends Component {
                 style={loading ? { opacity: 0 } : { opacity: 1 }}
                 onLoad={this.handleImageLoaded.bind(this)}
                 onError={this.handleImageErrored.bind(this)}
-                // src={item.thumbnailUrl}
-                src="https://cdn.dribbble.com/users/708421/screenshots/13914212/skindr_2x.png"
+                src={item.thumbnail}
+                // src="https://cdn.dribbble.com/users/708421/screenshots/13914212/skindr_2x.png"
               />
               {conf.type && (
                 <div className="img-base-over-icon">
@@ -410,3 +445,12 @@ export default class GridItem extends Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    user: state.user.user
+  };
+};
+
+export default connect(mapStateToProps)(GridItem);
+// export default sizeMe()(PaginateGrid);

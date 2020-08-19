@@ -12,6 +12,9 @@ import thunk from "redux-thunk";
 import { ApolloProvider } from "@apollo/client";
 import { client } from "./Apollo";
 
+// var cors = require("cors");
+// app.use(cors());
+
 // const store = applyMiddleware(thunk)(createStore);
 const store = createStore(rootReducer, applyMiddleware(thunk));
 // const {store} = applyMiddleware(thunk)(createStore);
