@@ -1,35 +1,30 @@
 import axios from "axios";
 
 const API = process.env.REACT_APP_API_URL;
-const AXIOS = axios.create({ baseURL: API });
 axios.defaults.baseURL = API;
 
-export function toggleLike(user_id, post_id, id) {
-  if (id > 0) {
-    return Unlike(id);
+export function toggleLike(post_id, likeOrNot) {
+  let token = localStorage.getItem("token");
+  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  let AXIOS = axios.create({ baseURL: API });
+  if (likeOrNot) {
+    return AXIOS.delete("like/" + post_id);
   } else {
-    return Like(user_id, post_id);
+    return AXIOS.post("like", {
+      status: 1,
+      post_id
+    });
   }
 }
 
-export function Like(user_id, post_id) {
-  return AXIOS.post("like", {
-    status: 1,
-    user_id,
-    post_id
-  });
-}
-
-export function Unlike(like_id) {
-  return AXIOS.delete("like/" + like_id);
-}
-
-export function toggleSave(user_id, post_id, id) {
-  if (id > 0) {
-    return AXIOS.delete("save/" + id);
+export function toggleSave(post_id, SaveOrNot) {
+  let token = localStorage.getItem("token");
+  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  let AXIOS = axios.create({ baseURL: API });
+  if (SaveOrNot) {
+    return AXIOS.delete("save/" + post_id);
   } else {
     return AXIOS.post("save", {
-      user_id,
       post_id
     });
   }

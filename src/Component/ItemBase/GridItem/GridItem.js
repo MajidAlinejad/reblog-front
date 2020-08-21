@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import noPic from "../../../assets/picture/nopic.svg";
 import { Avatar, Button, Popover, Menu, message } from "antd";
 import {
   LikeOutlined,
@@ -84,6 +85,7 @@ class GridItem extends Component {
     loading: true,
     liked: false,
     like_id: "",
+    imgError: false,
     saved: false,
     liker: 0,
     saved_id: "",
@@ -93,19 +95,23 @@ class GridItem extends Component {
 
   isLiked = () => {
     let id = this.props.item.id;
-    if (this.props.user.likes.find(element => id === element)) {
-      this.setState({
-        liked: true
-      });
+    if (this.props.user.likes) {
+      if (this.props.user.likes.find(element => id === element)) {
+        this.setState({
+          liked: true
+        });
+      }
     }
   };
 
   isSaved = () => {
     let id = this.props.item.id;
-    if (this.props.user.saves.find(element => id === element)) {
-      this.setState({
-        saved: true
-      });
+    if (this.props.user.saves) {
+      if (this.props.user.saves.find(element => id === element)) {
+        this.setState({
+          saved: true
+        });
+      }
     }
   };
 
@@ -116,17 +122,8 @@ class GridItem extends Component {
     });
     // Like(item);
     this.props.user
-      ? toggleLike(
-          this.props.user.id,
-          this.props.item.id,
-          this.state.like_id
-        ).then(
-          res => {
-            // console.log(res);
-            this.setState({
-              like_id: res.data.id
-            });
-          },
+      ? toggleLike(this.props.item.id, this.state.liked).then(
+          res => {},
           err => {
             message.error({
               content: "عملیات با مشکل مواجه شد، آیا وارد شده اید؟",
@@ -151,17 +148,8 @@ class GridItem extends Component {
       saved: !this.state.saved
     });
     this.props.user
-      ? toggleSave(
-          this.props.user.id,
-          this.props.item.id,
-          this.state.saved_id
-        ).then(
-          res => {
-            // console.log(res);
-            this.setState({
-              saved_id: res.data.id
-            });
-          },
+      ? toggleSave(this.props.item.id, this.state.saved).then(
+          res => {},
           err => {
             message.error({
               content: "عملیات با مشکل مواجه شد، آیا وارد شده اید؟",
@@ -183,7 +171,11 @@ class GridItem extends Component {
   }
 
   handleImageErrored() {
-    this.setState({ imageStatus: "failed to load", loading: true });
+    this.setState({
+      imageStatus: "failed to load",
+      loading: true,
+      imgError: true
+    });
   }
   hide = () => {
     this.setState({
@@ -216,7 +208,8 @@ class GridItem extends Component {
       });
     } else if (this.props.base === "img") {
       this.setState({
-        conf: imgConf
+        conf: imgConf,
+        liker: this.props.item.like
       });
     } else if (this.props.base === "video") {
       this.setState({
@@ -269,7 +262,16 @@ class GridItem extends Component {
           )}
 
           <Link to={"/post/" + item.id}>
-            <div className="img-base-item">
+            <div
+              className={
+                this.state.imgError ? "img-base-item nopic" : "img-base-item"
+              }
+              style={
+                this.state.imgError
+                  ? { background: `url(${noPic})` }
+                  : { background: `inherit` }
+              }
+            >
               <img
                 className="img-base-cover"
                 alt="example"
@@ -289,7 +291,13 @@ class GridItem extends Component {
                 </div>
               )}
               {conf.overlay && (
-                <div className="img-base-overlay">
+                <div
+                  className={
+                    this.state.imgError
+                      ? "img-base-overlay hide"
+                      : "img-base-overlay"
+                  }
+                >
                   {base === "video" && (
                     <PlayCircleFilled className="play-icon" />
                   )}
@@ -357,7 +365,7 @@ class GridItem extends Component {
                         <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
                       </span>
                     )}
-                    {conf.autor && <strong>مجید علی نژاد</strong>}
+                    {conf.autor && <strong>{item.title}</strong>}
                   </div>
                 )}
                 {conf.leftFooter && (

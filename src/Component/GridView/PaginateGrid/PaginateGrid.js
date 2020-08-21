@@ -9,6 +9,7 @@ import PostItem from "../../ItemBase/Post/PostItem";
 import PlayItem from "../../ItemBase/PlayItem/PlayItem";
 import { connect } from "react-redux";
 import ProductItem from "../../ItemBase/ProductItem/ProductItem";
+import { getUser } from "../../../Redux/Action/User";
 
 class PaginateGrid extends Component {
   state = {
@@ -29,6 +30,7 @@ class PaginateGrid extends Component {
   };
 
   getItems = () => {
+    this.props.getUser();
     axios
       .get(
         process.env.REACT_APP_API_URL + "posts/1"
@@ -257,5 +259,16 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(sizeMe()(PaginateGrid));
+const mapDispatchToProps = dispatch => {
+  return {
+    getUser: () => {
+      dispatch(getUser());
+    }
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(sizeMe()(PaginateGrid));
 // export default sizeMe()(PaginateGrid);
