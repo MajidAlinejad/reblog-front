@@ -2171,26 +2171,90 @@ button.default-overwrite:hover {
 
 .post-body {
   min-height: 900px;
+  transition: all 0.3s;
+  right: 50%;
+  opacity: 0;
+  position: relative;
+}
+
+.post-body.effect-on {
+  transition: all 0.3s;
+  right: 0;
+  opacity: 1;
+  position: relative;
+}
+
+.img-post-spin {
+  width: 100%;
+  height: 100%;
+  padding-top: 170px !important;
+}
+
+.back-btn {
+  position: fixed;
+  top: 193px;
+  z-index: 2;
+  left: 32px;
+  padding: 6px;
+  border-radius: 90px;
+  background: white;
+  box-shadow: 0 0 2px 0px #00000069;
+  cursor: pointer;
+  font-size: 27px;
+  width: auto;
+  line-height: 0;
+  color: #cccccc;
 }
 
 .post-container {
-  margin-top: 90px;
   padding: 20px 11px;
+  display: flex;
+  margin: 0 40px;
+  background: #fafafa;
+  border-radius: 21px;
+  margin-top: 92px;
+}
+
+.post-container .img-post-section {
+  /* width: 50%; */
+  padding: 0 10px;
+}
+
+.post-container .img-post-section.left {
+  /* width: 50%; */
+  padding: 0 10px;
+  width: 55%;
+}
+
+.post-container .img-post-section.right {
+  position: sticky;
+  width: 45%;
+  top: 135px;
+  display: table;
+}
+
+.img-post-section.left .sticky-title {
+  background: #fafafa;
+  position: sticky;
+  z-index: 1;
+  top: 123px;
+  padding-top: 12px;
 }
 
 .post-border {
   border: 1px solid #dfdfdf;
-  border-radius: 16px;
-  width: 50%;
+  border-radius: 21px;
+  /* width: 50%; */
   margin: 0 auto;
+  margin-top: 13px;
   /* display: flex; */
-  margin-top: 10px;
+  /* margin-top: 10px; */
 
   /* justify-content: center; */
 }
 
 .img-post-info {
-  width: 50%;
+  /* width: 50%; */
   padding: 10px 15px;
   border: 1px dashed #dadada;
   border-radius: 16px;
@@ -2205,7 +2269,7 @@ button.default-overwrite:hover {
   display: flex;
   width: 50%;
   align-items: center;
-  width: inherit;
+  /* width: inherit; */
 }
 
 .img-post-info .right strong {
@@ -2227,23 +2291,93 @@ button.default-overwrite:hover {
 .img-post-info-content .like-btn {
   display: flex;
   align-items: center;
+  margin-left: 10px;
+
   justify-content: flex-end;
-  width: inherit;
+  /* width: inherit; */
+}
+
+.img-post-caption .center-cm-btn {
+  text-align: center;
+}
+
+
+.img-post-caption .toggle-btn-comment {
+  position: relative;
+  top: 45px;
+  margin: 0 auto;
+  cursor: pointer;
+  font-size: 27px;
+  line-height: 1.8;
+  margin-top: -50px;
+  text-align: center;
+  background: #fafafa;
+  height: 45px;
+  color: grey;
+  border: 1px dashed grey;
+  width: 45px;
+  border-radius: 30px;
+  transition: all 0.3s;
+
+}
+
+.img-post-caption .hide-cm {
+  opacity: 0;
+  visibility: hidden;
+  height: 0;
+  transition: ease-in-out;
+  transition: all 0.3s;
+}
+
+.img-post-caption .emoji-keyboard {
+  font-size: 23px;
+  text-align: center;
+}
+
+.img-post-caption .emoji-keyboard span {
+  cursor: pointer;
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Safari */
+  -khtml-user-select: none;
+  /* Konqueror HTML */
+  -moz-user-select: none;
+  /* Old versions of Firefox */
+  -ms-user-select: none;
+  /* Internet Explorer/Edge */
+  user-select: none;
+}
+
+.img-post-info-content .control-btns {
+  display: flex;
+  background-color: #f0f0f0;
+  border-radius: 10px;
+}
+
+.img-post-info-content .comment-btn {
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+  justify-content: flex-end;
+  /* width: inherit; */
 }
 
 .post-border .main-img {
   width: 100%;
   box-shadow: 0 0 5px -3px inset;
-  border-radius: 16px;
+  border-radius: 21px;
 
 
+}
+
+.img-post-comment-container {
+  overflow: scroll;
 }
 
 .img-post-container {
   width: 100%;
   border-radius: 15px;
-  min-height: 450px;
-  /* background-color: #d4d4d4; */
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -2259,6 +2393,23 @@ button.default-overwrite:hover {
   background-color: #efefef !important;
 }
 
+
+.img-post-container .ant-form-item {
+  margin-bottom: 0;
+}
+
+
+.img-post-cm {
+  text-align: justify;
+  padding: 0 8px;
+  padding-right: 0;
+}
+
+.capital-letter span {
+  text-transform: capitalize;
+  font-family: "Segoe UI" !important;
+  font-weight: normal;
+}
 
 
 
@@ -2947,6 +3098,29 @@ button.default-overwrite:hover {
 
 }
 
+.dark-mode .back-btn {
+  background: #595a5d;
+  color: #ebecec;
+}
+
+.dark-mode .post-border {
+  border: 1px solid #595a5d;
+}
+
+.dark-mode .post-container {
+  background: #595a5d;
+}
+
 .ant-switch-checked {
   background-color: #323232;
+}
+
+.dark-mode .img-post-section.left .sticky-title {
+  background: #595a5d;
+  color: #dadada;
+}
+
+
+.dark-mode .img-post-comment-container {
+  color: #dadada;
 }

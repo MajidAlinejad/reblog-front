@@ -162,6 +162,7 @@ class PaginateGrid extends Component {
     this.getItems();
     this.getWidth();
   }
+
   render() {
     const { custom, base, user, product } = this.props;
     return (
