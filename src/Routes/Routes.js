@@ -5,10 +5,15 @@ import {
   Route,
   useParams
 } from "react-router-dom";
+// import moment from "jalali-moment";
 import Blog from "../Component/Blog/Blog";
 import ViewPost from "../Component/ViewPort/ViewPost";
-
+import { DatePicker } from "antd";
+// moment.locale("fa");
 export default class Routes extends Component {
+  // componentDidMount() {
+  //   console.log(moment());
+  // }
   render() {
     return (
       <React.Fragment>
@@ -28,6 +33,9 @@ export default class Routes extends Component {
               <br />
               <br />
               this is Home
+              {/* {moment()
+                .locale("fa")
+                .format("YYYY/M/D")} */}
             </p>
           </Route>
           <Route

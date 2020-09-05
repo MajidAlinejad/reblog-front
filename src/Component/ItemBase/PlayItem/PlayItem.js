@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Avatar, Button, Popover, Menu, message } from "antd";
+import { Button, Popover, Menu, message } from "antd";
 import {
   LikeOutlined,
   FieldTimeOutlined,
@@ -9,15 +9,18 @@ import {
   SaveOutlined,
   SaveFilled,
   EllipsisOutlined,
+  PlayCircleFilled,
+  PlayCircleOutlined,
+  AudioOutlined,
   EyeOutlined,
   PictureOutlined,
-  PlayCircleFilled,
   MessageOutlined,
   VideoCameraFilled
 } from "@ant-design/icons";
 import heart from "../../../assets/picture/heart.png";
 import { Link } from "react-router-dom";
 import { toggleLike, toggleSave } from "../../../GlobalFunc/GlobalFunc";
+import { isLoggedIn } from "../../../Auth/Auth";
 const defaultConf = {
   like: true,
   // view: true,
@@ -120,6 +123,32 @@ export default class PlayItem extends Component {
         });
   };
 
+  playStream = e => {
+    e.preventDefault();
+  };
+
+  isLiked = () => {
+    let id = this.props.item.id;
+    if (this.props.user.likes) {
+      if (this.props.user.likes.find(element => id === element)) {
+        this.setState({
+          liked: true
+        });
+      }
+    }
+  };
+
+  isSaved = () => {
+    let id = this.props.item.id;
+    if (this.props.user.saves) {
+      if (this.props.user.saves.find(element => id === element)) {
+        this.setState({
+          saved: true
+        });
+      }
+    }
+  };
+
   handleSave = e => {
     this.setState({
       saved: !this.state.saved
@@ -168,7 +197,22 @@ export default class PlayItem extends Component {
   handleVisibleChange = visible => {
     this.setState({ visible });
   };
+
+  componentDidUpdate(prevProps) {
+    if (isLoggedIn()) {
+      if (prevProps.user !== this.props.user) {
+        this.isLiked();
+        this.isSaved();
+      }
+    }
+  }
+
   componentDidMount() {
+    if (isLoggedIn()) {
+      this.isLiked();
+      this.isSaved();
+    }
+
     if (this.props.custom) {
       this.setState({
         conf: this.props.custom
@@ -227,7 +271,7 @@ export default class PlayItem extends Component {
             </Popover>
           )}
 
-          <Link to="/postItem">
+          <Link to={"/post/" + item.id}>
             <div className="img-base-item">
               <img
                 className="img-base-cover"
@@ -235,8 +279,8 @@ export default class PlayItem extends Component {
                 style={loading ? { opacity: 0 } : { opacity: 1 }}
                 onLoad={this.handleImageLoaded.bind(this)}
                 onError={this.handleImageErrored.bind(this)}
-                // src={item.thumbnailUrl}
-                src="https://cps-static.rovicorp.com/3/JPG_500/MI0003/715/MI0003715986.jpg"
+                src={item.thumbnail}
+                // src="https://cps-static.rovicorp.com/3/JPG_500/MI0003/715/MI0003715986.jpg"
               />
               {conf.type && (
                 <div className="img-base-over-icon">
@@ -248,22 +292,32 @@ export default class PlayItem extends Component {
                 </div>
               )}
               {conf.overlay && (
-                <div className="img-base-overlay">
+                <div
+                  style={loading ? { opacity: 0 } : { opacity: 1 }}
+                  className="img-base-overlay"
+                >
                   {base === "music" && (
-                    <PlayCircleFilled className="play-sound-icon" />
+                    <PlayCircleOutlined
+                      className="play-sound-icon"
+                      onClick={this.playStream}
+                    />
                   )}
                   {base === "podcast" && (
-                    <PlayCircleFilled className="play-sound-icon" />
+                    <PlayCircleOutlined
+                      className="play-sound-icon"
+                      onClick={this.playStream}
+                    />
                   )}
                   <div className="img-base-overlay-content">
                     {conf.text && (
                       <Button
-                        className="link-overwrite"
+                        className="link-overwrite music"
                         type="link"
+
                         // shape="circle"
                         // icon={<LikeOutlined />}
                       >
-                        ColdPlay
+                        {/* {base === "music" && item.title} */}
                       </Button>
                     )}
                     {conf.rate && (
@@ -318,12 +372,22 @@ export default class PlayItem extends Component {
               <div className="img-base-footer-content">
                 {conf.rightFooter && (
                   <div className="right-content">
-                    {conf.avatar && (
-                      <span className="first">
-                        <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+                    {base === "music" && (
+                      <span className="first avatar-icon">
+                        <PlayCircleFilled />
                       </span>
                     )}
-                    {conf.autor && <strong>پادکست شماره #3</strong>}
+                    {base === "podcast" && (
+                      <span className="first avatar-icon">
+                        <AudioOutlined />
+                      </span>
+                    )}
+                    {/* {conf.avatar && (
+                      <span className="first">
+                        <AudioOutlined />
+                      </span>
+                    )} */}
+                    {conf.autor && <strong>{item.title}</strong>}
                   </div>
                 )}
                 {conf.leftFooter && (
@@ -361,7 +425,7 @@ export default class PlayItem extends Component {
                               {/* <span className="tooltiptext">like</span> */}
                             </div>
                           </span>
-                          <strong> {this.state.liker}</strong>
+                          <strong> {item.like + this.state.liker}</strong>
                         </li>
                       )}
                       {conf.comment && (
@@ -403,7 +467,7 @@ export default class PlayItem extends Component {
               <div className="img-base-extra-content">
                 <hr />
                 {/* {item.title} */}
-                پادکست شماره 3 به همراه جناب چستر مرحوم
+                {item.caption}
               </div>
             </div>
           )}

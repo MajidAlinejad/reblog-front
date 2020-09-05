@@ -8,6 +8,7 @@ export default class extends Component {
       case "paginate":
         return (
           <PaginateList
+            id={this.props.id}
             custom={this.props.custom}
             base={this.props.base}
             user={this.props.user}
@@ -16,6 +17,7 @@ export default class extends Component {
       case "loadmore":
         return (
           <LoadMoreList
+            id={this.props.id}
             custom={this.props.custom}
             base={this.props.base}
             user={this.props.user}
@@ -24,6 +26,7 @@ export default class extends Component {
       default:
         return (
           <PaginateList
+            id={this.props.id}
             custom={this.props.custom}
             base={this.props.base}
             user={this.props.user}

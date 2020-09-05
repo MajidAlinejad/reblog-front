@@ -30,7 +30,8 @@ class LoadMoreGrid extends Component {
         // process.env.REACT_APP_API_URL + "posts/" + 1 // firstblog
         // +`?_page=${this.state.pageNumber}&_limit=${this.state.items}`
 
-        `https://jsonplaceholder.typicode.com/photos?_page=${this.state.pageNumber}&_limit=${this.state.items}`
+        process.env.REACT_APP_API_URL + "posts/" + this.props.id
+        // `https://jsonplaceholder.typicode.com/photos?_page=${this.state.pageNumber}&_limit=${this.state.items}`
       )
       .then(res =>
         this.setState({
@@ -66,27 +67,50 @@ class LoadMoreGrid extends Component {
       columnWidth = w <= 870 ? 220 : 300;
     } else if (this.props.base === "video") {
       className = "my-masonry-grid-video";
-      columnWidth = {
-        default: 4,
-        1440: 4 - siderOn,
-        1100: 3 - siderOn,
-        1099: 3,
-        700: 2,
-        500: 2,
-        400: 1
-      };
+      if (this.props.siderPost) {
+        columnWidth = {
+          default: 1,
+          1440: 1,
+          1100: 1,
+          1099: 3,
+          850: 2,
+          600: 1
+        };
+      } else {
+        columnWidth = {
+          default: 4,
+          1440: 4 - siderOn,
+          1100: 3 - siderOn,
+          1099: 3,
+          700: 2,
+          500: 2,
+          400: 1
+        };
+      }
     } else if (this.props.base === "music") {
-      className = "my-masonry-grid-music";
-      columnWidth = {
-        default: 5,
-        1440: 4 - siderOn,
-        1100: 3 - siderOn,
-        1099: 3,
-        1024: 3,
-        700: 2,
-        500: 2,
-        400: 1
-      };
+      if (this.props.siderPost) {
+        className = "my-masonry-grid-music sider-music";
+        columnWidth = {
+          default: 2,
+          1440: 2,
+          1100: 1,
+          1099: 3,
+          850: 2,
+          600: 1
+        };
+      } else {
+        className = "my-masonry-grid-music";
+        columnWidth = {
+          default: 5,
+          1440: 4 - siderOn,
+          1100: 3 - siderOn,
+          1099: 3,
+          1024: 3,
+          700: 2,
+          500: 2,
+          400: 1
+        };
+      }
     } else if (this.props.base === "podcast") {
       className = "my-masonry-grid-podcast";
       columnWidth = {
@@ -99,15 +123,27 @@ class LoadMoreGrid extends Component {
         400: 1
       };
     } else if (this.props.base === "post") {
-      className = "my-masonry-grid-post";
-      columnWidth = {
-        default: 5,
-        1440: 4 - siderOn,
-        1100: 3 - siderOn,
-        1099: 3,
-        850: 2,
-        600: 1
-      };
+      if (this.props.siderPost) {
+        className = "my-masonry-grid-post";
+        columnWidth = {
+          default: 1,
+          1440: 1,
+          1100: 1,
+          1099: 3,
+          850: 2,
+          600: 1
+        };
+      } else {
+        className = "my-masonry-grid-post";
+        columnWidth = {
+          default: 5,
+          1440: 4 - siderOn,
+          1100: 3 - siderOn,
+          1099: 3,
+          850: 2,
+          600: 1
+        };
+      }
     } else if (this.props.base === "product") {
       className = "my-masonry-grid-product";
       columnWidth = {
@@ -140,6 +176,15 @@ class LoadMoreGrid extends Component {
   componentDidUpdate(prevProps) {
     if (prevProps.size !== this.props.size) {
       this.getWidth();
+    }
+
+    if (prevProps.id !== this.props.id) {
+      this.setState(
+        {
+          data: []
+        },
+        this.getItems()
+      );
     }
   }
 

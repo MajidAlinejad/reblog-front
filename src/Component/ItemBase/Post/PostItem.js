@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Avatar, Button, message } from "antd";
+import { Button, message, Typography } from "antd";
 import noPic from "../../../assets/picture/nopic.svg";
 import {
   LikeOutlined,
@@ -7,13 +7,15 @@ import {
   SaveFilled,
   EyeOutlined,
   PlayCircleFilled,
+  UserOutlined,
   MessageOutlined
 } from "@ant-design/icons";
-
+import moment from "jalali-moment";
 import heart from "../../../assets/picture/heart.png";
 import { Link } from "react-router-dom";
 import { toggleLike, toggleSave } from "../../../GlobalFunc/GlobalFunc";
-
+import { isLoggedIn } from "../../../Auth/Auth";
+const { Paragraph } = Typography;
 const defaultConf = {
   like: true,
   // view: true,
@@ -70,34 +72,52 @@ export default class PostItem extends Component {
 
   getColors = colors =>
     this.setState(state => ({ colors: [...state.colors, ...colors] }));
+  isLiked = () => {
+    let id = this.props.item.id;
+    if (this.props.user.likes) {
+      if (this.props.user.likes.find(element => id === element)) {
+        this.setState({
+          liked: true
+        });
+      }
+    }
+  };
+
+  isSaved = () => {
+    let id = this.props.item.id;
+    if (this.props.user.saves) {
+      if (this.props.user.saves.find(element => id === element)) {
+        this.setState({
+          saved: true
+        });
+      }
+    }
+  };
 
   handleLiked = () => {
+    this.setState({
+      liked: !this.state.liked,
+      liker: this.state.liked ? this.state.liker - 1 : this.state.liker + 1
+    });
     // Like(item);
     this.props.user
-      ? toggleLike(
-          this.props.user.id,
-          this.props.item.id,
-          this.state.like_id
-        ).then(
-          res => {
-            // console.log(res);
+      ? toggleLike(this.props.item.id, this.state.liked).then(
+          res => {},
+          err => {
+            message.error({
+              content: "عملیات با مشکل مواجه شد، آیا وارد شده اید؟",
+              duration: 2
+            });
             this.setState({
-              like_id: res.data.id,
               liked: !this.state.liked,
               liker: this.state.liked
                 ? this.state.liker - 1
                 : this.state.liker + 1
             });
-          },
-          err => {
-            message.error({
-              content: "عملیات با مشکل مواجه شد",
-              duration: 2
-            });
           }
         )
       : message.error({
-          content: "لطفا ابتدا وارد شوید",
+          content: "لطفا ابتدا وارد شوید؟",
           duration: 2
         });
   };
@@ -107,20 +127,11 @@ export default class PostItem extends Component {
       saved: !this.state.saved
     });
     this.props.user
-      ? toggleSave(
-          this.props.user.id,
-          this.props.item.id,
-          this.state.saved_id
-        ).then(
-          res => {
-            // console.log(res);
-            this.setState({
-              saved_id: res.data.id
-            });
-          },
+      ? toggleSave(this.props.item.id, this.state.saved).then(
+          res => {},
           err => {
             message.error({
-              content: "عملیات با مشکل مواجه شد",
+              content: "عملیات با مشکل مواجه شد، آیا وارد شده اید؟",
               duration: 2
             });
             this.setState({
@@ -139,8 +150,13 @@ export default class PostItem extends Component {
   }
 
   handleImageErrored() {
-    this.setState({ imageStatus: "failed to load", loading: true, err: true });
+    this.setState({
+      imageStatus: "failed to load",
+      loading: true,
+      imgError: true
+    });
   }
+
   hide = () => {
     this.setState({
       visible: false
@@ -150,7 +166,22 @@ export default class PostItem extends Component {
   handleVisibleChange = visible => {
     this.setState({ visible });
   };
+
+  componentDidUpdate(prevProps) {
+    if (isLoggedIn()) {
+      if (prevProps.user !== this.props.user) {
+        this.isLiked();
+        this.isSaved();
+      }
+    }
+  }
+
   componentDidMount() {
+    if (isLoggedIn()) {
+      this.isLiked();
+      this.isSaved();
+    }
+
     if (this.props.custom) {
       this.setState({
         conf: this.props.custom
@@ -179,36 +210,40 @@ export default class PostItem extends Component {
               } 8%)`
             }}
           >
-            {conf.overlay && (
-              <div className="post-base-overlay">
-                {base === "music" && (
-                  <PlayCircleFilled className="play-sound-icon" />
-                )}
-                {base === "podcast" && (
-                  <PlayCircleFilled className="play-sound-icon" />
-                )}
-                <div className="post-base-overlay-content">
-                  {conf.rate && (
-                    <React.Fragment>
-                      <Button
-                        className="link-overwrite"
-                        type="link"
-                        // shape="circle"
-                        icon={<LikeOutlined />}
+            <Link to={"/post/" + item.id}>
+              {conf.overlay && (
+                <div className="post-base-overlay">
+                  {base === "music" && (
+                    <PlayCircleFilled className="play-sound-icon" />
+                  )}
+                  {base === "podcast" && (
+                    <PlayCircleFilled className="play-sound-icon" />
+                  )}
+                  <div className="post-base-overlay-content">
+                    {conf.rate && (
+                      <React.Fragment>
+                        <Button
+                          className="link-overwrite"
+                          type="link"
+                          // shape="circle"
+                          icon={<LikeOutlined />}
+                        >
+                          85%
+                        </Button>
+                      </React.Fragment>
+                    )}
+                    {conf.time && (
+                      <span
+                        className="prim-overwrite"
+                        style={{ float: "left" }}
                       >
-                        85%
-                      </Button>
-                    </React.Fragment>
-                  )}
-                  {conf.time && (
-                    <span className="prim-overwrite" style={{ float: "left" }}>
-                      تکنولوژی
-                    </span>
-                  )}
+                        تکنولوژی
+                      </span>
+                    )}
+                  </div>
                 </div>
-              </div>
-            )}
-            <Link to={item.url}>
+              )}
+
               <div
                 className="grid-card-cover"
                 style={
@@ -222,7 +257,8 @@ export default class PostItem extends Component {
                   onLoad={this.handleImageLoaded.bind(this)}
                   onError={this.handleImageErrored.bind(this)}
                   alt="example"
-                  src="https://cdn.zoomg.ir/2020/8/fa2f0d22-c463-4c48-932b-82a3bb250ec7.jpg"
+                  // src="https://cdn.zoomg.ir/2020/8/fa2f0d22-c463-4c48-932b-82a3bb250ec7.jpg"
+                  src={item.thumbnail}
                   // src={item.thumbnailUrl}
                 />
               </div>
@@ -284,26 +320,22 @@ export default class PostItem extends Component {
                         }
                       ></div>
                     </span>
-                    <strong> {this.state.liker}</strong>
+                    <strong> {item.like + this.state.liker}</strong>
                   </li>
                 )}
               </ul>
             </div>
             <div className="grid-card-body">
               <div className="grid-card-meta">
-                <Link to={item.url}>
-                  <h3>
-                    ساعت هوشمند اپل سری 3 جی پی اس مدل 38mm Aluminium Case with
-                    Sport Band
-                  </h3>
+                <Link to={"/post/" + item.id}>
+                  <h3>{item.title}</h3>
                 </Link>
                 <hr className="middle-hr" style={{ borderColor: "#50cee5" }} />
-
-                <p>
-                  ساعت هوشمند اپل سری 3 جی پی اس مدل 38mm Aluminium Case with
-                  Sport Band ساعت هوشمند اپل سری 3 جی پی اس مدل 38mm Aluminium
-                  Case with Sport Band
-                </p>
+                <Paragraph
+                  ellipsis={{ rows: 2, expandable: true, symbol: "بیشتر" }}
+                >
+                  {item.caption}
+                </Paragraph>
 
                 {/* {item.title} */}
               </div>
@@ -316,15 +348,21 @@ export default class PostItem extends Component {
                       <div className="right-content">
                         {conf.avatar && (
                           <span className="first">
-                            <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+                            <UserOutlined />
                           </span>
                         )}
-                        {conf.autor && <i>مجید علی نژاد</i>}
+                        {conf.autor && <i>{item.user.name}</i>}
                       </div>
                     )}
                     {conf.leftFooter && (
                       <div className="left-content">
-                        {conf.date && <i>55 روز پیش</i>}
+                        {conf.date && (
+                          <i>
+                            {moment(item.created_at)
+                              .locale("fa")
+                              .format("DD/MMMM/YYYY")}
+                          </i>
+                        )}
                       </div>
                     )}
                   </div>

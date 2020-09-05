@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import noPic from "../../../assets/picture/nopic.svg";
-import { Avatar, Button, Popover, Menu, message } from "antd";
+import { Button, Popover, Menu, message } from "antd";
 import {
   LikeOutlined,
   FieldTimeOutlined,
@@ -9,6 +9,7 @@ import {
   StopOutlined,
   SaveOutlined,
   SaveFilled,
+  UserOutlined,
   EllipsisOutlined,
   EyeOutlined,
   PictureOutlined,
@@ -20,6 +21,7 @@ import heart from "../../../assets/picture/heart.png";
 import { Link } from "react-router-dom";
 import { toggleLike, toggleSave } from "../../../GlobalFunc/GlobalFunc";
 import { connect } from "react-redux";
+import moment from "jalali-moment";
 import { isLoggedIn } from "../../../Auth/Auth";
 const defaultConf = {
   like: true,
@@ -44,7 +46,7 @@ const imgConf = {
   like: true,
   // view: true,
   // comment: true,
-  // avatar: true,
+  avatar: true,
   // date: true,
   save: true,
   // time: true,
@@ -362,10 +364,10 @@ class GridItem extends Component {
                   <div className="right-content">
                     {conf.avatar && (
                       <span className="first">
-                        <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+                        <UserOutlined />
                       </span>
                     )}
-                    {conf.autor && <strong>{item.title}</strong>}
+                    {conf.autor && <strong>{item.user.name}</strong>}
                   </div>
                 )}
                 {conf.leftFooter && (
@@ -433,7 +435,14 @@ class GridItem extends Component {
                         </li>
                       )}
 
-                      {conf.date && <i>55 روز پیش</i>}
+                      {conf.date && (
+                        <i>
+                          {" "}
+                          {moment(item.created_at)
+                            .locale("fa")
+                            .format("DD/MMMM/YYYY")}
+                        </i>
+                      )}
                     </ul>
                   </div>
                 )}

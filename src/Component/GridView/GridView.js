@@ -9,6 +9,7 @@ export default class GridView extends Component {
       case "infinit":
         return (
           <InfinitGrid
+            id={this.props.id}
             custom={this.props.custom}
             base={this.props.base}
             product={this.props.product}
@@ -17,6 +18,7 @@ export default class GridView extends Component {
       case "paginate":
         return (
           <PaginateGrid
+            id={this.props.id}
             custom={this.props.custom}
             base={this.props.base}
             product={this.props.product}
@@ -25,6 +27,7 @@ export default class GridView extends Component {
       case "loadmore":
         return (
           <LoadMoreGrid
+            id={this.props.id}
             custom={this.props.custom}
             base={this.props.base}
             product={this.props.product}
@@ -33,6 +36,7 @@ export default class GridView extends Component {
       default:
         return (
           <PaginateGrid
+            id={this.props.id}
             custom={this.props.custom}
             base={this.props.base}
             product={this.props.product}

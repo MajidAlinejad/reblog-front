@@ -93,6 +93,7 @@ class Blog extends Component {
             {view === "grid" ? (
               <div className="grid-container">
                 <GridView
+                  id={this.props.match.params.id}
                   custom={this.props.custom}
                   loader={loader}
                   base={base}
@@ -102,6 +103,7 @@ class Blog extends Component {
             ) : (
               <div className="grid-container">
                 <ListView
+                  id={this.props.match.params.id}
                   custom={this.props.custom}
                   loader={loader}
                   base={base}

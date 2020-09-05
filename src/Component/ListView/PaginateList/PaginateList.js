@@ -24,22 +24,17 @@ class PaginateList extends Component {
   };
 
   getItems = () => {
-    axios
-      .get(
-        // process.env.REACT_APP_API_URL + "posts/" + 1 // firstblog
-        `https://jsonplaceholder.typicode.com/photos?_page=${this.state.pageNumber}&_limit=${this.state.items}`
-      )
-      .then(
-        res =>
-          this.setState({
-            data: res.data,
-            loading: false
-          }),
-        window.scrollTo({
-          top: 0,
-          behavior: "smooth"
-        })
-      );
+    axios.get(process.env.REACT_APP_API_URL + "posts/" + this.props.id).then(
+      res =>
+        this.setState({
+          data: res.data,
+          loading: false
+        }),
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      })
+    );
   };
 
   onChange = current => {

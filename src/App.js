@@ -10,9 +10,7 @@ import "./App.css";
 import "antd/dist/antd.css";
 import "simplebar/dist/simplebar.min.css";
 // config import
-import fa_IR from "antd/lib/locale-provider/fa_IR";
-import "moment/locale/fa";
-import moment from "moment";
+
 //component import
 import Header from "./Component/Header/Header";
 import Footer from "./Component/Footer/Footer";
@@ -22,8 +20,6 @@ import * as animationData from "./assets/lottie/car.json";
 // redux import
 import { getUser } from "./Redux/Action/User";
 import { getNightMode } from "./Redux/Action/View";
-
-moment.locale("fa");
 
 const { Content } = Layout;
 var styleArray = [
@@ -100,29 +96,25 @@ class App extends Component {
   render() {
     return (
       <Router>
-        <ConfigProvider direction="rtl" locale={fa_IR}>
-          <div
-            className={
-              this.state.loading ? "abs-loading active" : "abs-loading"
-            }
-          >
-            {/* <div class="lds-ellipsis">
+        <div
+          className={this.state.loading ? "abs-loading active" : "abs-loading"}
+        >
+          {/* <div class="lds-ellipsis">
               <div></div>
               <div></div>
               <div></div>
               <div></div>
             </div> */}
-            <Lottie options={defaultOptions} height={400} width={400} />
-          </div>
-          <Layout>
-            <Header blogs={this.state.data} />
-            <Content>
-              <Routes blogs={this.state.data} />
-            </Content>
-            <BackTop />
-            <Footer />
-          </Layout>
-        </ConfigProvider>
+          <Lottie options={defaultOptions} height={400} width={400} />
+        </div>
+        <Layout>
+          <Header blogs={this.state.data} />
+          <Content>
+            <Routes blogs={this.state.data} />
+          </Content>
+          <BackTop />
+          <Footer />
+        </Layout>
       </Router>
     );
   }

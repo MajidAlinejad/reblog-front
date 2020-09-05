@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { Avatar, message } from "antd";
+import moment from "jalali-moment";
+
 import { EyeOutlined, MessageOutlined, HeartOutlined } from "@ant-design/icons";
 import { toggleLike, toggleSave } from "../../../GlobalFunc/GlobalFunc";
 import noPic from "../../../assets/picture/nopic.svg";
@@ -175,27 +177,14 @@ export default class ListItem extends Component {
                 style={loading ? { opacity: 0 } : { opacity: 1 }}
                 onLoad={this.handleImageLoaded.bind(this)}
                 onError={this.handleImageErrored.bind(this)}
-                src="https://cdn.zoomg.ir/2020/8/fa2f0d22-c463-4c48-932b-82a3bb250ec7.jpg"
+                src={item.thumbnail}
                 alt=""
               />
-            </Link>
-            <Link to={"/post/" + item.id}>
-              <div
-                className="li-bs-itm overlay"
-                // style={loading ? { display: "none" } : { display: "inherit" }}
-              >
-                <div className="tag-container">
-                  <span className="li-itm-tag-disable">تکنولوژی #</span>
-                  <span className="li-itm-tag-disable">بازی آنلاین #</span>
-                </div>
-              </div>
             </Link>
           </div>
           <div className="li-bs-itm left-section">
             <Link to={"/post/" + item.id}>
-              <h2 className="li-bs-itm title">
-                تاریخ انتشار بسته Heart of Deimos بازی Warframe مشخص شد
-              </h2>
+              <h2 className="li-bs-itm title">{item.title}</h2>
             </Link>
             <div className="li-bs-itm meta">
               <div className="righted">
@@ -207,17 +196,17 @@ export default class ListItem extends Component {
 
               <div className="lefted">
                 <div>
-                  <i>22 فروردین 1399 / 12:39</i>
+                  <i>
+                    {moment(item.created_at)
+                      .locale("fa")
+                      .format("DD/MMMM/YYYY")}
+                  </i>
                 </div>
               </div>
             </div>
             <hr className="middle-hr " />
             <div className="li-bs-itm caption">
-              <p>
-                در جریان رویداد Tennocon 2020 تاریخ انتشار بسته الحاقی جدید بازی
-                Warframe به‌نام Heart of Deimos مشخص شد و تریلری هم از یکی از
-                شخصیت‌های جدید بازی منتشر شد
-              </p>
+              <p>{item.caption}</p>
               <div className="li-bs-itm footer-section">
                 {conf.like && (
                   <div className="btn comment">
@@ -228,7 +217,7 @@ export default class ListItem extends Component {
                         <HeartOutlined className="cmnt-img-line" />
                       </div>
                     </span>
-                    <strong>99K</strong>
+                    <strong>{item.like}</strong>
                   </div>
                 )}
                 {conf.comment && (
@@ -240,7 +229,7 @@ export default class ListItem extends Component {
                         <MessageOutlined className="cmnt-img-line" />
                       </div>
                     </span>
-                    <strong>13</strong>
+                    <strong>12</strong>
                   </div>
                 )}
                 {conf.view && (

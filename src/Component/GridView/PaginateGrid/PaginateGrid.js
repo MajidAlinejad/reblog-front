@@ -3,6 +3,7 @@ import axios from "axios";
 import sizeMe from "react-sizeme";
 import { Spin, Pagination, Divider } from "antd";
 import Masonry from "react-masonry-css";
+import History from "../../../History";
 
 import GridItem from "../../ItemBase/GridItem/GridItem";
 import PostItem from "../../ItemBase/Post/PostItem";
@@ -33,7 +34,7 @@ class PaginateGrid extends Component {
     this.props.getUser();
     axios
       .get(
-        process.env.REACT_APP_API_URL + "posts/1"
+        process.env.REACT_APP_API_URL + "posts/" + this.props.id
         // `https://jsonplaceholder.typicode.com/photos?_page=${this.state.pageNumber}&_limit=${this.state.items}`
       )
       .then(
@@ -155,6 +156,11 @@ class PaginateGrid extends Component {
   componentDidUpdate(prevProps) {
     if (prevProps.size !== this.props.size) {
       this.getWidth();
+    }
+
+    if (prevProps.id !== this.props.id) {
+      this.getWidth();
+      this.getItems();
     }
   }
 
