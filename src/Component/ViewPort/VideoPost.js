@@ -316,7 +316,7 @@ class VideoPost extends Component {
   }
 
   render() {
-    const { data, loading } = this.state;
+    const { data } = this.state;
 
     return (
       <div className="post-container origin-post">
@@ -485,25 +485,63 @@ class VideoPost extends Component {
               <div className={this.state.hide ? "hide-cm" : ""}>
                 <Divider />
                 <div className="emoji-keyboard">
-                  <span onClick={this.emojiClick}>😍</span>
-                  <span onClick={this.emojiClick}>😉</span>
-                  <span onClick={this.emojiClick}>😂</span>
-                  <span onClick={this.emojiClick}>😁</span>
-                  <span onClick={this.emojiClick}>😘</span>
-                  <span onClick={this.emojiClick}>🤬</span>
-                  <span onClick={this.emojiClick}>😤</span>
-                  <span onClick={this.emojiClick}>😒</span>
-                  <span onClick={this.emojiClick}>👌</span>
-                  <span onClick={this.emojiClick}>👍</span>
-                  <span onClick={this.emojiClick}>👎</span>
-                  <span onClick={this.emojiClick}>❤️</span>
-                  <span onClick={this.emojiClick}>🙏</span>
-                  <span onClick={this.emojiClick}>👏</span>
-                  <span onClick={this.emojiClick}>😎</span>
-                  <span onClick={this.emojiClick}>🤩</span>
-                  <span onClick={this.emojiClick}>😊</span>
-                  <span onClick={this.emojiClick}>😏</span>
-                  <span onClick={this.emojiClick}>🤨</span>
+                  <span role="img" aria-label="xxxx" onClick={this.emojiClick}>
+                    😍
+                  </span>
+                  <span role="img" aria-label="xxxx" onClick={this.emojiClick}>
+                    😉
+                  </span>
+                  <span role="img" aria-label="xxxx" onClick={this.emojiClick}>
+                    😂
+                  </span>
+                  <span role="img" aria-label="xxxx" onClick={this.emojiClick}>
+                    😁
+                  </span>
+                  <span role="img" aria-label="xxxx" onClick={this.emojiClick}>
+                    😘
+                  </span>
+                  <span role="img" aria-label="xxxx" onClick={this.emojiClick}>
+                    🤬
+                  </span>
+                  <span role="img" aria-label="xxxx" onClick={this.emojiClick}>
+                    😤
+                  </span>
+                  <span role="img" aria-label="xxxx" onClick={this.emojiClick}>
+                    😒
+                  </span>
+                  <span role="img" aria-label="xxxx" onClick={this.emojiClick}>
+                    👌
+                  </span>
+                  <span role="img" aria-label="xxxx" onClick={this.emojiClick}>
+                    👍
+                  </span>
+                  <span role="img" aria-label="xxxx" onClick={this.emojiClick}>
+                    👎
+                  </span>
+                  <span role="img" aria-label="xxxx" onClick={this.emojiClick}>
+                    ❤️
+                  </span>
+                  <span role="img" aria-label="xxxx" onClick={this.emojiClick}>
+                    🙏
+                  </span>
+                  <span role="img" aria-label="xxxx" onClick={this.emojiClick}>
+                    👏
+                  </span>
+                  <span role="img" aria-label="xxxx" onClick={this.emojiClick}>
+                    😎
+                  </span>
+                  <span role="img" aria-label="xxxx" onClick={this.emojiClick}>
+                    🤩
+                  </span>
+                  <span role="img" aria-label="xxxx" onClick={this.emojiClick}>
+                    😊
+                  </span>
+                  <span role="img" aria-label="xxxx" onClick={this.emojiClick}>
+                    😏
+                  </span>
+                  <span role="img" aria-label="xxxx" onClick={this.emojiClick}>
+                    🤨
+                  </span>
                 </div>
                 <div className="cm-textbox">
                   <Form.Item>
@@ -567,9 +605,14 @@ class VideoPost extends Component {
                   ]}
                   key={cm.id}
                   author={
-                    <a id={cm.id} name={cm.user.name} onClick={this.onReply}>
+                    <Button
+                      type="link"
+                      id={cm.id}
+                      name={cm.user.name}
+                      onClick={this.onReply}
+                    >
                       {cm.user.name} <RollbackOutlined />
-                    </a>
+                    </Button>
                   }
                   avatar={
                     <Avatar className="capital-letter">

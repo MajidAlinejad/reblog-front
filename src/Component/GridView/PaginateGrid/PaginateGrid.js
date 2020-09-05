@@ -3,7 +3,6 @@ import axios from "axios";
 import sizeMe from "react-sizeme";
 import { Spin, Pagination, Divider } from "antd";
 import Masonry from "react-masonry-css";
-import History from "../../../History";
 
 import GridItem from "../../ItemBase/GridItem/GridItem";
 import PostItem from "../../ItemBase/Post/PostItem";
