@@ -28,8 +28,18 @@ import { toggleLike, toggleSave } from "../../GlobalFunc/GlobalFunc";
 import heart from "../../assets/picture/heart.png";
 import { connect } from "react-redux";
 import { isLoggedIn } from "../../Auth/Auth";
+import Slider from "react-slick";
 const { TextArea } = Input;
 const { Paragraph } = Typography;
+
+const settings = {
+  dots: true,
+  infinite: true,
+  speed: 500,
+  slidesToShow: 1,
+  slidesToScroll: 1
+};
+
 class ImgPost extends Component {
   constructor(props) {
     super(props);
@@ -51,6 +61,7 @@ class ImgPost extends Component {
     Cloading: false,
     submitting: false,
     action: "",
+    blocks: [],
     edit: false
   };
 
@@ -222,6 +233,16 @@ class ImgPost extends Component {
     }
   };
 
+  getBlocks = id => {
+    Axios.get(process.env.REACT_APP_API_URL + "blocks/" + this.props.id).then(
+      res =>
+        this.setState({
+          blocks: res.data,
+          Bloading: false
+        })
+    );
+  };
+
   getItems = id => {
     Axios.get(
       process.env.REACT_APP_API_URL + "post/" + this.props.id // firstblog
@@ -236,6 +257,7 @@ class ImgPost extends Component {
         top: 0,
         behavior: "smooth"
       }),
+      this.getBlocks(),
       this.getComment()
     );
   };
@@ -397,14 +419,64 @@ class ImgPost extends Component {
                 spinning={this.state.loading}
                 size="large"
               />
-              <img
-                className="main-img"
-                alt=""
-                src={data.img}
-                style={loading ? { opacity: 0 } : { opacity: 1 }}
-                onLoad={this.handleImageLoaded.bind(this)}
-                onError={this.handleImageErrored.bind(this)}
-              />
+              {/* {this.state.blocks.length ? this.state.blocks.map(block => {
+              return (
+                
+              );
+            })} */}
+              {this.state.blocks.length ? (
+                <Slider {...settings}>
+                  <div>
+                    <img
+                      className="main-img"
+                      alt=""
+                      src={data.img}
+                      style={loading ? { opacity: 0 } : { opacity: 1 }}
+                      onLoad={this.handleImageLoaded.bind(this)}
+                      onError={this.handleImageErrored.bind(this)}
+                    />
+                  </div>
+                  {this.state.blocks.map(block => {
+                    return (
+                      <div key={block.id}>
+                        <img className="main-img" alt="" src={block.img} />
+                      </div>
+                    );
+                  })}
+                </Slider>
+              ) : (
+                // <Carousel
+                //   // autoplay
+                //   dotPosition="right"
+                //   className="main-carousel-img"
+                // >
+                //   <div>
+                //     <img
+                //       className="main-img"
+                //       alt=""
+                //       src={data.img}
+                //       style={loading ? { opacity: 0 } : { opacity: 1 }}
+                //       onLoad={this.handleImageLoaded.bind(this)}
+                //       onError={this.handleImageErrored.bind(this)}
+                //     />
+                //   </div>
+                //   {this.state.blocks.map(block => {
+                //     return (
+                //       <div key={block.id}>
+                //         <img className="main-img" alt="" src={block.img} />
+                //       </div>
+                //     );
+                //   })}
+                // </Carousel>
+                <img
+                  className="main-img"
+                  alt=""
+                  src={data.img}
+                  style={loading ? { opacity: 0 } : { opacity: 1 }}
+                  onLoad={this.handleImageLoaded.bind(this)}
+                  onError={this.handleImageErrored.bind(this)}
+                />
+              )}
             </div>
           </div>
         </div>

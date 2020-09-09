@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import ReactPlayer from "react-player";
+import ReactImageMagnify from "react-image-magnify";
 import {
   Typography,
   Avatar,
@@ -17,7 +19,7 @@ import {
   SaveFilled,
   SaveOutlined,
   CloseCircleOutlined,
-  PlayCircleFilled,
+  EyeOutlined,
   RollbackOutlined,
   EditOutlined
 } from "@ant-design/icons";
@@ -27,16 +29,11 @@ import { toggleLike, toggleSave } from "../../GlobalFunc/GlobalFunc";
 import heart from "../../assets/picture/heart.png";
 import { connect } from "react-redux";
 import { isLoggedIn } from "../../Auth/Auth";
-import { ColorExtractor } from "react-color-extractor";
-import { addStream } from "../../Redux/Action/Stream";
 const { TextArea } = Input;
 const { Paragraph } = Typography;
-
-class MusicPost extends Component {
+class ProductPost extends Component {
   constructor(props) {
     super(props);
-    this.audio = {};
-
     this.myRef = React.createRef();
   }
   state = {
@@ -56,19 +53,13 @@ class MusicPost extends Component {
     submitting: false,
     action: "",
     blocks: [],
-    colors: [],
     edit: false
-  };
-
-  onAddAudio = block => {
-    // console.log(id);
-    // add to q
-    this.props.addStream(block);
   };
 
   isLiked = () => {
     let id = parseInt(this.props.id);
     this.setState({ liked: false });
+
     if (this.props.user.likes) {
       if (this.props.user.likes.find(element => id === element)) {
         this.setState({
@@ -78,13 +69,9 @@ class MusicPost extends Component {
     }
   };
 
-  getColors = colors =>
-    this.setState(state => ({ colors: [...state.colors, ...colors] }));
-
   isSaved = () => {
     let id = parseInt(this.props.id);
     this.setState({ saved: false });
-
     if (this.props.user.saves) {
       if (this.props.user.saves.find(element => id === element)) {
         this.setState({
@@ -105,6 +92,7 @@ class MusicPost extends Component {
     this.setState({
       value: this.state.value.concat(e.target.innerText)
     });
+    console.log();
   };
 
   handleImageErrored() {
@@ -229,7 +217,7 @@ class MusicPost extends Component {
           );
           if (comment_id === 0 && this.state.Comments.length > 3) {
             window.scrollTo(0, this.myRef.current.offsetTop - 500);
-            // console.log(this.myRef.current.offsetTop, this.myRef.current);
+            console.log(this.myRef.current.offsetTop, this.myRef.current);
           }
         },
         err => {
@@ -306,10 +294,9 @@ class MusicPost extends Component {
     if (prevProps.id !== this.props.id) {
       this.setState(
         {
-          data: [],
-          colors: [],
-          //   liked: false,
-          //   saved: false,
+          data: {
+            username: ""
+          },
           loading: true
         },
         this.getItems()
@@ -331,29 +318,103 @@ class MusicPost extends Component {
   }
 
   render() {
-    const { data, loading, colors } = this.state;
+    const { data, loading } = this.state;
 
     return (
-      <div className="post-container music-post">
-        <Spin
-          className="music-post-spin"
-          spinning={this.state.loading}
-          size="large"
-        />
-        <div
-          style={{
-            background: `linear-gradient(0deg,#cacaca00, ${colors[1]}70 , ${
-              colors[5]
-            }90)`
-          }}
-          className="music-post-section album-container"
-        >
+      <div className="post-container origin-post">
+        <div className="origin-post-section">
+          <div className="img-post-info">
+            <div className="img-post-info-content right">
+              <Avatar size="large" className="capital-letter">
+                {data.username.charAt(0).toUpperCase()}
+              </Avatar>
+              <div className="img-post-autor">
+                <strong> {data.username}</strong>
+              </div>
+              <i className="img-post-date">
+                {moment(data.created_at)
+                  .locale("fa")
+                  .format("DD/MMMM/YYYY")}
+              </i>
+            </div>
+            <div className="img-post-info-content left">
+              <div className="control-btns">
+                <div className="like-btn">
+                  <span>
+                    <div
+                      onClick={this.handleLiked}
+                      style={{ background: `url(${heart})` }}
+                      className={this.state.liked ? "heart is-active" : "heart"}
+                    ></div>
+                  </span>
+                  <strong> {data.like}</strong>
+                </div>
+                <div className="comment-btn">
+                  <span>
+                    <div className="view">
+                      <EyeOutlined className="views-img-line" />
+                    </div>
+                  </span>
+                  <strong> 3K</strong>
+                </div>
+
+                <div className="comment-btn">
+                  <span>
+                    <div className="comment">
+                      <MessageOutlined className="cmnt-img-line" />
+                    </div>
+                  </span>
+
+                  <strong>{data.cm}</strong>
+                </div>
+                <div className="comment-btn">
+                  <span>
+                    <div
+                      onClick={this.handleSave}
+                      className={
+                        this.state.saved
+                          ? "bubbly-button animate"
+                          : "bubbly-button"
+                      }
+                    >
+                      {this.state.saved ? (
+                        <SaveFilled className="save-img" />
+                      ) : (
+                        <SaveOutlined className="save-img-line" />
+                      )}
+                    </div>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="origin-post-title">
+            <h1 className="title img-post-title origin-title">
+              {data.title}
+              {this.state.tags.map((tag, idx) => {
+                return (
+                  <Tag key={idx} color="blue">
+                    #{tag}
+                  </Tag>
+                );
+              })}
+            </h1>
+            <Divider />
+
+            <div className="img-post-caption">
+              <Paragraph style={{ textAlign: `justify` }}>
+                {data.caption}
+              </Paragraph>
+            </div>
+          </div>
+
           <div className="post-border">
             <div
               className={
                 this.state.imgError
-                  ? "music-post-container nopic"
-                  : "music-post-container"
+                  ? "origin-post-container nopic"
+                  : "origin-post-container"
               }
               style={
                 this.state.imgError
@@ -361,110 +422,54 @@ class MusicPost extends Component {
                   : { background: `inherit` }
               }
             >
-              <ColorExtractor getColors={this.getColors} maxColors={4}>
-                <img
+              <Spin
+                className="origin-post-spin"
+                spinning={this.state.loading}
+                size="large"
+              />
+
+              <ReactImageMagnify
+                {...{
+                  smallImage: {
+                    alt: "Wristwatch by Ted Baker London",
+                    isFluidWidth: true,
+                    src: data.img
+                  },
+                  largeImage: {
+                    src: data.img,
+                    width: 1200,
+                    height: 1800
+                  }
+                }}
+              />
+
+              {/* <img
                   className="main-img"
                   alt=""
-                  src={data.thumbnail}
+                  src={data.img}
                   style={loading ? { opacity: 0 } : { opacity: 1 }}
                   onLoad={this.handleImageLoaded.bind(this)}
                   onError={this.handleImageErrored.bind(this)}
-                />
-              </ColorExtractor>
-            </div>
-          </div>
-
-          <div className="music-post-title">
-            <h1 className="title img-post-title music-title">{data.title}</h1>
-            <h3 className="title img-post-title music-title">{data.special}</h3>
-
-            <div className="music-control-btns">
-              <div className="like-btn">
-                <span>
-                  <div
-                    onClick={this.handleLiked}
-                    style={{ background: `url(${heart})` }}
-                    className={this.state.liked ? "heart is-active" : "heart"}
-                  ></div>
-                </span>
-              </div>
-
-              <div className="comment-btn">
-                <span>
-                  <div
-                    onClick={this.handleSave}
-                    className={
-                      this.state.saved
-                        ? "bubbly-button animate"
-                        : "bubbly-button"
-                    }
-                  >
-                    {this.state.saved ? (
-                      <SaveFilled className="save-img" />
-                    ) : (
-                      <SaveOutlined className="save-img-line" />
-                    )}
-                  </div>
-                </span>
-              </div>
-            </div>
-
-            <Divider />
-
-            <div className="img-post-caption">
-              <Paragraph style={{ textAlign: `justify` }}>
-                {data.caption}
-              </Paragraph>
-              {this.state.tags.map((tag, idx) => {
-                return (
-                  <Tag key={idx} color="default">
-                    #{tag}
-                  </Tag>
-                );
-              })}
+                /> */}
             </div>
           </div>
         </div>
-        <Divider />
-
-        <div className="music-list">
-          <ul>
-            <li>
-              <div>نام آهنگ</div>
-              <div>آلبوم</div>
-              <div>خواننده</div>
-              <div>تاریخ</div>
-            </li>
+        <div className="img-post-section">
+          <div className="origin-post-text-container">
             {this.state.blocks.map(block => {
               return (
-                <li key={block.id}>
-                  <div>
-                    <span
-                      className="music-play-btn"
-                      onClick={() => this.onAddAudio(block)}
-                    >
-                      <PlayCircleFilled />
-                    </span>
-                    {block.title}
+                <div className="origin-post-block">
+                  <Paragraph style={{ textAlign: `justify` }}>
+                    {block.text}
+                  </Paragraph>
+                  <div className="origin-post-img-container">
+                    <img className="main-img" alt="" src={block.img} />
                   </div>
-                  <div>{data.title}</div>
-                  <div>{block.special}</div>
-                  <div>
-                    {moment(block.created_at)
-                      .locale("fa")
-                      .format("DD/MMMM/YYYY")}
-                  </div>
-
-                  {/* {block.text} */}
-                </li>
+                </div>
               );
             })}
-          </ul>
-        </div>
-
-        <div className="music-post-section cm">
-          <div className="music-post-text-container"></div>
-          <div className="sticky-title music-post-sticky">
+          </div>
+          <div className="sticky-title origin-post-sticky">
             <div className="img-post-caption">
               <div className="center-cm-btn">
                 <div
@@ -554,7 +559,7 @@ class MusicPost extends Component {
                       allowClear={true}
                       ref="imgComment"
                       onChange={this.onCommentChange}
-                      id="music-post-comment"
+                      id="origin-post-comment"
                       value={this.state.value}
                       autoSize={true}
                     />
@@ -574,9 +579,9 @@ class MusicPost extends Component {
               <Divider style={{ marginTop: 0 }} />
             </div>
           </div>
-          <div className="music-post-comment-container">
+          <div className="origin-post-comment-container">
             <Spin
-              className="music-post-spin"
+              className="origin-post-spin"
               spinning={this.state.Cloading}
               size="large"
             />
@@ -586,7 +591,7 @@ class MusicPost extends Component {
                   actions={[
                     <div>
                       <span
-                        className="music-post-comment-edit"
+                        className="origin-post-comment-edit"
                         onClick={() => {
                           this.setState({
                             hide: false,
@@ -625,7 +630,7 @@ class MusicPost extends Component {
                   }
                   content={
                     <Paragraph
-                      className="music-post-cm"
+                      className="origin-post-cm"
                       ellipsis={{
                         rows: 2,
                         expandable: true,
@@ -642,7 +647,7 @@ class MusicPost extends Component {
                         actions={[
                           <div>
                             <span
-                              className="music-post-comment-edit"
+                              className="origin-post-comment-edit"
                               onClick={() => {
                                 this.setState({
                                   hide: false,
@@ -666,7 +671,7 @@ class MusicPost extends Component {
                         }
                         content={
                           <Paragraph
-                            className="music-post-cm"
+                            className="origin-post-cm"
                             ellipsis={{
                               rows: 2,
                               expandable: true,
@@ -696,16 +701,5 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    addStream: block => {
-      dispatch(addStream(block));
-    }
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(MusicPost);
+export default connect(mapStateToProps)(ProductPost);
 // export default sizeMe()(PaginateGrid);

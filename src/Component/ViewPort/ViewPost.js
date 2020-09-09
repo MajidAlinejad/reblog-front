@@ -11,6 +11,7 @@ import ImgPost from "./ImgPost";
 import OriginPost from "./OriginPost";
 import VideoPost from "./VideoPost";
 import MusicPost from "./MusicPost";
+import ProductPost from "./ProductPost";
 class ViewPost extends Component {
   state = {
     effect: false,
@@ -38,6 +39,8 @@ class ViewPost extends Component {
       return <MusicPost id={id} />;
     } else if (this.state.base === "podcast") {
       return <MusicPost id={id} />;
+    } else if (this.state.base === "product") {
+      return <ProductPost id={id} />;
     }
   };
 
@@ -52,6 +55,8 @@ class ViewPost extends Component {
       return <LoadMoreGrid base={this.state.base} siderPost={true} id="6" />;
     } else if (this.state.base === "post") {
       return <LoadMoreGrid base={this.state.base} siderPost={true} id="9" />;
+    } else if (this.state.base === "product") {
+      return <LoadMoreGrid base={this.state.base} id="4" />;
     }
   };
 

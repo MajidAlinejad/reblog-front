@@ -2,13 +2,11 @@ import React, { Component } from "react";
 import { FieldTimeOutlined, StarOutlined } from "@ant-design/icons";
 import Countdown from "react-countdown";
 import { Link } from "react-router-dom";
+import NumberFormat from "react-number-format";
 import { ColorExtractor } from "react-color-extractor";
-// import apple from "../../../assets/picture/example/apple.png";
-import perfume from "../../../assets/picture/example/perfume.png";
-// import perfume2 from "../../../assets/picture/example/perfume2.png";
 
 const defaultConf = {
-  discount: false,
+  discount: true,
   modern: false,
   time: true
 };
@@ -65,14 +63,20 @@ export default class ProductItem extends Component {
     return (
       <React.Fragment>
         <div className="container-base-item-store">
-          <Link to={item.url}>
+          <Link to={"/post/" + item.id}>
+            {item.special && (
+              <div className="special-product">{item.special}</div>
+            )}
             <div
               className="grid-product-card"
-              style={{
-                background: `linear-gradient(to bottom, #ffffff30 92%, ${
-                  colors[0]
-                } 8%)`
-              }}
+              style={
+                {
+                  // background: `linear-gradient(to bottom, #ffffff30 92%, ${
+                  //   colors[0]
+                  // } 8%)`
+                  // background: `linear-gradient(to bottom, #ffffff30 92%, #ff605b 8%)`
+                }
+              }
             >
               <div
                 className="grid-card-cover"
@@ -92,8 +96,8 @@ export default class ProductItem extends Component {
                     }
                     onLoad={this.handleImageLoaded.bind(this)}
                     onError={this.handleImageErrored.bind(this)}
-                    src={perfume}
-                    // src={item.thumbnailUrl}
+                    // src={perfume}
+                    src={item.thumbnail}
                   />
                 </ColorExtractor>
               </div>
@@ -102,32 +106,58 @@ export default class ProductItem extends Component {
 
               <div className="grid-card-body">
                 <div className="grid-card-meta">
-                  <p>
-                    ساعت هوشمند اپل سری 3 جی پی اس مدل 38mm Aluminium Case with
-                    Sport Band ساعت هوشمند اپل سری 3 جی پی اس مدل 38mm Aluminium
-                    Case with Sport Band
-                  </p>
+                  <h1>{item.title}</h1>
                   <hr className="middle-hr" />
                   <div className="extra-grid">
-                    <span className="exist">ناموجود</span>
+                    <span className={item.status > 0 ? "exist green" : "exist"}>
+                      {item.status === "active"
+                        ? "موجود"
+                        : item.status > 0
+                        ? item.status + " عدد"
+                        : "ناموجود"}
+                    </span>
                     <div className="rate">
                       <StarOutlined />
-                      3.7
+                      {Math.round(
+                        ((item.like - item.unlike) /
+                          (item.like + item.unlike)) *
+                          5 *
+                          10
+                      ) / 10}
                     </div>
                   </div>
-                  {conf.discount && (
+
+                  {/* {conf.discount && (
                     <h3 className="last-price-grid">3,200,000</h3>
+                  )} */}
+                  {item.expire > 0 && conf.time ? (
+                    <Countdown
+                      date={item.expire - Date.now()}
+                      renderer={renderer}
+                    />
+                  ) : (
+                    <div className="count-grid empty"> </div>
                   )}
-
-                  <h1 className="price-grid">3,000,000 تومان</h1>
-
-                  {/* {item.title} */}
                 </div>
               </div>
               <div className="grid-card-footer">
-                {conf.time && (
+                {/* {conf.time ? (
                   <Countdown date={Date.now() + 900000} renderer={renderer} />
-                )}
+                ) : (
+                  <h1 className="price-grid white">3,000,000 تومان</h1>
+                )} */}
+                {/* {conf.time ? (
+                  <Countdown date={Date.now() + 900000} renderer={renderer} />
+                ) : ( */}
+                <h1 className="price-grid white">
+                  <NumberFormat
+                    value={item.lable}
+                    displayType={"text"}
+                    thousandSeparator={true}
+                    suffix={" تومان"}
+                  />
+                </h1>
+                {/* )} */}
               </div>
             </div>
           </Link>
