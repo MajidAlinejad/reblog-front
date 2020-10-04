@@ -165,7 +165,7 @@ class Toolbar extends Component {
     if (prevProps.toolbar !== this.props.toolbar) {
       this.setState({
         searchMode: this.props.toolbar === "search" ? true : false,
-        switcher: this.props.switcher ? true : false
+        switcher: this.props.switcher === 1 ? true : false
         // filters: this.props.filters ? true : false
       });
     }

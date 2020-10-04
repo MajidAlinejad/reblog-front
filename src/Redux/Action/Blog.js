@@ -10,8 +10,7 @@ const updateBlog = payload => {
 export const getBlog = id => {
   //   let id = 1;
   return dispatch => {
-    axios.get("http://smarblog.mamp:8050/api/blog/" + id).then(res => {
-      //   console.log(res.data);
+    axios.get(process.env.REACT_APP_API_URL + "blog/" + id).then(res => {
       dispatch(updateBlog(res.data));
     });
   };

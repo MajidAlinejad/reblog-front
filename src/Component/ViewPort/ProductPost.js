@@ -11,17 +11,17 @@ import {
   Comment,
   Divider,
   Button,
-  Input
+  Input,
+  Card
 } from "antd";
 import Axios from "axios";
 import {
+  LikeOutlined,
+  DislikeOutlined,
+  ShareAltOutlined,
   MessageOutlined,
-  SaveFilled,
-  SaveOutlined,
-  CloseCircleOutlined,
-  EyeOutlined,
-  RollbackOutlined,
-  EditOutlined
+  TagOutlined,
+  FullscreenOutlined
 } from "@ant-design/icons";
 import moment from "jalali-moment";
 import noPic from "../../assets/picture/nopic.svg";
@@ -29,6 +29,7 @@ import { toggleLike, toggleSave } from "../../GlobalFunc/GlobalFunc";
 import heart from "../../assets/picture/heart.png";
 import { connect } from "react-redux";
 import { isLoggedIn } from "../../Auth/Auth";
+import { ColorExtractor } from "react-color-extractor";
 const { TextArea } = Input;
 const { Paragraph } = Typography;
 class ProductPost extends Component {
@@ -52,6 +53,8 @@ class ProductPost extends Component {
     Cloading: false,
     submitting: false,
     action: "",
+    colors: [],
+    imageLoaded: false,
     blocks: [],
     edit: false
   };
@@ -307,6 +310,34 @@ class ProductPost extends Component {
       }
     }
   }
+  getColors = colors =>
+    this.setState(state => ({ colors: [...state.colors, ...colors] }));
+
+  componentDidUpdate(prevProps) {
+    if (isLoggedIn()) {
+      if (prevProps.user !== this.props.user) {
+        this.isLiked();
+        this.isSaved();
+      }
+    }
+
+    if (prevProps.id !== this.props.id) {
+      this.setState(
+        {
+          data: [],
+          colors: [],
+          tags: [],
+          imageLoaded: false,
+          loading: true
+        },
+        this.getItems()
+      );
+      if (isLoggedIn()) {
+        this.isLiked();
+        this.isSaved();
+      }
+    }
+  }
 
   componentDidMount() {
     if (isLoggedIn()) {
@@ -318,14 +349,104 @@ class ProductPost extends Component {
   }
 
   render() {
-    const { data, loading } = this.state;
+    const { data, loading, colors, imageLoaded } = this.state;
 
     return (
-      <div className="post-container origin-post">
+      <div className="post-container product-post">
+        <div
+          className="product-row row-top "
+          style={{
+            transition: `all 2s ease !important`,
+
+            background: imageLoaded
+              ? `linear-gradient(115deg,  ${colors[5]}05,${colors[1]}40 )`
+              : "#fafafa"
+          }}
+        >
+          <Spin className="product-post-spin" spinning={loading} size="large" />
+          <div className="pr-extra-btn">
+            <LikeOutlined />
+            <DislikeOutlined />
+            <ShareAltOutlined />
+            <MessageOutlined />
+            <TagOutlined />
+          </div>
+          <div className="product-right-section">
+            <div className="main-img-container">
+              <ColorExtractor getColors={this.getColors} maxColors={4}>
+                <img
+                  alt="example"
+                  // style={loading ? { opacity: 0 } : { opacity: 1 }}
+                  className={`product-img ${imageLoaded ? "show" : "hide"}`}
+                  onLoad={() => this.setState({ imageLoaded: true })}
+                  // src={perfume}
+                  src={data.img ? data.img : "0"}
+                />
+              </ColorExtractor>
+            </div>
+            <div
+              className={`thumnail-pr-main ${imageLoaded ? "show" : "hide"}`}
+            >
+              <img alt="example" src={data.img} />
+            </div>
+            <div
+              className={`thumnail-pr-main ${imageLoaded ? "show" : "hide"}`}
+            >
+              <img alt="example" src={data.img} />
+            </div>
+            <div
+              className={`thumnail-pr-main ${imageLoaded ? "show" : "hide"}`}
+            >
+              <img alt="example" src={data.img} />
+            </div>
+            <div
+              className={`thumnail-pr-main ${imageLoaded ? "show" : "hide"}`}
+            >
+              {/* <img alt="example" src={data.img} /> */}
+              <FullscreenOutlined className="bigger-btn" />
+            </div>
+          </div>
+
+          <div className="product-left-section">
+            <div className="product-post-title">
+              <h1 className="title img-post-title origin-title">
+                {data.title}
+                {this.state.tags.map((tag, idx) => {
+                  return (
+                    <Tag key={idx} color="blue">
+                      #{tag}
+                    </Tag>
+                  );
+                })}
+              </h1>
+              <Divider />
+              <div className="pr-control-panel">
+                <div className="pr-right">
+                  {/* <Card title="Default size card" extra={<a href="#">More</a>}>
+                    <Button type="primary" danger>
+                      360000000
+                    </Button>
+                  </Card> */}
+                </div>
+                <div className="pr-left">
+                  {/* <Card title="Default size card" extra={<a href="#">More</a>}>
+                    <Button type="primary" block danger>
+                      120000000
+                    </Button>
+                  </Card> */}
+                </div>
+              </div>
+            </div>
+          </div>
+          <span className="pr-timer">12:24:53</span>
+        </div>
+        <div className="row-top"></div>
+
+        {/*       
         <div className="origin-post-section">
           <div className="img-post-info">
             <div className="img-post-info-content right">
-              <Avatar size="large" className="capital-letter">
+              <Avatar1 size="large" className="capital-letter">
                 {data.username.charAt(0).toUpperCase()}
               </Avatar>
               <div className="img-post-autor">
@@ -450,10 +571,11 @@ class ProductPost extends Component {
                   style={loading ? { opacity: 0 } : { opacity: 1 }}
                   onLoad={this.handleImageLoaded.bind(this)}
                   onError={this.handleImageErrored.bind(this)}
-                /> */}
+                /> 
             </div>
           </div>
         </div>
+      
         <div className="img-post-section">
           <div className="origin-post-text-container">
             {this.state.blocks.map(block => {
@@ -690,6 +812,7 @@ class ProductPost extends Component {
             <div ref={this.myRef}></div>
           </div>
         </div>
+      */}
       </div>
     );
   }

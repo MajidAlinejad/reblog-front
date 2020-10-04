@@ -167,18 +167,18 @@ class ImgPost extends Component {
       process.env.REACT_APP_API_URL + "comments/" + this.props.id // firstblog
     ).then(res =>
       this.setState({
-        Comments: res.data,
+        Comments: res.data.data,
         Cloading: false
       })
     );
   };
 
   onReply = e => {
-    let txt = "پاسخ شما به " + e.target.name;
+    let txt = "پاسخ شما به " + e.currentTarget.name;
     this.setState({
       hide: false,
       btnTxt: txt,
-      reply: e.target.id
+      reply: e.currentTarget.id
     });
   };
 

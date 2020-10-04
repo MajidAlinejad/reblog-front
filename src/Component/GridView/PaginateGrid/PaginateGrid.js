@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 import axios from "axios";
 import sizeMe from "react-sizeme";
-import { Spin, Pagination, Divider } from "antd";
+import { Spin, Pagination, Divider, Empty } from "antd";
 import Masonry from "react-masonry-css";
-
 import GridItem from "../../ItemBase/GridItem/GridItem";
 import PostItem from "../../ItemBase/Post/PostItem";
 import PlayItem from "../../ItemBase/PlayItem/PlayItem";
@@ -12,14 +11,22 @@ import ProductItem from "../../ItemBase/ProductItem/ProductItem";
 import { getUser } from "../../../Redux/Action/User";
 
 class PaginateGrid extends Component {
+  constructor(props) {
+    super(props);
+    this._isMounted = false;
+  }
   state = {
-    loading: true,
-    data: [],
-    pageNumber: 1,
     items: 30,
     hasMore: true,
     current: 1,
-    perPage: 10,
+    perPage: 4,
+    loading: true,
+    total: 100,
+    category: null,
+    tags: [],
+    empty: false,
+    data: [],
+    pageNumber: 1,
     className: "my-masonry-grid",
     width: {
       default: 5,
@@ -29,29 +36,51 @@ class PaginateGrid extends Component {
     }
   };
 
-  getItems = () => {
+  getItems = (perPage, pageNumber, category) => {
     this.props.getUser();
-    axios
-      .get(
-        process.env.REACT_APP_API_URL + "posts/" + this.props.id
-        // `https://jsonplaceholder.typicode.com/photos?_page=${this.state.pageNumber}&_limit=${this.state.items}`
-      )
-      .then(
-        res =>
-          this.setState({
-            data: res.data,
-            loading: false
-          }),
-        window.scrollTo({
-          top: 0,
-          behavior: "smooth"
-        })
-      );
+    this._isMounted &&
+      axios
+        .get(
+          process.env.REACT_APP_API_URL +
+            "posts/" +
+            this.props.id +
+            `?per_page=${perPage ? perPage : this.state.perPage}&page=${
+              pageNumber ? pageNumber : this.state.pageNumber
+            }` +
+            `&cat=${category ? category : ""}` +
+            `&tags=${this.state.tags ? this.state.tags : ""}`
+        )
+        .then(res =>
+          res.data.data[0] &&
+          res.data.data[0].blog_id === parseInt(this.props.id) &&
+          this._isMounted &&
+          res.data.data.length > 0
+            ? this.setState(
+                {
+                  empty: !parseInt(res.data.total),
+                  data: res.data.data,
+                  total: res.data.total,
+                  loading: false
+                },
+                () => {
+                  window.scrollTo({
+                    top: 0,
+                    behavior: "smooth"
+                  });
+                }
+              )
+            : this.setState({
+                empty: !parseInt(res.data.total),
+                total: parseInt(res.data.total),
+                loading: false
+              })
+        );
   };
 
   onChange = current => {
     this.setState(
       {
+        current: current,
         pageNumber: current,
         loading: true
       },
@@ -60,14 +89,15 @@ class PaginateGrid extends Component {
   };
 
   onShowSizeChange = (current, perPage) => {
-    this.setState(
-      {
-        items: perPage,
-        pageNumber: current,
-        loading: true
-      },
-      this.getItems
-    );
+    this._isMounted &&
+      this.setState(
+        {
+          items: perPage,
+          pageNumber: current,
+          loading: true
+        },
+        this._isMounted && this.getItems
+      );
   };
 
   getWidth = w => {
@@ -146,28 +176,108 @@ class PaginateGrid extends Component {
         400: 1
       };
     }
-    this.setState({
-      width: columnWidth,
-      className: className
-    });
+    this._isMounted &&
+      this.setState({
+        width: columnWidth,
+        className: className
+      });
   };
 
   componentDidUpdate(prevProps) {
     if (prevProps.size !== this.props.size) {
-      this.getWidth();
+      this._isMounted && this.getWidth();
+    }
+
+    if (prevProps.tags !== this.props.tags) {
+      console.log(this.state.category);
+      this._isMounted &&
+        this.setState(
+          {
+            tags: this.props.tags,
+            data: [],
+            loading: true,
+            // hasMore: true,
+            pageNumber: 1,
+            items: 5,
+            current: 1,
+            perPage: 4,
+            total: 100
+          },
+          () => {
+            this._isMounted &&
+              this.getItems(
+                this.state.items,
+                this.state.pageNumber,
+                this.state.category
+              );
+          }
+        );
+    }
+
+    if (prevProps.category !== this.props.category) {
+      this._isMounted &&
+        this.setState(
+          {
+            data: [],
+            current: 1,
+            perPage: 4,
+            total: 100,
+            loading: true,
+            items: 5,
+            category: this.props.category
+          },
+          () => {
+            this._isMounted &&
+              this.getItems(
+                this.state.items,
+                this.state.pageNumber,
+                this.props.category
+              );
+          }
+        );
     }
 
     if (prevProps.id !== this.props.id) {
-      this.getWidth();
-      this.getItems();
+      this.setState(
+        {
+          data: [],
+          hasMore: true,
+          items: 30,
+          current: 1,
+          pageNumber: 1,
+          perPage: 4,
+          total: 100
+        },
+        () => {
+          this.getItems(4, 1);
+        }
+      );
     }
   }
 
   componentDidMount() {
-    this.getItems();
-    this.getWidth();
+    this._isMounted = true;
+    this._isMounted && this.getItems();
+    this._isMounted && this.getWidth();
   }
 
+  componentWillUnmount() {
+    this._isMounted = false;
+    this.setState({
+      data: null,
+      loading: null,
+      pageNumber: null,
+      items: null,
+      hasMore: null,
+      current: null,
+      perPage: null,
+      className: null,
+      width: null,
+      empty: null,
+      category: null,
+      tags: null
+    });
+  }
   render() {
     const { custom, base, user, product } = this.props;
     return (
@@ -177,69 +287,71 @@ class PaginateGrid extends Component {
           spinning={this.state.loading}
           size="large"
         />
-
-        <Masonry
-          breakpointCols={this.state.width}
-          className={this.state.className}
-          columnClassName="my-masonry-grid_column"
-        >
-          {this.state.data.map(function(item) {
-            return (
-              <div key={item.id}>
-                {base === "img" && (
-                  <GridItem
-                    item={item}
-                    base={base}
-                    user={user}
-                    custom={custom}
-                  />
-                )}
-                {base === "video" && (
-                  <GridItem
-                    item={item}
-                    base={base}
-                    user={user}
-                    custom={custom}
-                  />
-                )}
-                {base === "music" && (
-                  <PlayItem
-                    item={item}
-                    base={base}
-                    user={user}
-                    custom={custom}
-                  />
-                )}
-                {base === "podcast" && (
-                  <PlayItem
-                    item={item}
-                    base={base}
-                    user={user}
-                    custom={custom}
-                  />
-                )}
-                {base === "post" && (
-                  <PostItem
-                    item={item}
-                    base={base}
-                    user={user}
-                    custom={custom}
-                  />
-                )}
-                {base === "product" && (
-                  <ProductItem
-                    item={item}
-                    product={product}
-                    base={base}
-                    user={user}
-                  />
-                )}
-                {/* <PostItem item={item} /> */}
-              </div>
-            );
-          })}
-        </Masonry>
-
+        {!this.state.empty ? (
+          <Masonry
+            breakpointCols={this.state.width}
+            className={this.state.className}
+            columnClassName="my-masonry-grid_column"
+          >
+            {this.state.data.map(function(item) {
+              return (
+                <div key={item.id}>
+                  {base === "img" && (
+                    <GridItem
+                      item={item}
+                      base={base}
+                      user={user}
+                      custom={custom}
+                    />
+                  )}
+                  {base === "video" && (
+                    <GridItem
+                      item={item}
+                      base={base}
+                      user={user}
+                      custom={custom}
+                    />
+                  )}
+                  {base === "music" && (
+                    <PlayItem
+                      item={item}
+                      base={base}
+                      user={user}
+                      custom={custom}
+                    />
+                  )}
+                  {base === "podcast" && (
+                    <PlayItem
+                      item={item}
+                      base={base}
+                      user={user}
+                      custom={custom}
+                    />
+                  )}
+                  {base === "post" && (
+                    <PostItem
+                      item={item}
+                      base={base}
+                      user={user}
+                      custom={custom}
+                    />
+                  )}
+                  {base === "product" && (
+                    <ProductItem
+                      item={item}
+                      product={product}
+                      base={base}
+                      user={user}
+                    />
+                  )}
+                  {/* <PostItem item={item} /> */}
+                </div>
+              );
+            })}
+          </Masonry>
+        ) : (
+          <Empty description={false} />
+        )}
         <Divider />
         <Pagination
           onChange={this.onChange}
@@ -250,8 +362,9 @@ class PaginateGrid extends Component {
           hideOnSinglePage={true}
           responsive={true}
           defaultCurrent={1}
-          defaultPageSize={30}
-          total={200}
+          current={this.state.current}
+          defaultPageSize={this.state.perPage}
+          total={this.state.total}
         />
       </div>
     );
@@ -261,7 +374,9 @@ class PaginateGrid extends Component {
 const mapStateToProps = state => {
   return {
     user: state.user.user,
-    sidebar: state.view.sidebar
+    sidebar: state.view.sidebar,
+    tags: state.filter.tags,
+    category: state.filter.category
   };
 };
 

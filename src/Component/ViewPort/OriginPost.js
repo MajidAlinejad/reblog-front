@@ -157,7 +157,7 @@ class OriginPost extends Component {
     Axios.get(process.env.REACT_APP_API_URL + "comments/" + this.props.id).then(
       res =>
         this.setState({
-          Comments: res.data,
+          Comments: res.data.data,
           Cloading: false
         })
     );
@@ -174,11 +174,11 @@ class OriginPost extends Component {
   };
 
   onReply = e => {
-    let txt = "پاسخ شما به " + e.target.name;
+    let txt = "پاسخ شما به " + e.currentTarget.name;
     this.setState({
       hide: false,
       btnTxt: txt,
-      reply: e.target.id
+      reply: e.currentTarget.id
     });
   };
 
@@ -217,7 +217,6 @@ class OriginPost extends Component {
           );
           if (comment_id === 0 && this.state.Comments.length > 3) {
             window.scrollTo(0, this.myRef.current.offsetTop - 500);
-            console.log(this.myRef.current.offsetTop, this.myRef.current);
           }
         },
         err => {

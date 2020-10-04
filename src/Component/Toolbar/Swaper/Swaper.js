@@ -4,6 +4,8 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { Skeleton, Space, Tooltip, message } from "antd";
+import { setTags } from "../../../Redux/Action/Filter";
+import { connect } from "react-redux";
 
 function SampleNextArrow(props) {
   const { className, onClick } = props;
@@ -23,7 +25,7 @@ const settings = {
   className: "center",
   infinite: false,
   centerPadding: "60px",
-
+  slidesToScroll: 5,
   variableWidth: true,
   nextArrow: <SampleNextArrow />,
   prevArrow: <SamplePrevArrow />,
@@ -31,35 +33,35 @@ const settings = {
     {
       breakpoint: 1366,
       settings: {
-        slidesToScroll: 3,
+        // slidesToScroll: 3,
         slidesToShow: 8
       }
     },
     {
       breakpoint: 1000,
       settings: {
-        slidesToScroll: 3,
+        // slidesToScroll: 3,
         slidesToShow: 5
       }
     },
     {
       breakpoint: 900,
       settings: {
-        slidesToScroll: 3,
+        // slidesToScroll: 3,
         slidesToShow: 4
       }
     },
     {
       breakpoint: 700,
       settings: {
-        slidesToScroll: 2,
+        // slidesToScroll: 2,
         slidesToShow: 1
       }
     },
     {
       breakpoint: 480,
       settings: {
-        slidesToScroll: 1,
+        // slidesToScroll: 1,
         slidesToShow: 1
       }
     }
@@ -120,9 +122,9 @@ class Swaper extends Component {
       selectedTags = this.state.selectedTags.filter(
         item => item.id !== select.id
       );
-      this.removeMessage(clicked.title);
+      this.removeMessage(clicked.text);
     } else {
-      this.addMessage(clicked.title);
+      this.addMessage(clicked.text);
     }
 
     tempTag = tags;
@@ -132,14 +134,20 @@ class Swaper extends Component {
     });
 
     result = selectedTags.concat(tempTag);
-    this.setState({
-      selectedTags: selectedTags,
-      tags: result
-    });
+    this.setState(
+      {
+        selectedTags: selectedTags,
+        tags: result
+      },
+      () => {
+        this.props.setTags(this.state.selectedTags);
+      }
+      //set tags
+    );
   };
 
   async getItems() {
-    axios.get(process.env.REACT_APP_API_URL + "cats").then(res => {
+    axios.get(process.env.REACT_APP_API_URL + "tagsname").then(res => {
       const tags = res.data;
       if (this._isMounted) {
         this.setState({
@@ -173,7 +181,7 @@ class Swaper extends Component {
             <Slider {...settings}>
               {this.state.tags.map(tag => {
                 return (
-                  <React.Fragment>
+                  <React.Fragment key={tag.id}>
                     {tag.className ? (
                       <Tooltip placement="bottom" title="حذف؟">
                         <div
@@ -183,7 +191,7 @@ class Swaper extends Component {
                             this.selectTag(tag, e.target);
                           }}
                         >
-                          {tag.title}
+                          {tag.text}
                         </div>
                       </Tooltip>
                     ) : (
@@ -194,7 +202,7 @@ class Swaper extends Component {
                           this.selectTag(tag, e.target);
                         }}
                       >
-                        {tag.title}
+                        {tag.text}
                       </div>
                     )}
                   </React.Fragment>
@@ -312,4 +320,20 @@ function CatSketon() {
   );
 }
 
-export default Swaper;
+const mapStateToProps = state => {
+  return {
+    tags: state.filter.tags
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    setTags: tags => {
+      dispatch(setTags(tags));
+    }
+  };
+};
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Swaper);

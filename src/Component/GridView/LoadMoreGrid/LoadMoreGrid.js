@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import sizeMe from "react-sizeme";
 import axios from "axios";
-import { Divider, Button } from "antd";
+import { Divider, Button, Empty } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import Masonry from "react-masonry-css";
 import ProductItem from "../../ItemBase/ProductItem/ProductItem";
@@ -9,12 +9,22 @@ import PostItem from "../../ItemBase/Post/PostItem";
 import PlayItem from "../../ItemBase/PlayItem/PlayItem";
 import GridItem from "../../ItemBase/GridItem/GridItem";
 import { connect } from "react-redux";
+
 class LoadMoreGrid extends Component {
+  constructor(props) {
+    super(props);
+    this.L_isMounted = false;
+  }
+
   state = {
     loading: true,
     data: [],
+    empty: false,
+    hasMore: true,
     pageNumber: 1,
-    items: 30,
+    category: null,
+    tags: [],
+    items: 5,
     className: "my-masonry-grid",
     width: {
       default: 5,
@@ -24,35 +34,75 @@ class LoadMoreGrid extends Component {
     }
   };
 
-  getItems = () => {
-    axios
-      .get(
-        // process.env.REACT_APP_API_URL + "posts/" + 1 // firstblog
-        // +`?_page=${this.state.pageNumber}&_limit=${this.state.items}`
+  getMoreItems = () => {
+    const { category } = this.state;
+    // console.log(category);
+    this.L_isMounted &&
+      axios
+        .get(
+          process.env.REACT_APP_API_URL +
+            "posts/" +
+            this.props.id +
+            `?per_page=${this.state.items}&page=${this.state.pageNumber}` +
+            `&cat=${category && category}` +
+            `&tags=${this.state.tags ? this.state.tags : ""}`
+        )
+        .then(
+          res =>
+            res.data.data[0] &&
+            res.data.data[0].blog_id === parseInt(this.props.id) &&
+            this.L_isMounted &&
+            this.setState({
+              data: [...this.state.data, ...res.data.data],
+              hasMore: res.data.next_page_url,
+              loading: false
+            })
+        );
+  };
 
-        process.env.REACT_APP_API_URL + "posts/" + this.props.id
-        // `https://jsonplaceholder.typicode.com/photos?_page=${this.state.pageNumber}&_limit=${this.state.items}`
-      )
-      .then(res =>
-        this.setState({
-          //updating data
-          data: [...this.state.data, ...res.data],
-          //updating page numbers
-          //   pageNumber: this.state.pageNumber + 1,
-          loading: false
-        })
-      );
+  getItems = (items, pageNumber, category) => {
+    this.L_isMounted &&
+      axios
+        .get(
+          process.env.REACT_APP_API_URL +
+            "posts/" +
+            this.props.id +
+            `?per_page=${items ? items : this.state.items}&page=${
+              pageNumber ? pageNumber : this.state.pageNumber
+            }` +
+            `&cat=${category ? category : ""}` +
+            `&tags=${this.state.tags ? this.state.tags : ""}`
+        )
+        .then(res =>
+          res.data.data[0] &&
+          res.data.data[0].blog_id === parseInt(this.props.id) &&
+          this.L_isMounted &&
+          res.data.data.length > 0
+            ? this.setState({
+                empty: !parseInt(res.data.total),
+                data: res.data.data,
+                hasMore: res.data.next_page_url,
+                loading: false
+              })
+            : this.setState({
+                empty: !parseInt(res.data.total),
+                hasMore: res.data.next_page_url,
+                loading: false
+              })
+        );
   };
 
   onChange = () => {
     // console.log(current);
-    this.setState(
-      {
-        pageNumber: this.state.pageNumber + 1,
-        loading: true
-      },
-      this.getItems
-    );
+    this.state.hasMore &&
+      this.L_isMounted &&
+      this.setState(
+        {
+          pageNumber: this.state.pageNumber + 1,
+          loading: true
+        },
+        this.L_isMounted && this.getMoreItems
+      );
   };
 
   getWidth = w => {
@@ -167,31 +217,104 @@ class LoadMoreGrid extends Component {
         320: 1
       };
     }
-    this.setState({
-      width: columnWidth,
-      className: className
-    });
+    this.L_isMounted &&
+      this.setState({
+        width: columnWidth,
+        className: className
+      });
   };
 
   componentDidUpdate(prevProps) {
     if (prevProps.size !== this.props.size) {
-      this.getWidth();
+      this.L_isMounted && this.getWidth();
+    }
+
+    if (prevProps.tags !== this.props.tags) {
+      console.log(this.state.category);
+      this.L_isMounted &&
+        this.setState(
+          {
+            tags: this.props.tags,
+            data: [],
+            loading: true,
+            // hasMore: true,
+            pageNumber: 1,
+            items: 5
+          },
+          () => {
+            this.L_isMounted &&
+              this.getItems(
+                this.state.items,
+                this.state.pageNumber,
+                this.state.category
+              );
+          }
+        );
+    }
+
+    if (prevProps.category !== this.props.category) {
+      this.L_isMounted &&
+        this.setState(
+          {
+            data: [],
+            loading: true,
+            // hasMore: true,
+            pageNumber: 1,
+            category: null,
+            items: 5,
+            category: this.props.category
+          },
+          () => {
+            this.L_isMounted &&
+              this.getItems(
+                this.state.items,
+                this.state.pageNumber,
+                this.props.category
+              );
+          }
+        );
     }
 
     if (prevProps.id !== this.props.id) {
-      this.setState(
-        {
-          data: []
-        },
-        this.getItems()
-      );
+      this.L_isMounted &&
+        this.setState(
+          {
+            data: [],
+            hasMore: true,
+            empty: null,
+            pageNumber: 1,
+            category: null,
+            items: 5
+          },
+          this.L_isMounted && this.getItems(5, 1)
+        );
     }
   }
 
   componentDidMount() {
-    this.getItems();
-    this.getWidth();
+    this.L_isMounted = true;
+    this.L_isMounted && this.getItems();
+    this.L_isMounted && this.getWidth();
   }
+
+  componentWillUnmount() {
+    this.L_isMounted = false;
+    this.setState({
+      data: null,
+      loading: null,
+      pageNumber: null,
+      empty: null,
+      items: null,
+      hasMore: null,
+      category: null,
+      current: null,
+      tags: null,
+      perPage: null,
+      className: null,
+      width: null
+    });
+  }
+
   render() {
     const { custom, base, user, product } = this.props;
 
@@ -202,67 +325,72 @@ class LoadMoreGrid extends Component {
           spinning={this.state.loading}
           size="large"
         /> */}
-        <Masonry
-          breakpointCols={this.state.width}
-          className={this.state.className}
-          columnClassName="my-masonry-grid_column"
-        >
-          {this.state.data.map(function(item) {
-            return (
-              <div key={item.id}>
-                {base === "img" && (
-                  <GridItem
-                    item={item}
-                    base={base}
-                    user={user}
-                    custom={custom}
-                  />
-                )}
-                {base === "video" && (
-                  <GridItem
-                    item={item}
-                    base={base}
-                    user={user}
-                    custom={custom}
-                  />
-                )}
-                {base === "music" && (
-                  <PlayItem
-                    item={item}
-                    base={base}
-                    user={user}
-                    custom={custom}
-                  />
-                )}
-                {base === "podcast" && (
-                  <PlayItem
-                    item={item}
-                    base={base}
-                    user={user}
-                    custom={custom}
-                  />
-                )}
-                {base === "post" && (
-                  <PostItem
-                    item={item}
-                    base={base}
-                    user={user}
-                    custom={custom}
-                  />
-                )}
-                {base === "product" && (
-                  <ProductItem
-                    item={item}
-                    product={product}
-                    base={base}
-                    user={user}
-                  />
-                )}
-                {/* <PostItem item={item} /> */}
-              </div>
-            );
-          })}
-        </Masonry>
+        {!this.state.empty ? (
+          <Masonry
+            breakpointCols={this.state.width}
+            className={this.state.className}
+            columnClassName="my-masonry-grid_column"
+          >
+            {this.state.data.map(function(item) {
+              return (
+                <div key={item.id}>
+                  {base === "img" && (
+                    <GridItem
+                      item={item}
+                      base={base}
+                      user={user}
+                      custom={custom}
+                    />
+                  )}
+                  {base === "video" && (
+                    <GridItem
+                      item={item}
+                      base={base}
+                      user={user}
+                      custom={custom}
+                    />
+                  )}
+                  {base === "music" && (
+                    <PlayItem
+                      item={item}
+                      base={base}
+                      user={user}
+                      custom={custom}
+                    />
+                  )}
+                  {base === "podcast" && (
+                    <PlayItem
+                      item={item}
+                      base={base}
+                      user={user}
+                      custom={custom}
+                    />
+                  )}
+                  {base === "post" && (
+                    <PostItem
+                      item={item}
+                      base={base}
+                      user={user}
+                      custom={custom}
+                    />
+                  )}
+                  {base === "product" && (
+                    <ProductItem
+                      item={item}
+                      product={product}
+                      base={base}
+                      user={user}
+                    />
+                  )}
+                  {/* <PostItem item={item} /> */}
+                </div>
+              );
+            })}
+          </Masonry>
+        ) : (
+          <Empty description={false} />
+        )}
+
         <Divider />
 
         <div className="text-center">
@@ -280,6 +408,7 @@ class LoadMoreGrid extends Component {
             <Button
               type="primary"
               size="large"
+              disabled={this.state.hasMore ? false : true}
               shape="round"
               onClick={this.onChange}
             >
@@ -295,7 +424,9 @@ class LoadMoreGrid extends Component {
 const mapStateToProps = state => {
   return {
     user: state.user.user,
-    sidebar: state.view.sidebar
+    sidebar: state.view.sidebar,
+    tags: state.filter.tags,
+    category: state.filter.category
   };
 };
 

@@ -169,7 +169,7 @@ class MusicPost extends Component {
     Axios.get(process.env.REACT_APP_API_URL + "comments/" + this.props.id).then(
       res =>
         this.setState({
-          Comments: res.data,
+          Comments: res.data.data,
           Cloading: false
         })
     );

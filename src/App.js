@@ -38,7 +38,7 @@ var styleArray = [
 ];
 
 var logoConsole = [
-  'background-image:    url("http://smarblog.mamp:8050/logo-wide.png")',
+  `background-image:    url("${process.env.REACT_APP_BASE_URL}logo-wide.png")`,
   "background-size: cover",
   "line-height: 30px"
 ];

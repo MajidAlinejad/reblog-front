@@ -5,6 +5,7 @@ import user from "./User";
 import view from "./View";
 import blog from "./Blog";
 import stream from "./Stream";
+import filter from "./Filter";
 
 // import message from './message';
 
@@ -14,7 +15,8 @@ const rootReducer = combineReducers({
   blog,
   user,
   view,
-  stream
+  stream,
+  filter
   //   message
 });
 

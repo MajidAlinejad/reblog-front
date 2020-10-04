@@ -27,6 +27,10 @@ const renderer = ({ hours, minutes, seconds, completed }) => {
 };
 
 export default class ProductItem extends Component {
+  constructor(props) {
+    super(props);
+    this._isMounted = false;
+  }
   state = {
     time: false,
     loading: true,
@@ -36,26 +40,42 @@ export default class ProductItem extends Component {
   };
 
   getColors = colors =>
+    this._isMounted &&
     this.setState(state => ({ colors: [...state.colors, ...colors] }));
 
   handleImageLoaded() {
-    this.setState({ imageStatus: "loaded", loading: false });
+    this._isMounted && this.setState({ imageStatus: "loaded", loading: false });
   }
 
   handleImageErrored() {
-    this.setState({ imageStatus: "failed to load", loading: true });
+    this._isMounted &&
+      this.setState({ imageStatus: "failed to load", loading: true });
   }
 
   componentDidMount() {
+    this._isMounted = true;
+
     if (this.props.product) {
-      this.setState({
-        conf: this.props.product
-      });
+      this._isMounted &&
+        this.setState({
+          conf: this.props.product
+        });
     } else {
-      this.setState({
-        conf: defaultConf
-      });
+      this._isMounted &&
+        this.setState({
+          conf: defaultConf
+        });
     }
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+    this.setState({
+      item: [],
+      colors: [],
+      conf: [],
+      loading: null
+    });
   }
   render() {
     const { item } = this.props;
