@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Collapse, Input, Tree } from "antd";
+import { Checkbox, Collapse, Divider, Input, Select, Tree } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 
 import axios from "axios";
 import { setCategory } from "../../../Redux/Action/Filter";
 const { Search } = Input;
-
+const { Option } = Select;
 class SidebarContent extends Component {
   constructor(props) {
     super(props);
@@ -15,7 +15,9 @@ class SidebarContent extends Component {
   state = {
     loading: true,
     data: [],
+    specs: [],
     expandedKeys: [],
+    brands: [],
     category: null,
     dataList: [],
     searchValue: "",
@@ -47,6 +49,19 @@ class SidebarContent extends Component {
     return parentKey;
   };
 
+  getSpec = () => {
+    this._isMounted &&
+      axios
+        .get(process.env.REACT_APP_API_URL + `speclists/${this.state.category}`)
+        .then(
+          res =>
+            this._isMounted &&
+            this.setState({
+              specs: res.data
+            })
+        );
+  };
+
   onSelect = selectedKeys => {
     this.setState(
       {
@@ -54,6 +69,7 @@ class SidebarContent extends Component {
       },
       () => {
         this.props.setCategory(selectedKeys[0]);
+        this.getSpec();
       }
     );
     //set category
@@ -126,15 +142,34 @@ class SidebarContent extends Component {
               data: res.data,
               loading: false
             },
-            this._isMounted && this.generateList(res.data)
+            () => {
+              this._isMounted && this.generateList(res.data);
+            }
           )
       );
+  };
+
+  getBrands = () => {
+    this._isMounted &&
+      axios.get(process.env.REACT_APP_API_URL + "brands").then(
+        res =>
+          this._isMounted &&
+          this.setState({
+            brands: res.data,
+            loading: false
+          })
+      );
+  };
+
+  onChangeBrand = value => {
+    console.log(`selected ${value}`);
   };
 
   componentDidMount() {
     this._isMounted = true;
 
     this._isMounted && this.getCategories();
+    this._isMounted && this.getBrands();
   }
 
   componentWillUnmount() {
@@ -165,76 +200,54 @@ class SidebarContent extends Component {
             treeData={this.loop(this.state.data)}
           />
         </div>
-        <Collapse defaultActiveKey={["1"]}>
-          <Collapse.Panel className="side-collapse" header="دسته بندی" key="1">
-            <hr className="minimal-border" />
-            <div>
-              <div className="cat-list">کامپیوتر و تجهیزات جانبی</div>
-              <div className="cat-list">تجهیزات ذخیره‌سازی اطلاعات</div>
-              <div className="cat-list">تجهیزات شبکه و ارتباطات</div>
-              <div className="cat-list">کامپیوترهای All-in-One</div>
-              <div className="cat-list">کیس های اسمبل شده</div>
-              <div className="cat-list">کامپیوترهای کوچک</div>
-              <div className="cat-list">قطعات کامپیوتر</div>
-            </div>
-          </Collapse.Panel>
-        </Collapse>
-        <Collapse defaultActiveKey={["1"]}>
-          <Collapse.Panel className="side-collapse" header="دسته بندی" key="1">
-            <hr className="minimal-border" />
-            <div>
-              <div className="cat-list">کامپیوتر و تجهیزات جانبی</div>
-              <div className="cat-list">تجهیزات ذخیره‌سازی اطلاعات</div>
-              <div className="cat-list">تجهیزات شبکه و ارتباطات</div>
-              <div className="cat-list">کامپیوترهای All-in-One</div>
-              <div className="cat-list">کیس های اسمبل شده</div>
-              <div className="cat-list">کامپیوترهای کوچک</div>
-              <div className="cat-list">قطعات کامپیوتر</div>
-            </div>
-          </Collapse.Panel>
-        </Collapse>
-        <Collapse defaultActiveKey={["1"]}>
-          <Collapse.Panel className="side-collapse" header="دسته بندی" key="1">
-            <hr className="minimal-border" />
-            <div>
-              <div className="cat-list">کامپیوتر و تجهیزات جانبی</div>
-              <div className="cat-list">تجهیزات ذخیره‌سازی اطلاعات</div>
-              <div className="cat-list">تجهیزات شبکه و ارتباطات</div>
-              <div className="cat-list">کامپیوترهای All-in-One</div>
-              <div className="cat-list">کیس های اسمبل شده</div>
-              <div className="cat-list">کامپیوترهای کوچک</div>
-              <div className="cat-list">قطعات کامپیوتر</div>
-            </div>
-          </Collapse.Panel>
-        </Collapse>
-        <Collapse defaultActiveKey={["1"]}>
-          <Collapse.Panel className="side-collapse" header="دسته بندی" key="1">
-            <hr className="minimal-border" />
-            <div>
-              <div className="cat-list">کامپیوتر و تجهیزات جانبی</div>
-              <div className="cat-list">تجهیزات ذخیره‌سازی اطلاعات</div>
-              <div className="cat-list">تجهیزات شبکه و ارتباطات</div>
-              <div className="cat-list">کامپیوترهای All-in-One</div>
-              <div className="cat-list">کیس های اسمبل شده</div>
-              <div className="cat-list">کامپیوترهای کوچک</div>
-              <div className="cat-list">قطعات کامپیوتر</div>
-            </div>
-          </Collapse.Panel>
-        </Collapse>
-        <Collapse defaultActiveKey={["1"]}>
-          <Collapse.Panel className="side-collapse" header="دسته بندی" key="1">
-            <hr className="minimal-border" />
-            <div>
-              <div className="cat-list">کامپیوتر و تجهیزات جانبی</div>
-              <div className="cat-list">تجهیزات ذخیره‌سازی اطلاعات</div>
-              <div className="cat-list">تجهیزات شبکه و ارتباطات</div>
-              <div className="cat-list">کامپیوترهای All-in-One</div>
-              <div className="cat-list">کیس های اسمبل شده</div>
-              <div className="cat-list">کامپیوترهای کوچک</div>
-              <div className="cat-list">قطعات کامپیوتر</div>
-            </div>
-          </Collapse.Panel>
-        </Collapse>
+        <Divider />
+        <Select
+          showSearch
+          mode="multiple"
+          allowClear
+          className="brand-selector"
+          placeholder="انتخاب برند"
+          optionFilterProp="children"
+          onChange={this.onChangeBrand}
+          filterOption={(input, option) =>
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+          }
+        >
+          {this.state.brands.map(brand => {
+            return (
+              <Option key={brand.id} value={brand.name}>
+                {brand.fa_name}
+              </Option>
+            );
+          })}
+        </Select>
+        <hr className="hide-strock" />
+        {this.state.specs.map((spec, index) => {
+          return (
+            <Collapse
+              className="spec-collapse"
+              key={spec.id}
+              defaultActiveKey={[index + 1]}
+            >
+              <Collapse.Panel
+                className="side-collapse"
+                header={spec.name}
+                key={index + 1}
+              >
+                <hr className="minimal-border" />
+                <div>
+                  {spec.details.map(param => {
+                    return (
+                      <div key={param.id} className="cat-list">
+                        <Checkbox key={param.id}>{param.value}</Checkbox>
+                      </div>
+                    );
+                  })}
+                </div>
+              </Collapse.Panel>
+            </Collapse>
+          );
+        })}
       </div>
     );
   }

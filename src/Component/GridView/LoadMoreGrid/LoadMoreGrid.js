@@ -22,7 +22,7 @@ class LoadMoreGrid extends Component {
     empty: false,
     hasMore: true,
     pageNumber: 1,
-    category: null,
+    category: "",
     tags: [],
     items: 5,
     className: "my-masonry-grid",

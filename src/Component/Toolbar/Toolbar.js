@@ -126,94 +126,97 @@ class Toolbar extends Component {
     filters: true,
     drawer: false,
     visible: false,
+    toolbar: "",
+    leftSide: "",
     mobile: undefined
-    // sidebar: {
-    //   hide: false
-    // }
   };
 
   toggleSider = () => {
-    // document.body.classList.add("no-sroll");
-    this.setState({
-      visible: !this.state.visible
-    });
-    // const { hide } = this.state.sidebar;
-    // if (this.props.drawer) {
-    //   this.setState({
-    //     visible: !this.state.visible
-    //   });
-    // } else {
-    //   this.props.toggleSidebar(!hide);
-    //   this.setState({
-    //     hide: !hide
-    //   });
-    // }
+    this._isMounted &&
+      this.setState({
+        visible: !this.state.visible
+      });
   };
   onClose = () => {
-    this.setState({
-      visible: false
-    });
+    this._isMounted &&
+      this.setState({
+        visible: false
+      });
   };
 
   ToggleMode = () => {
-    this.setState({
-      searchMode: this.state.searchMode ? false : true
-    });
+    this._isMounted &&
+      this.setState({
+        searchMode: this.state.searchMode ? false : true
+      });
+  };
+
+  handleDrawer = () => {
+    if (this.state.leftSide === "sider" && this.state.mobile) {
+      this._isMounted && this.setState({ drawer: true, filters: true });
+    } else if (this.state.leftSide === "drawer") {
+      this._isMounted && this.setState({ drawer: true, filters: true });
+    } else {
+      this._isMounted && this.setState({ drawer: false, filters: false });
+    }
   };
 
   componentDidUpdate(prevProps) {
-    if (prevProps.toolbar !== this.props.toolbar) {
-      this.setState({
-        searchMode: this.props.toolbar === "search" ? true : false,
-        switcher: this.props.switcher === 1 ? true : false
-        // filters: this.props.filters ? true : false
-      });
-    }
-    if (prevProps.sidebar !== this.props.sidebar) {
-      this.setState({
-        sidebar: this.props.sidebar
-      });
+    if (
+      prevProps.toolbar !== this.props.toolbar ||
+      prevProps.leftSide !== this.props.leftSide ||
+      prevProps.switcher !== this.props.switcher
+    ) {
+      this._isMounted &&
+        this.setState(
+          {
+            leftSide: this.props.leftSide,
+            searchMode: this.props.toolbar === "search" ? true : false,
+            toolbar: this.props.toolbar,
+            visible: false,
+            switcher: this.props.switcher === 1 ? true : false
+          },
+          () => {
+            this.handleDrawer();
+          }
+        );
     }
   }
 
   handleResize = () => {
     // console.log(window.innerWidth);
     if (window.innerWidth < 1100) {
-      this.setState(
-        {
-          mobile: true
-        },
-        () => this.handleDrawer()
-      );
+      this._isMounted &&
+        this.setState(
+          {
+            mobile: true
+          },
+          () => this.handleDrawer()
+        );
     } else {
-      this.setState(
-        {
-          mobile: false
-        },
-        () => this.handleDrawer()
-      );
-    }
-  };
-
-  handleDrawer = () => {
-    // console.log(this.props.leftSide, this.state.mobile);
-    if (this.props.leftSide === "sider" && this.state.mobile) {
-      this.setState({ drawer: true, filters: true });
-    } else if (this.props.leftSide === "drawer") {
-      this.setState({ drawer: true, filters: true });
-    } else {
-      this.setState({ drawer: false, filters: false });
+      this._isMounted &&
+        this.setState(
+          {
+            mobile: false
+          },
+          () => this.handleDrawer()
+        );
     }
   };
 
   componentDidMount() {
+    this._isMounted = true;
     this.handleResize();
     window.addEventListener("resize", this.handleResize, true);
-    this.setState({
-      searchMode: this.props.toolbar === "search" ? true : false,
-      switcher: this.props.switcher ? true : false
-      // filters: this.props.filters ? true : false
-    });
+    this._isMounted &&
+      this.setState({
+        searchMode: this.props.toolbar === "search" ? true : false,
+        switcher: this.props.switcher ? true : false
+      });
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   render() {
@@ -347,11 +350,8 @@ class Toolbar extends Component {
             // closeIcon={true}
             visible={this.state.visible}
             getContainer={false}
-            // style={{ position: "absolute" }}
           >
-            {/* <p> */}
             <SidebarContent />
-            {/* </p> */}
           </Drawer>
         ) : null}
       </React.Fragment>
@@ -362,7 +362,6 @@ class Toolbar extends Component {
 const mapStateToProps = state => {
   return {
     user: state.user.user
-    // sidebar: state.view.sidebar
   };
 };
 
@@ -371,9 +370,6 @@ const mapDispatchToProps = dispatch => {
     getUser: () => {
       dispatch(getUser());
     }
-    // toggleSidebar: param => {
-    //   dispatch(toggleSidebar(param));
-    // }
   };
 };
 

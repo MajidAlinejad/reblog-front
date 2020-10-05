@@ -11,6 +11,11 @@ import { getBlog } from "../../Redux/Action/Blog";
 const { Content } = Layout;
 
 class Blog extends Component {
+  constructor(props) {
+    super(props);
+    this._isMounted = false;
+  }
+
   state = {
     desktop: false,
     id: "",
@@ -28,20 +33,24 @@ class Blog extends Component {
   handleResize = () => {
     // console.log(window.innerWidth);
     if (window.innerWidth >= 1100) {
-      this.setState({
-        desktop: true
-      });
+      this._isMounted &&
+        this.setState({
+          desktop: true
+        });
     } else {
-      this.setState({
-        desktop: false
-      });
+      this._isMounted &&
+        this.setState({
+          desktop: false
+        });
     }
   };
   componentWillUnmount() {
+    this._isMounted = false;
     // console.log("blog UN mounted");
   }
 
   componentDidMount() {
+    this._isMounted = true;
     this.handleResize();
     this.props.getBlog(this.props.match.params.id);
     window.addEventListener("resize", this.handleResize, true);
@@ -50,12 +59,13 @@ class Blog extends Component {
   componentDidUpdate(prevProps) {
     if (prevProps.match.params !== this.props.match.params) {
       // console.log(this.props.match.params.id);
-      this.setState(
-        {
-          blogProps: { ...this.state.blogProps, loading: true }
-        },
-        this.props.getBlog(this.props.match.params.id)
-      );
+      this._isMounted &&
+        this.setState(
+          {
+            blogProps: { ...this.state.blogProps, loading: true }
+          },
+          this.props.getBlog(this.props.match.params.id)
+        );
       window.scrollTo({
         top: 0,
         behavior: "smooth"
@@ -63,9 +73,10 @@ class Blog extends Component {
     }
     if (prevProps.blog !== this.props.blog) {
       let pr = this.props.blog;
-      this.setState({
-        blogProps: { ...this.state.blogProps, ...pr, loading: false }
-      });
+      this._isMounted &&
+        this.setState({
+          blogProps: { ...this.state.blogProps, ...pr, loading: false }
+        });
     }
   }
 
