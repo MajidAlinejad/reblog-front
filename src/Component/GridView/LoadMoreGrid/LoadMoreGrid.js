@@ -84,7 +84,8 @@ class LoadMoreGrid extends Component {
                 hasMore: res.data.next_page_url,
                 loading: false
               })
-            : this.setState({
+            : this.L_isMounted &&
+              this.setState({
                 empty: !parseInt(res.data.total),
                 hasMore: res.data.next_page_url,
                 loading: false
@@ -299,20 +300,20 @@ class LoadMoreGrid extends Component {
 
   componentWillUnmount() {
     this.L_isMounted = false;
-    this.setState({
-      data: null,
-      loading: null,
-      pageNumber: null,
-      empty: null,
-      items: null,
-      hasMore: null,
-      category: null,
-      current: null,
-      tags: null,
-      perPage: null,
-      className: null,
-      width: null
-    });
+    // this.setState({
+    //   data: null,
+    //   loading: null,
+    //   pageNumber: null,
+    //   empty: null,
+    //   items: null,
+    //   hasMore: null,
+    //   category: null,
+    //   current: null,
+    //   tags: null,
+    //   perPage: null,
+    //   className: null,
+    //   width: null
+    // });
   }
 
   render() {

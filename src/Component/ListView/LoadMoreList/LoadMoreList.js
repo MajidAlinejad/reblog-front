@@ -78,7 +78,8 @@ class LoadMoreList extends Component {
                 hasMore: res.data.next_page_url,
                 loading: false
               })
-            : this.setState({
+            : this.L_isMounted &&
+              this.setState({
                 empty: !parseInt(res.data.total),
                 hasMore: res.data.next_page_url,
                 loading: false
@@ -166,23 +167,23 @@ class LoadMoreList extends Component {
 
   componentWillUnmount() {
     this.L_isMounted = false;
-    this.setState({
-      loading: null,
-      data: null,
-      pageNumber: null,
-      simpleList: null,
-      img: null,
-      items: null,
-      description: null,
-      hasMore: null,
-      avatar: null,
-      current: null,
-      tags: null,
-      category: null,
-      social: null,
-      block: null,
-      optInfo: null
-    });
+    // this.setState({
+    //   loading: null,
+    //   data: null,
+    //   pageNumber: null,
+    //   simpleList: null,
+    //   img: null,
+    //   items: null,
+    //   description: null,
+    //   hasMore: null,
+    //   avatar: null,
+    //   current: null,
+    //   tags: null,
+    //   category: null,
+    //   social: null,
+    //   block: null,
+    //   optInfo: null
+    // });
   }
 
   render() {

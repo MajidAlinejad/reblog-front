@@ -64,7 +64,8 @@ class PaginateList extends Component {
                   });
                 }
               )
-            : this.setState({
+            : this._isMounted &&
+              this.setState({
                 empty: !parseInt(res.data.total),
                 total: parseInt(res.data.total),
                 loading: false
@@ -73,14 +74,15 @@ class PaginateList extends Component {
   };
 
   onChange = current => {
-    this.setState(
-      {
-        current: current,
-        pageNumber: current,
-        loading: true
-      },
-      this.getItems
-    );
+    this._isMounted &&
+      this.setState(
+        {
+          current: current,
+          pageNumber: current,
+          loading: true
+        },
+        this.getItems
+      );
   };
 
   onShowSizeChange = (current, perPage) => {
@@ -146,20 +148,21 @@ class PaginateList extends Component {
     }
 
     if (prevProps.id !== this.props.id) {
-      this.setState(
-        {
-          data: [],
-          hasMore: true,
-          items: 30,
-          current: 1,
-          pageNumber: 1,
-          perPage: 4,
-          total: 100
-        },
-        () => {
-          this.getItems(4, 1);
-        }
-      );
+      this._isMounted &&
+        this.setState(
+          {
+            data: [],
+            hasMore: true,
+            items: 30,
+            current: 1,
+            pageNumber: 1,
+            perPage: 4,
+            total: 100
+          },
+          () => {
+            this.getItems(4, 1);
+          }
+        );
     }
   }
 
@@ -170,27 +173,27 @@ class PaginateList extends Component {
 
   componentWillUnmount() {
     this._isMounted = false;
-    this.setState({
-      data: null,
-      loading: null,
-      pageNumber: null,
-      items: null,
-      hasMore: null,
-      current: null,
-      perPage: null,
-      className: null,
-      width: null,
-      simpleList: null,
-      img: null,
-      description: null,
-      avatar: null,
-      social: null,
-      block: null,
-      empty: null,
-      category: null,
-      tags: null,
-      optInfo: null
-    });
+    // this.setState({
+    //   data: null,
+    //   loading: null,
+    //   pageNumber: null,
+    //   items: null,
+    //   hasMore: null,
+    //   current: null,
+    //   perPage: null,
+    //   className: null,
+    //   width: null,
+    //   simpleList: null,
+    //   img: null,
+    //   description: null,
+    //   avatar: null,
+    //   social: null,
+    //   block: null,
+    //   empty: null,
+    //   category: null,
+    //   tags: null,
+    //   optInfo: null
+    // });
   }
 
   render() {

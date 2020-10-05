@@ -271,7 +271,7 @@ class GridItem extends Component {
               style={
                 this.state.imgError
                   ? { background: `url(${noPic})` }
-                  : { background: `inherit` }
+                  : { background: loading ? "" : `inherit` }
               }
             >
               <img
@@ -281,7 +281,6 @@ class GridItem extends Component {
                 onLoad={this.handleImageLoaded.bind(this)}
                 onError={this.handleImageErrored.bind(this)}
                 src={item.thumbnail}
-                // src="https://cdn.dribbble.com/users/708421/screenshots/13914212/skindr_2x.png"
               />
               {conf.type && (
                 <div className="img-base-over-icon">
