@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-import ReactPlayer from "react-player";
-import ReactImageMagnify from "react-image-magnify";
 import {
   Typography,
   Avatar,
@@ -12,30 +10,83 @@ import {
   Divider,
   Button,
   Input,
-  Card
+  Breadcrumb,
+  Radio,
+  Popover,
+  Tabs,
+  Collapse,
+  Empty
 } from "antd";
 import Axios from "axios";
 import {
   LikeOutlined,
+  LikeFilled,
   DislikeOutlined,
+  DislikeFilled,
+  EditOutlined,
+  RollbackOutlined,
   ShareAltOutlined,
+  ShoppingCartOutlined,
   MessageOutlined,
+  SearchOutlined,
+  SlidersOutlined,
   TagOutlined,
+  TagFilled,
+  CaretLeftFilled,
   FullscreenOutlined
 } from "@ant-design/icons";
-import moment from "jalali-moment";
-import noPic from "../../assets/picture/nopic.svg";
-import { toggleLike, toggleSave } from "../../GlobalFunc/GlobalFunc";
-import heart from "../../assets/picture/heart.png";
+import { LikeDisLike, toggleSave } from "../../GlobalFunc/GlobalFunc";
 import { connect } from "react-redux";
 import { isLoggedIn } from "../../Auth/Auth";
 import { ColorExtractor } from "react-color-extractor";
+import moment from "jalali-moment";
+import NumberFormat from "react-number-format";
+import { Link } from "react-router-dom";
+import Modal from "antd/lib/modal/Modal";
+import {
+  EmailShareButton,
+  FacebookShareButton,
+  LinkedinShareButton,
+  PinterestShareButton,
+  TelegramShareButton,
+  WhatsappShareButton,
+  WhatsappIcon,
+  TelegramIcon,
+  TwitterShareButton,
+  TwitterIcon,
+  FacebookIcon,
+  LinkedinIcon,
+  EmailIcon,
+  PinterestIcon,
+  RedditShareButton,
+  RedditIcon
+} from "react-share";
+import Countdown from "react-countdown";
+const { TabPane } = Tabs;
+const { Panel } = Collapse;
+var QRCode = require("qrcode.react");
 const { TextArea } = Input;
 const { Paragraph } = Typography;
+
+const renderer = ({ hours, minutes, seconds, completed }) => {
+  if (completed) {
+    // Render a complete state
+    return <span className="pr-timer ended">زمان به اتمام رسید</span>;
+  } else {
+    // Render a countdown
+    return (
+      <span className="pr-timer">
+        {hours}:{minutes}:{seconds}
+      </span>
+    );
+  }
+};
+
 class ProductPost extends Component {
   constructor(props) {
     super(props);
     this.myRef = React.createRef();
+    this.TextAreaRef = React.createRef();
   }
   state = {
     id: "",
@@ -43,7 +94,9 @@ class ProductPost extends Component {
       username: ""
     },
     loading: true,
+    tab: "1",
     effect: false,
+    disliked: false,
     tags: [],
     hide: true,
     value: "",
@@ -54,6 +107,8 @@ class ProductPost extends Component {
     submitting: false,
     action: "",
     colors: [],
+    specs: [],
+    sloading: false,
     imageLoaded: false,
     blocks: [],
     edit: false
@@ -67,6 +122,13 @@ class ProductPost extends Component {
       if (this.props.user.likes.find(element => id === element)) {
         this.setState({
           liked: true
+        });
+      }
+    }
+    if (this.props.user.unlikes) {
+      if (this.props.user.unlikes.find(element => id === element)) {
+        this.setState({
+          disliked: true
         });
       }
     }
@@ -129,13 +191,14 @@ class ProductPost extends Component {
         });
   };
 
-  handleLiked = () => {
+  handleLiked = operation => {
+    let type = operation ? 1 : -1;
     this.setState({
-      liked: !this.state.liked,
-      liker: this.state.liked ? this.state.liker - 1 : this.state.liker + 1
+      liked: operation && true,
+      disliked: !operation && true
     });
     this.props.user
-      ? toggleLike(this.props.id, this.state.liked).then(
+      ? LikeDisLike(this.props.id, type).then(
           res => {},
           err => {
             message.error({
@@ -143,10 +206,8 @@ class ProductPost extends Component {
               duration: 2
             });
             this.setState({
-              liked: !this.state.liked,
-              liker: this.state.liked
-                ? this.state.liker - 1
-                : this.state.liker + 1
+              liked: operation && !this.state.liked,
+              disliked: !operation && !this.state.disliked
             });
           }
         )
@@ -160,7 +221,7 @@ class ProductPost extends Component {
     Axios.get(process.env.REACT_APP_API_URL + "comments/" + this.props.id).then(
       res =>
         this.setState({
-          Comments: res.data,
+          Comments: res.data.data,
           Cloading: false
         })
     );
@@ -176,12 +237,38 @@ class ProductPost extends Component {
     );
   };
 
+  getSpecs = id => {
+    Axios.get(
+      process.env.REACT_APP_API_URL +
+        "detail/" +
+        this.props.id +
+        `/${this.state.data.category_id}`
+    ).then(res =>
+      this.setState({
+        specs: res.data,
+        sloading: false
+      })
+    );
+  };
+
+  callback = key => {
+    // console.log(key);
+    this.setState({
+      tab: key
+    });
+    (key === "2") & !this.state.specs.length &&
+      this.setState({ sloading: true }, () => {
+        this.getSpecs();
+      });
+  };
+
   onReply = e => {
-    let txt = "پاسخ شما به " + e.target.name;
+    window.scrollTo(0, this.TextAreaRef.current.offsetTop - 300);
+    let txt = "پاسخ شما به " + e.currentTarget.name;
     this.setState({
       hide: false,
       btnTxt: txt,
-      reply: e.target.id
+      reply: e.currentTarget.id
     });
   };
 
@@ -216,7 +303,13 @@ class ProductPost extends Component {
               reply: "",
               btnTxt: "ارسال نظر"
             },
-            this.getComment()
+            () => {
+              message.success({
+                content: "بازخورد شما ذخیره شد",
+                duration: 2
+              });
+              this.getComment();
+            }
           );
           if (comment_id === 0 && this.state.Comments.length > 3) {
             window.scrollTo(0, this.myRef.current.offsetTop - 500);
@@ -271,7 +364,13 @@ class ProductPost extends Component {
             reply: "",
             btnTxt: "ارسال نظر"
           },
-          this.getComment()
+          () => {
+            message.success({
+              content: "بازخورد شما ذخیره شد",
+              duration: 2
+            });
+            this.getComment();
+          }
         );
       },
       err => {
@@ -327,10 +426,13 @@ class ProductPost extends Component {
           data: [],
           colors: [],
           tags: [],
+          specs: [],
           imageLoaded: false,
           loading: true
         },
-        this.getItems()
+        () => {
+          this.getItems();
+        }
       );
       if (isLoggedIn()) {
         this.isLiked();
@@ -358,19 +460,113 @@ class ProductPost extends Component {
           style={{
             transition: `all 2s ease !important`,
 
-            background: imageLoaded
-              ? `linear-gradient(115deg,  ${colors[5]}05,${colors[1]}40 )`
-              : "#fafafa"
+            background:
+              imageLoaded && !!colors.length
+                ? `linear-gradient(115deg,  ${colors[5]}05,${colors[1]}40 )`
+                : `linear-gradient(115deg,#b8b8b833,#ebebeb3d)`
           }}
         >
           <Spin className="product-post-spin" spinning={loading} size="large" />
           <div className="pr-extra-btn">
-            <LikeOutlined />
-            <DislikeOutlined />
-            <ShareAltOutlined />
-            <MessageOutlined />
-            <TagOutlined />
+            {this.state.liked ? (
+              <LikeFilled />
+            ) : (
+              <LikeOutlined
+                onClick={() => {
+                  this.handleLiked(true);
+                }}
+              />
+            )}
+
+            {this.state.disliked ? (
+              <DislikeFilled />
+            ) : (
+              <DislikeOutlined
+                onClick={() => {
+                  this.handleLiked(false);
+                }}
+              />
+            )}
+
+            <ShareAltOutlined
+              onClick={() => {
+                this.setState({ visible: true });
+              }}
+            />
+            <MessageOutlined
+              onClick={() => {
+                this.setState({ tab: "3" }, () => {
+                  window.scrollTo(0, this.TextAreaRef.current.offsetTop + 200);
+                });
+              }}
+            />
+            {this.state.saved ? (
+              <TagFilled onClick={this.handleSave} />
+            ) : (
+              <TagOutlined onClick={this.handleSave} />
+            )}
           </div>
+          <Modal
+            className="pr-share-btns"
+            title="اشتراک گذاری"
+            footer={null}
+            visible={this.state.visible}
+            onCancel={() => {
+              this.setState({ visible: false });
+            }}
+          >
+            <div className="pr-share-div">
+              <WhatsappShareButton
+                title={data.title}
+                url={window.location.href}
+              >
+                <WhatsappIcon size={32} round={true} /> <span>واتس اپ</span>
+              </WhatsappShareButton>
+
+              <TelegramShareButton
+                title={data.title}
+                url={window.location.href}
+              >
+                <TelegramIcon size={32} round={true} /> <span>تلگرام</span>
+              </TelegramShareButton>
+
+              <TwitterShareButton title={data.title} url={window.location.href}>
+                <TwitterIcon size={32} round={true} /> <span>توییتر</span>
+              </TwitterShareButton>
+
+              <FacebookShareButton
+                title={data.title}
+                url={window.location.href}
+              >
+                <FacebookIcon size={32} round={true} /> <span>فیس بوک</span>
+              </FacebookShareButton>
+            </div>
+            <div className="pr-share-div">
+              <LinkedinShareButton
+                title={data.title}
+                url={window.location.href}
+              >
+                <LinkedinIcon size={32} round={true} /> <span>لینکد این</span>
+              </LinkedinShareButton>
+
+              <PinterestShareButton
+                description={data.title}
+                media={data.img}
+                url={window.location.href}
+              >
+                <PinterestIcon size={32} round={true} />
+                <span> پینترست</span>
+              </PinterestShareButton>
+
+              <EmailShareButton title={data.title} url={window.location.href}>
+                <EmailIcon size={32} round={true} /> <span>ایمیل</span>
+              </EmailShareButton>
+
+              <RedditShareButton title={data.title} url={window.location.href}>
+                <RedditIcon size={32} round={true} /> <span>ردیت</span>
+              </RedditShareButton>
+            </div>
+          </Modal>
           <div className="product-right-section">
             <div className="main-img-container">
               <ColorExtractor getColors={this.getColors} maxColors={4}>
@@ -419,400 +615,506 @@ class ProductPost extends Component {
                   );
                 })}
               </h1>
-              <Divider />
+              {/* <Divider className="product-top-hr" /> */}
               <div className="pr-control-panel">
                 <div className="pr-right">
-                  {/* <Card title="Default size card" extra={<a href="#">More</a>}>
-                    <Button type="primary" danger>
-                      360000000
-                    </Button>
-                  </Card> */}
+                  <Divider className="pr-block-hr" orientation="right">
+                    خرید
+                  </Divider>
+
+                  <Breadcrumb className="breadcrumb-product" separator=">">
+                    {data.breadcrumb &&
+                      data.breadcrumb.map(bre => {
+                        return (
+                          <Breadcrumb.Item key={bre.id}>
+                            <Link
+                              to={"/blog/" + data.blog_id + "&cat=" + bre.id}
+                            >
+                              {bre.text}
+                            </Link>
+                          </Breadcrumb.Item>
+                        );
+                      })}
+                  </Breadcrumb>
+                  <Divider className="product-right-hr" />
+                  <span className="pr-off-price">
+                    <NumberFormat
+                      value={data.price}
+                      displayType={"text"}
+                      thousandSeparator={true}
+                      suffix={" تومان"}
+                    />
+                  </span>
+                  <h1 className="product-price center">
+                    قیمت :
+                    <NumberFormat
+                      value={Math.round(
+                        data.price - data.price * (data.off / 100)
+                      )}
+                      displayType={"text"}
+                      thousandSeparator={true}
+                      suffix={" تومان"}
+                    />
+                    <span className="pr-right-off">{data.off}% تخفیف</span>
+                  </h1>
+                  <Divider dashed />
+                  <Radio.Group
+                    className="pr-radio-color"
+                    // onChange={this.onChange} value={this.state.value}
+                  >
+                    <Radio className="pr-radio cream" value={1}>
+                      کرمی
+                    </Radio>
+                    <Radio className="pr-radio blue" value={2}>
+                      آبی
+                    </Radio>
+                    <Radio className="pr-radio red" value={3}>
+                      قرمز
+                    </Radio>
+                    <Radio className="pr-radio lime" value={4}>
+                      لیمویی
+                    </Radio>
+                  </Radio.Group>
+
+                  <Button
+                    className="pr-shop"
+                    size="large"
+                    block
+                    type="primary"
+                    danger
+                  >
+                    <ShoppingCartOutlined className="pr-shop-icon" />
+                    افزودن به سبد خرید
+                  </Button>
                 </div>
                 <div className="pr-left">
-                  {/* <Card title="Default size card" extra={<a href="#">More</a>}>
-                    <Button type="primary" block danger>
-                      120000000
-                    </Button>
-                  </Card> */}
-                </div>
-              </div>
-            </div>
-          </div>
-          <span className="pr-timer">12:24:53</span>
-        </div>
-        <div className="row-top"></div>
-
-        {/*       
-        <div className="origin-post-section">
-          <div className="img-post-info">
-            <div className="img-post-info-content right">
-              <Avatar1 size="large" className="capital-letter">
-                {data.username.charAt(0).toUpperCase()}
-              </Avatar>
-              <div className="img-post-autor">
-                <strong> {data.username}</strong>
-              </div>
-              <i className="img-post-date">
-                {moment(data.created_at)
-                  .locale("fa")
-                  .format("DD/MMMM/YYYY")}
-              </i>
-            </div>
-            <div className="img-post-info-content left">
-              <div className="control-btns">
-                <div className="like-btn">
-                  <span>
-                    <div
-                      onClick={this.handleLiked}
-                      style={{ background: `url(${heart})` }}
-                      className={this.state.liked ? "heart is-active" : "heart"}
-                    ></div>
-                  </span>
-                  <strong> {data.like}</strong>
-                </div>
-                <div className="comment-btn">
-                  <span>
-                    <div className="view">
-                      <EyeOutlined className="views-img-line" />
+                  <Divider className="pr-block-hr" orientation="right">
+                    جزئیات
+                  </Divider>
+                  <div className="pr-left-container">
+                    <div className="center qr-code">
+                      <QRCode value={window.location.href} />
                     </div>
-                  </span>
-                  <strong> 3K</strong>
-                </div>
+                    <Divider className="m-0" dashed />
 
-                <div className="comment-btn">
-                  <span>
-                    <div className="comment">
-                      <MessageOutlined className="cmnt-img-line" />
-                    </div>
-                  </span>
-
-                  <strong>{data.cm}</strong>
-                </div>
-                <div className="comment-btn">
-                  <span>
-                    <div
-                      onClick={this.handleSave}
-                      className={
-                        this.state.saved
-                          ? "bubbly-button animate"
-                          : "bubbly-button"
-                      }
+                    <Popover
+                      trigger="click"
+                      content={<p>{data.brand && data.brand.desc}</p>}
                     >
-                      {this.state.saved ? (
-                        <SaveFilled className="save-img" />
-                      ) : (
-                        <SaveOutlined className="save-img-line" />
-                      )}
-                    </div>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="origin-post-title">
-            <h1 className="title img-post-title origin-title">
-              {data.title}
-              {this.state.tags.map((tag, idx) => {
-                return (
-                  <Tag key={idx} color="blue">
-                    #{tag}
-                  </Tag>
-                );
-              })}
-            </h1>
-            <Divider />
-
-            <div className="img-post-caption">
-              <Paragraph style={{ textAlign: `justify` }}>
-                {data.caption}
-              </Paragraph>
-            </div>
-          </div>
-
-          <div className="post-border">
-            <div
-              className={
-                this.state.imgError
-                  ? "origin-post-container nopic"
-                  : "origin-post-container"
-              }
-              style={
-                this.state.imgError
-                  ? { background: `url(${noPic})` }
-                  : { background: `inherit` }
-              }
-            >
-              <Spin
-                className="origin-post-spin"
-                spinning={this.state.loading}
-                size="large"
-              />
-
-              <ReactImageMagnify
-                {...{
-                  smallImage: {
-                    alt: "Wristwatch by Ted Baker London",
-                    isFluidWidth: true,
-                    src: data.img
-                  },
-                  largeImage: {
-                    src: data.img,
-                    width: 1200,
-                    height: 1800
-                  }
-                }}
-              />
-
-              {/* <img
-                  className="main-img"
-                  alt=""
-                  src={data.img}
-                  style={loading ? { opacity: 0 } : { opacity: 1 }}
-                  onLoad={this.handleImageLoaded.bind(this)}
-                  onError={this.handleImageErrored.bind(this)}
-                /> 
-            </div>
-          </div>
-        </div>
-      
-        <div className="img-post-section">
-          <div className="origin-post-text-container">
-            {this.state.blocks.map(block => {
-              return (
-                <div className="origin-post-block">
-                  <Paragraph style={{ textAlign: `justify` }}>
-                    {block.text}
-                  </Paragraph>
-                  <div className="origin-post-img-container">
-                    <img className="main-img" alt="" src={block.img} />
+                      <li>
+                        برند :
+                        <span className="pr-det-link">
+                          {data.brand && data.brand.fa_name}
+                        </span>
+                      </li>
+                    </Popover>
+                    <li>
+                      تعداد افرادی که این محصول را پسندیده اند :
+                      <span className="pr-det-link">{data.like} نفر </span>
+                    </li>
+                    <li>
+                      تعداد افرادی که این محصول را نپسندیده اند :
+                      <span className="pr-det-link">{data.unlike} نفر</span>
+                    </li>
+                    <li>
+                      تعداد نظرات برای این محصول :
+                      <span className="pr-det-link">{data.cm} نظر</span>
+                    </li>
+                    <li>
+                      تاریخ افزودن محصول به فروشگاه :
+                      <span className="pr-det-link">
+                        {moment(data.created_at)
+                          .locale("fa")
+                          .format("DD/MMMM/YYYY")}
+                      </span>
+                    </li>
                   </div>
                 </div>
-              );
-            })}
-          </div>
-          <div className="sticky-title origin-post-sticky">
-            <div className="img-post-caption">
-              <div className="center-cm-btn">
-                <div
-                  onClick={() => {
-                    this.setState({
-                      hide: !this.state.hide,
-                      value: "",
-                      edit: false,
-                      comment_id: "",
-                      btnTxt: "ارسال نظر"
-                    });
-                  }}
-                  className="toggle-btn-comment"
-                >
-                  {this.state.hide ? (
-                    <MessageOutlined className="cmnt-img-line" />
-                  ) : (
-                    <CloseCircleOutlined className="cmnt-img-line" />
-                  )}
-                </div>
               </div>
-              <div className={this.state.hide ? "hide-cm" : ""}>
-                <Divider />
-                <div className="emoji-keyboard">
-                  <span role="img" aria-label="xxxx" onClick={this.emojiClick}>
-                    😍
-                  </span>
-                  <span role="img" aria-label="xxxx" onClick={this.emojiClick}>
-                    😉
-                  </span>
-                  <span role="img" aria-label="xxxx" onClick={this.emojiClick}>
-                    😂
-                  </span>
-                  <span role="img" aria-label="xxxx" onClick={this.emojiClick}>
-                    😁
-                  </span>
-                  <span role="img" aria-label="xxxx" onClick={this.emojiClick}>
-                    😘
-                  </span>
-                  <span role="img" aria-label="xxxx" onClick={this.emojiClick}>
-                    🤬
-                  </span>
-                  <span role="img" aria-label="xxxx" onClick={this.emojiClick}>
-                    😤
-                  </span>
-                  <span role="img" aria-label="xxxx" onClick={this.emojiClick}>
-                    😒
-                  </span>
-                  <span role="img" aria-label="xxxx" onClick={this.emojiClick}>
-                    👌
-                  </span>
-                  <span role="img" aria-label="xxxx" onClick={this.emojiClick}>
-                    👍
-                  </span>
-                  <span role="img" aria-label="xxxx" onClick={this.emojiClick}>
-                    👎
-                  </span>
-                  <span role="img" aria-label="xxxx" onClick={this.emojiClick}>
-                    ❤️
-                  </span>
-                  <span role="img" aria-label="xxxx" onClick={this.emojiClick}>
-                    🙏
-                  </span>
-                  <span role="img" aria-label="xxxx" onClick={this.emojiClick}>
-                    👏
-                  </span>
-                  <span role="img" aria-label="xxxx" onClick={this.emojiClick}>
-                    😎
-                  </span>
-                  <span role="img" aria-label="xxxx" onClick={this.emojiClick}>
-                    🤩
-                  </span>
-                  <span role="img" aria-label="xxxx" onClick={this.emojiClick}>
-                    😊
-                  </span>
-                  <span role="img" aria-label="xxxx" onClick={this.emojiClick}>
-                    😏
-                  </span>
-                  <span role="img" aria-label="xxxx" onClick={this.emojiClick}>
-                    🤨
-                  </span>
-                </div>
-                <div className="cm-textbox">
-                  <Form.Item>
-                    <TextArea
-                      // rows={1}
-                      allowClear={true}
-                      ref="imgComment"
-                      onChange={this.onCommentChange}
-                      id="origin-post-comment"
-                      value={this.state.value}
-                      autoSize={true}
-                    />
-                  </Form.Item>
-                  <Form.Item>
-                    <Button
-                      htmlType="submit"
-                      loading={this.state.submitting}
-                      onClick={this.onSubmit}
-                      type="primary"
-                    >
-                      {this.state.btnTxt}
-                    </Button>
-                  </Form.Item>
-                </div>
-              </div>
-              <Divider style={{ marginTop: 0 }} />
             </div>
           </div>
-          <div className="origin-post-comment-container">
-            <Spin
-              className="origin-post-spin"
-              spinning={this.state.Cloading}
-              size="large"
-            />
-            {this.state.Comments.map(cm => {
-              return (
-                <Comment
-                  actions={[
+          {data.expire > 0 && (
+            <Countdown date={data.expire - Date.now()} renderer={renderer} />
+          )}
+        </div>
+        {/* <div className="break-flex"></div> */}
+        <div className="row-top">
+          <Tabs
+            className="pr-tab-main"
+            defaultActiveKey={this.state.tab}
+            activeKey={this.state.tab}
+            onChange={this.callback}
+            type="card"
+            size="large"
+          >
+            <TabPane
+              tab={
+                <span>
+                  <SearchOutlined />
+                  نقد و بررسی
+                </span>
+              }
+              key="1"
+            >
+              <div className="pr-tab-review">
+                <Collapse defaultActiveKey={["1", "2", "3", "4"]} ghost>
+                  {this.state.blocks.map((block, idx) => {
+                    return (
+                      <Panel header={block.title} key={idx + 1}>
+                        <div>
+                          <Paragraph style={{ textAlign: `justify` }}>
+                            {block.text}
+                          </Paragraph>
+                          <div>
+                            {block.img && (
+                              <img
+                                className="pr-img-review"
+                                alt=""
+                                src={block.img}
+                              />
+                            )}
+                          </div>
+                        </div>
+                      </Panel>
+                    );
+                  })}
+                </Collapse>
+              </div>
+            </TabPane>
+            <TabPane
+              tab={
+                <span>
+                  <SlidersOutlined />
+                  جزئیات کالا
+                </span>
+              }
+              key="2"
+            >
+              <Spin spinning={this.state.sloading} size="small" />
+              {/* <h1> جزئیات کالا </h1> */}
+              {this.state.specs.length ? (
+                this.state.specs.map(spec => {
+                  return (
                     <div>
-                      <span
-                        className="origin-post-comment-edit"
-                        onClick={() => {
-                          this.setState({
-                            hide: false,
-                            value: cm.text,
-                            edit: cm.id
-                          });
-                        }}
-                      >
-                        <EditOutlined />
-
-                        <span
-                          id={cm.id}
-                          name={cm.text}
-                          className="comment-action"
-                        >
-                          ویرایش
-                        </span>
-                      </span>
+                      <h2 className="spec-main-h">
+                        <CaretLeftFilled />
+                        {spec.name}
+                      </h2>
+                      {spec.det_spec.map(sub => {
+                        return (
+                          <div className="spec-row">
+                            <h4 className="spec-h"> {sub.name}</h4>
+                            <span className="spec-v">
+                              {sub.details[0].value}
+                            </span>
+                          </div>
+                        );
+                      })}
                     </div>
-                  ]}
-                  key={cm.id}
-                  author={
-                    <Button
-                      type="link"
-                      id={cm.id}
-                      name={cm.user.name}
-                      onClick={this.onReply}
+                  );
+                })
+              ) : (
+                <Empty description={false} />
+              )}
+
+              {/* <Table dataSource={this.state.specs} /> */}
+            </TabPane>
+            <TabPane
+              tab={
+                <span>
+                  <MessageOutlined />
+                  نظرات
+                </span>
+              }
+              className="product-comment"
+              key="3"
+            >
+              <div className="img-post-comment-container">
+                <Spin spinning={this.state.Cloading} size="small" />
+                <div className="center-cm-btn"></div>
+                <div className={this.state.hide ? "hide-cm" : ""}>
+                  <div className="emoji-keyboard">
+                    <span
+                      role="img"
+                      aria-label="xxxx"
+                      onClick={this.emojiClick}
                     >
-                      {cm.user.name} <RollbackOutlined />
-                    </Button>
-                  }
-                  avatar={
-                    <Avatar className="capital-letter">
-                      {cm.user.name.charAt(0).toUpperCase()}
-                    </Avatar>
-                  }
-                  content={
-                    <Paragraph
-                      className="origin-post-cm"
-                      ellipsis={{
-                        rows: 2,
-                        expandable: true,
-                        symbol: "ادامه"
-                      }}
+                      😍
+                    </span>
+                    <span
+                      role="img"
+                      aria-label="xxxx"
+                      onClick={this.emojiClick}
                     >
-                      {cm.text}
-                    </Paragraph>
-                  }
-                >
-                  {cm.sub_comment.map(subCm => {
+                      😉
+                    </span>
+                    <span
+                      role="img"
+                      aria-label="xxxx"
+                      onClick={this.emojiClick}
+                    >
+                      😂
+                    </span>
+                    <span
+                      role="img"
+                      aria-label="xxxx"
+                      onClick={this.emojiClick}
+                    >
+                      😁
+                    </span>
+                    <span
+                      role="img"
+                      aria-label="xxxx"
+                      onClick={this.emojiClick}
+                    >
+                      😘
+                    </span>
+                    <span
+                      role="img"
+                      aria-label="xxxx"
+                      onClick={this.emojiClick}
+                    >
+                      🤬
+                    </span>
+                    <span
+                      role="img"
+                      aria-label="xxxx"
+                      onClick={this.emojiClick}
+                    >
+                      😤
+                    </span>
+                    <span
+                      role="img"
+                      aria-label="xxxx"
+                      onClick={this.emojiClick}
+                    >
+                      😒
+                    </span>
+                    <span
+                      role="img"
+                      aria-label="xxxx"
+                      onClick={this.emojiClick}
+                    >
+                      👌
+                    </span>
+                    <span
+                      role="img"
+                      aria-label="xxxx"
+                      onClick={this.emojiClick}
+                    >
+                      👍
+                    </span>
+                    <span
+                      role="img"
+                      aria-label="xxxx"
+                      onClick={this.emojiClick}
+                    >
+                      👎
+                    </span>
+                    <span
+                      role="img"
+                      aria-label="xxxx"
+                      onClick={this.emojiClick}
+                    >
+                      ❤️
+                    </span>
+                    <span
+                      role="img"
+                      aria-label="xxxx"
+                      onClick={this.emojiClick}
+                    >
+                      🙏
+                    </span>
+                    <span
+                      role="img"
+                      aria-label="xxxx"
+                      onClick={this.emojiClick}
+                    >
+                      👏
+                    </span>
+                    <span
+                      role="img"
+                      aria-label="xxxx"
+                      onClick={this.emojiClick}
+                    >
+                      😎
+                    </span>
+                    <span
+                      role="img"
+                      aria-label="xxxx"
+                      onClick={this.emojiClick}
+                    >
+                      🤩
+                    </span>
+                    <span
+                      role="img"
+                      aria-label="xxxx"
+                      onClick={this.emojiClick}
+                    >
+                      😊
+                    </span>
+                    <span
+                      role="img"
+                      aria-label="xxxx"
+                      onClick={this.emojiClick}
+                    >
+                      😏
+                    </span>
+                    <span
+                      role="img"
+                      aria-label="xxxx"
+                      onClick={this.emojiClick}
+                    >
+                      🤨
+                    </span>
+                  </div>
+                  <div ref={this.TextAreaRef} className="cm-textbox">
+                    <Form.Item>
+                      <TextArea
+                        rows={5}
+                        allowClear={true}
+                        className="product-post-comment"
+                        onChange={this.onCommentChange}
+                        id="img-post-comment"
+                        value={this.state.value}
+                        autoSize={true}
+                      />
+                    </Form.Item>
+                    <Form.Item>
+                      <Button
+                        htmlType="submit"
+                        className="pr-submit-btn"
+                        size="large"
+                        block
+                        loading={this.state.submitting}
+                        onClick={this.onSubmit}
+                        type="primary"
+                      >
+                        {this.state.btnTxt}
+                      </Button>
+                    </Form.Item>
+                  </div>
+                </div>
+                <Divider style={{ marginTop: 0 }} />
+                {this.state.Comments.length &&
+                  this.state.Comments.map(cm => {
                     return (
                       <Comment
+                        className="pr-upper-cm"
                         actions={[
                           <div>
                             <span
-                              className="origin-post-comment-edit"
+                              className="img-post-comment-edit"
                               onClick={() => {
-                                this.setState({
-                                  hide: false,
-                                  value: subCm.text,
-                                  edit: subCm.id
-                                });
+                                this.setState(
+                                  {
+                                    hide: false,
+                                    value: cm.text,
+                                    edit: cm.id
+                                  },
+                                  () => {
+                                    window.scrollTo(
+                                      0,
+                                      this.TextAreaRef.current.offsetTop - 300
+                                    );
+                                  }
+                                );
                               }}
                             >
                               <EditOutlined />
 
-                              <span className="comment-action">ویرایش</span>
+                              <span
+                                id={cm.id}
+                                name={cm.text}
+                                className="comment-action"
+                              >
+                                ویرایش
+                              </span>
                             </span>
                           </div>
                         ]}
-                        key={subCm.id}
-                        author={<span>{subCm.user.name}</span>}
+                        key={cm.id}
+                        author={
+                          <Button
+                            type="link"
+                            id={cm.id}
+                            name={cm.user.name}
+                            onClick={this.onReply}
+                          >
+                            {cm.user.name} <RollbackOutlined />
+                          </Button>
+                        }
                         avatar={
                           <Avatar className="capital-letter">
-                            {subCm.user.name.charAt(0).toUpperCase()}
+                            {cm.user.name.charAt(0).toUpperCase()}
                           </Avatar>
                         }
                         content={
                           <Paragraph
-                            className="origin-post-cm"
+                            className="img-post-cm"
                             ellipsis={{
                               rows: 2,
                               expandable: true,
                               symbol: "ادامه"
                             }}
                           >
-                            {subCm.text}
+                            {cm.text}
                           </Paragraph>
                         }
-                      ></Comment>
+                      >
+                        {cm.sub_comment.map(subCm => {
+                          return (
+                            <Comment
+                              actions={[
+                                <div>
+                                  <span
+                                    className="img-post-comment-edit"
+                                    onClick={() => {
+                                      this.setState({
+                                        hide: false,
+                                        value: subCm.text,
+                                        edit: subCm.id
+                                      });
+                                    }}
+                                  >
+                                    <EditOutlined />
+
+                                    <span className="comment-action">
+                                      ویرایش
+                                    </span>
+                                  </span>
+                                </div>
+                              ]}
+                              key={subCm.id}
+                              author={<span>{subCm.user.name}</span>}
+                              avatar={
+                                <Avatar className="capital-letter">
+                                  {subCm.user.name.charAt(0).toUpperCase()}
+                                </Avatar>
+                              }
+                              content={
+                                <Paragraph
+                                  className="img-post-cm"
+                                  ellipsis={{
+                                    rows: 2,
+                                    expandable: true,
+                                    symbol: "ادامه"
+                                  }}
+                                >
+                                  {subCm.text}
+                                </Paragraph>
+                              }
+                            ></Comment>
+                          );
+                        })}
+                      </Comment>
                     );
                   })}
-                </Comment>
-              );
-            })}
-            <div ref={this.myRef}></div>
-          </div>
+                <div ref={this.myRef}></div>
+              </div>
+            </TabPane>
+          </Tabs>
         </div>
-      */}
       </div>
     );
   }

@@ -17,6 +17,23 @@ export function toggleLike(post_id, likeOrNot) {
   }
 }
 
+export function LikeDisLike(post_id, likeOrNot) {
+  let token = localStorage.getItem("token");
+  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  let AXIOS = axios.create({ baseURL: API });
+  if (likeOrNot) {
+    return AXIOS.post("likedislike", {
+      status: likeOrNot,
+      post_id
+    });
+  } else {
+    return AXIOS.post("likedislike", {
+      status: likeOrNot,
+      post_id
+    });
+  }
+}
+
 export function toggleSave(post_id, SaveOrNot) {
   let token = localStorage.getItem("token");
   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
