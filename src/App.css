@@ -2933,7 +2933,7 @@ user-select: none; /* Standard */
 .product-row .product-right-section {
   display: flex;
   height: 400px;
-  width: 40%;
+  width: 35%;
 }
 
 .product-row .product-right-section .product-img {
@@ -2945,6 +2945,7 @@ user-select: none; /* Standard */
   transition: visibility 0s;
   width: 100%;
   height: 100%;
+  cursor: pointer;
   object-fit: contain;
 }
 
@@ -2954,14 +2955,14 @@ user-select: none; /* Standard */
   visibility: visible;
   opacity: 1;
   transform: translate(0px, 0px);
-  width: 80%;
-  height: 100%;
+  width: calc(100vmax*0.32);
+  height: auto;
   object-fit: contain;
 }
 
 .product-post .product-left-section {
   display: flex;
-  width: 60%;
+  width: 65%;
 }
 
 .thumnail-pr-main img {
@@ -3040,8 +3041,8 @@ user-select: none; /* Standard */
 
 .thumnail-pr-main.show:last-child .bigger-btn {
   position: absolute;
-  margin-right: -11vw;
-  margin-top: 51vh;
+  margin-right: -6vw;
+  margin-top: 54vh;
   cursor: pointer;
   transition: opacity 3s;
   visibility: visible;
@@ -3533,6 +3534,27 @@ cursor: pointer;
 .pr-share-div{
   width: 50%;
 }
+
+.side-hr span{
+  font-size: 13px;
+}
+.brand-btn-filter{
+  margin-top: 12px;
+}
+
+.side-empty{
+  padding: 3px 8px;
+  padding-bottom: 35px;
+}
+
+.pr-alter-img{
+  display: none;
+}
+
+.ant-collapse-item.hide{
+  display: none;
+}
+
 /* END OF LIGHTMODE */
 
 
@@ -4835,4 +4857,21 @@ user-select: none; /* Standard */
 
 .dark-mode .ant-modal-close-x {
   color: #ebb00c;
+}
+
+.dark-mode .thumnail-pr-main.show:last-child .bigger-btn {
+  color: white;
+}
+
+.dark-mode #SRLLightbox{
+  background-color: #363636ee;
+}
+
+
+#SRLLightbox button{
+  border-radius: 20px;
+}
+
+.css-l3kq4c{
+  background-size: contain !important;
 }

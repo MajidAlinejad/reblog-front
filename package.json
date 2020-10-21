@@ -42,6 +42,7 @@
     "react-sticky-box": "^0.9.3",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
+    "simple-react-lightbox": "^3.3.4-1",
     "simplebar-react": "^2.2.1",
     "slick-carousel": "^1.8.1",
     "sticky-sidebar": "^3.3.1"

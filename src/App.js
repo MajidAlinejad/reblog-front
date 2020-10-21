@@ -5,6 +5,7 @@ import { BackTop, ConfigProvider, Layout } from "antd";
 import { BrowserRouter as Router } from "react-router-dom";
 import Axios from "axios";
 import { DownCircleOutlined, UpCircleOutlined } from "@ant-design/icons";
+import SimpleReactLightbox from "simple-react-lightbox";
 // css import
 import "./App.css";
 import "antd/dist/antd.css";
@@ -230,15 +231,16 @@ class App extends Component {
             </div> */}
           <Lottie options={defaultOptions} height={400} width={400} />
         </div>
-        <Layout>
-          <Header blogs={this.state.data} />
-          <Content>
-            <Routes blogs={this.state.data} />
-          </Content>
-          <BackTop />
-          <Footer />
-        </Layout>
-
+        <SimpleReactLightbox>
+          <Layout>
+            <Header blogs={this.state.data} />
+            <Content>
+              <Routes blogs={this.state.data} />
+            </Content>
+            <BackTop />
+            <Footer />
+          </Layout>
+        </SimpleReactLightbox>
         <span
           id={this.state.togglePlayer ? "show" : "hide"}
           onClick={this.togglePlayer}

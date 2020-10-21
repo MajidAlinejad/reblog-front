@@ -84,9 +84,7 @@ export default class ProductItem extends Component {
       <React.Fragment>
         <div className="container-base-item-store">
           <Link to={"/post/" + item.id}>
-            {item.special && (
-              <div className="special-product">{item.special}</div>
-            )}
+            {item.off && <div className="special-product">{item.off}%</div>}
             <div
               className="grid-product-card"
               style={
@@ -171,7 +169,7 @@ export default class ProductItem extends Component {
                 ) : ( */}
                 <h1 className="price-grid white">
                   <NumberFormat
-                    value={item.lable}
+                    value={item.price}
                     displayType={"text"}
                     thousandSeparator={true}
                     suffix={" تومان"}

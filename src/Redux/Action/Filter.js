@@ -17,3 +17,27 @@ export const setTags = payload => {
     payload: arrayPayload
   };
 };
+
+export const setBrands = payload => {
+  // console.log(payload);
+  return {
+    type: "SET_BRANDS",
+    payload: payload
+  };
+};
+
+export const setPrice = payload => {
+  // console.log(payload);
+  return {
+    type: "SET_PRICE",
+    payload: payload
+  };
+};
+
+export const setParams = payload => {
+  // console.log(payload);
+  return {
+    type: "SET_PARAMS",
+    payload: payload
+  };
+};

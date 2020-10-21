@@ -21,6 +21,9 @@ class LoadMoreGrid extends Component {
     data: [],
     empty: false,
     hasMore: true,
+    price: [],
+    brands: [],
+    params: [],
     pageNumber: 1,
     category: "",
     tags: [],
@@ -36,16 +39,20 @@ class LoadMoreGrid extends Component {
 
   getMoreItems = () => {
     const { category } = this.state;
-    // console.log(category);
     this.L_isMounted &&
       axios
-        .get(
+        .post(
           process.env.REACT_APP_API_URL +
             "posts/" +
             this.props.id +
-            `?per_page=${this.state.items}&page=${this.state.pageNumber}` +
-            `&cat=${category && category}` +
-            `&tags=${this.state.tags ? this.state.tags : ""}`
+            `?per_page=${this.state.items}&page=${this.state.pageNumber}`,
+          {
+            params: this.state.params,
+            category: this.state.category,
+            brands: this.state.brands,
+            tags: this.state.tags,
+            price: this.state.price
+          }
         )
         .then(
           res =>
@@ -63,15 +70,20 @@ class LoadMoreGrid extends Component {
   getItems = (items, pageNumber, category) => {
     this.L_isMounted &&
       axios
-        .get(
+        .post(
           process.env.REACT_APP_API_URL +
             "posts/" +
             this.props.id +
             `?per_page=${items ? items : this.state.items}&page=${
               pageNumber ? pageNumber : this.state.pageNumber
-            }` +
-            `&cat=${category ? category : ""}` +
-            `&tags=${this.state.tags ? this.state.tags : ""}`
+            }`,
+          {
+            params: this.state.params,
+            category: this.state.category,
+            brands: this.state.brands,
+            tags: this.state.tags,
+            price: this.state.price
+          }
         )
         .then(res =>
           res.data.data[0] &&
@@ -259,7 +271,7 @@ class LoadMoreGrid extends Component {
           {
             data: [],
             loading: true,
-            // hasMore: true,
+            params: [],
             pageNumber: 1,
             category: null,
             items: 5,
@@ -271,6 +283,72 @@ class LoadMoreGrid extends Component {
                 this.state.items,
                 this.state.pageNumber,
                 this.props.category
+              );
+          }
+        );
+    }
+
+    if (prevProps.brands !== this.props.brands) {
+      this.L_isMounted &&
+        this.setState(
+          {
+            data: [],
+            loading: true,
+            // hasMore: true,
+            pageNumber: 1,
+            items: 5,
+            brands: this.props.brands
+          },
+          () => {
+            this.L_isMounted &&
+              this.getItems(
+                this.state.items,
+                this.state.pageNumber,
+                this.state.category
+              );
+          }
+        );
+    }
+
+    if (prevProps.params !== this.props.params) {
+      this.L_isMounted &&
+        this.setState(
+          {
+            data: [],
+            loading: true,
+            // hasMore: true,
+            pageNumber: 1,
+            items: 5,
+            params: this.props.params
+          },
+          () => {
+            this.L_isMounted &&
+              this.getItems(
+                this.state.items,
+                this.state.pageNumber,
+                this.state.category
+              );
+          }
+        );
+    }
+
+    if (prevProps.price !== this.props.price) {
+      this.L_isMounted &&
+        this.setState(
+          {
+            data: [],
+            loading: true,
+            // hasMore: true,
+            pageNumber: 1,
+            items: 5,
+            price: this.props.price
+          },
+          () => {
+            this.L_isMounted &&
+              this.getItems(
+                this.state.items,
+                this.state.pageNumber,
+                this.state.category
               );
           }
         );
@@ -427,7 +505,10 @@ const mapStateToProps = state => {
     user: state.user.user,
     sidebar: state.view.sidebar,
     tags: state.filter.tags,
-    category: state.filter.category
+    category: state.filter.category,
+    brands: state.filter.brands,
+    params: state.filter.params,
+    price: state.filter.price
   };
 };
 

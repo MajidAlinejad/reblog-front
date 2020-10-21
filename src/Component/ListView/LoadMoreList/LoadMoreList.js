@@ -34,13 +34,17 @@ class LoadMoreList extends Component {
     const { category } = this.state;
     this.L_isMounted &&
       axios
-        .get(
+        .post(
           process.env.REACT_APP_API_URL +
             "posts/" +
             this.props.id +
-            `?per_page=${this.state.items}&page=${this.state.pageNumber}` +
-            `&cat=${category && category}` +
-            `&tags=${this.state.tags ? this.state.tags : ""}`
+            `?per_page=${this.state.items}&page=${this.state.pageNumber}`,
+          {
+            category: this.state.category,
+            brands: this.state.brands,
+            tags: this.state.tags,
+            price: this.state.price
+          }
         )
         .then(res => {
           res.data.data[0] &&
@@ -57,15 +61,19 @@ class LoadMoreList extends Component {
   getItems = (items, pageNumber, category) => {
     this.L_isMounted &&
       axios
-        .get(
+        .post(
           process.env.REACT_APP_API_URL +
             "posts/" +
             this.props.id +
             `?per_page=${items ? items : this.state.items}&page=${
               pageNumber ? pageNumber : this.state.pageNumber
-            }` +
-            `&cat=${category ? category : ""}` +
-            `&tags=${this.state.tags ? this.state.tags : ""}`
+            }`,
+          {
+            category: this.state.category,
+            brands: this.state.brands,
+            tags: this.state.tags,
+            price: this.state.price
+          }
         )
         .then(res =>
           res.data.data[0] &&
@@ -142,6 +150,50 @@ class LoadMoreList extends Component {
                 this.state.items,
                 this.state.pageNumber,
                 this.props.category
+              );
+          }
+        );
+    }
+
+    if (prevProps.brands !== this.props.brands) {
+      this.L_isMounted &&
+        this.setState(
+          {
+            data: [],
+            loading: true,
+            // hasMore: true,
+            pageNumber: 1,
+            items: 5,
+            brands: this.props.brands
+          },
+          () => {
+            this.L_isMounted &&
+              this.getItems(
+                this.state.items,
+                this.state.pageNumber,
+                this.state.category
+              );
+          }
+        );
+    }
+
+    if (prevProps.price !== this.props.price) {
+      this.L_isMounted &&
+        this.setState(
+          {
+            data: [],
+            loading: true,
+            // hasMore: true,
+            pageNumber: 1,
+            items: 5,
+            price: this.props.price
+          },
+          () => {
+            this.L_isMounted &&
+              this.getItems(
+                this.state.items,
+                this.state.pageNumber,
+                this.state.category
               );
           }
         );

@@ -37,6 +37,7 @@ import {
 } from "@ant-design/icons";
 import { LikeDisLike, toggleSave } from "../../GlobalFunc/GlobalFunc";
 import { connect } from "react-redux";
+import { SRLWrapper, useLightbox } from "simple-react-lightbox";
 import { isLoggedIn } from "../../Auth/Auth";
 import { ColorExtractor } from "react-color-extractor";
 import moment from "jalali-moment";
@@ -62,6 +63,7 @@ import {
   RedditIcon
 } from "react-share";
 import Countdown from "react-countdown";
+import OpenLightBox from "../GlobalHook/OpenLightBox";
 const { TabPane } = Tabs;
 const { Panel } = Collapse;
 var QRCode = require("qrcode.react");
@@ -79,6 +81,19 @@ const renderer = ({ hours, minutes, seconds, completed }) => {
         {hours}:{minutes}:{seconds}
       </span>
     );
+  }
+};
+
+const options = {
+  settings: {
+    overlayColor: "#000000ba",
+    autoplaySpeed: 1500,
+    transitionSpeed: 900
+  },
+  buttons: {
+    showAutoplayButton: false,
+    showDownloadButton: false,
+    showThumbnailsButton: false
   }
 };
 
@@ -569,18 +584,25 @@ class ProductPost extends Component {
           </Modal>
           <div className="product-right-section">
             <div className="main-img-container">
-              <ColorExtractor getColors={this.getColors} maxColors={4}>
-                <img
-                  alt="example"
-                  // style={loading ? { opacity: 0 } : { opacity: 1 }}
-                  className={`product-img ${imageLoaded ? "show" : "hide"}`}
-                  onLoad={() => this.setState({ imageLoaded: true })}
-                  // src={perfume}
-                  src={data.img ? data.img : "0"}
-                />
-              </ColorExtractor>
+              <SRLWrapper options={options}>
+                <ColorExtractor getColors={this.getColors} maxColors={4}>
+                  <img
+                    alt="example"
+                    // style={loading ? { opacity: 0 } : { opacity: 1 }}
+                    className={`product-img ${imageLoaded ? "show" : "hide"}`}
+                    onLoad={() => this.setState({ imageLoaded: true })}
+                    // src={perfume}
+                    src={data.img ? data.img : "0"}
+                  />
+                </ColorExtractor>
+                <div className="pr-alter-img">
+                  {this.state.blocks.map(blk => {
+                    return <img key={blk.id} src={blk.special} />;
+                  })}
+                </div>
+              </SRLWrapper>
             </div>
-            <div
+            {/* <div
               className={`thumnail-pr-main ${imageLoaded ? "show" : "hide"}`}
             >
               <img alt="example" src={data.img} />
@@ -594,12 +616,12 @@ class ProductPost extends Component {
               className={`thumnail-pr-main ${imageLoaded ? "show" : "hide"}`}
             >
               <img alt="example" src={data.img} />
-            </div>
+            </div> */}
             <div
               className={`thumnail-pr-main ${imageLoaded ? "show" : "hide"}`}
             >
               {/* <img alt="example" src={data.img} /> */}
-              <FullscreenOutlined className="bigger-btn" />
+              <OpenLightBox />
             </div>
           </div>
 
@@ -760,7 +782,11 @@ class ProductPost extends Component {
                 <Collapse defaultActiveKey={["1", "2", "3", "4"]} ghost>
                   {this.state.blocks.map((block, idx) => {
                     return (
-                      <Panel header={block.title} key={idx + 1}>
+                      <Panel
+                        header={block.title}
+                        key={idx + 1}
+                        className={!block.text && "hide"}
+                      >
                         <div>
                           <Paragraph style={{ textAlign: `justify` }}>
                             {block.text}
