@@ -146,8 +146,8 @@ class Swaper extends Component {
     );
   };
 
-  async getItems() {
-    axios.get(process.env.REACT_APP_API_URL + "tagsname").then(res => {
+  async getItems(id) {
+    axios.get(process.env.REACT_APP_API_URL + "tagsname/" + id).then(res => {
       const tags = res.data;
       if (this._isMounted) {
         this.setState({
@@ -163,13 +163,23 @@ class Swaper extends Component {
     this._isMounted = false;
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.id !== this.props.id) {
+      this.getItems(this.props.id);
+    }
+  }
+
   componentDidMount() {
     this._isMounted = true;
-    this.getItems();
+    if (this.props.id !== undefined) {
+      this._isMounted && this.getItems(this.props.id);
+    }
+
     this.setState({
       optClass: "with-opacity"
     });
   }
+
   render() {
     const { loading } = this.state;
     return (
@@ -322,7 +332,8 @@ function CatSketon() {
 
 const mapStateToProps = state => {
   return {
-    tags: state.filter.tags
+    tags: state.filter.tags,
+    id: state.blog.id
   };
 };
 

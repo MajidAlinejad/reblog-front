@@ -12,10 +12,13 @@ import OriginPost from "./OriginPost";
 import VideoPost from "./VideoPost";
 import MusicPost from "./MusicPost";
 import ProductPost from "./ProductPost";
+import RelatedGrid from "../GridView/RelatedGrid/RelatedGrid";
 class ViewPost extends Component {
   state = {
     effect: false,
-    base: ""
+    base: "",
+    category: "",
+    blogId: ""
   };
 
   getItems = id => {
@@ -23,10 +26,18 @@ class ViewPost extends Component {
       process.env.REACT_APP_API_URL + "base/" + this.props.match.params.id // firstblog
     ).then(res =>
       this.setState({
-        base: res.data
+        base: res.data.base,
+        blogId: res.data.blog_id,
+        category: res.data.category
       })
     );
   };
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.related !== this.props.related) {
+      this.setState({ base: this.props.base, category: this.props.related });
+    }
+  }
 
   renderer = id => {
     if (this.state.base === "img") {
@@ -44,22 +55,6 @@ class ViewPost extends Component {
     }
   };
 
-  related = id => {
-    if (this.state.base === "img") {
-      return <LoadMoreGrid base={this.state.base} id="1" />;
-    } else if (this.state.base === "video") {
-      return <LoadMoreGrid base={this.state.base} siderPost={true} id="9" />;
-    } else if (this.state.base === "music") {
-      return <LoadMoreGrid base={this.state.base} siderPost={true} id="6" />;
-    } else if (this.state.base === "podcast") {
-      return <LoadMoreGrid base={this.state.base} siderPost={true} id="6" />;
-    } else if (this.state.base === "post") {
-      return <LoadMoreGrid base={this.state.base} siderPost={true} id="9" />;
-    } else if (this.state.base === "product") {
-      return <LoadMoreGrid base={this.state.base} id="4" />;
-    }
-  };
-
   componentDidMount() {
     window.scrollTo(0, 0);
     this.getItems();
@@ -69,7 +64,7 @@ class ViewPost extends Component {
   }
 
   render() {
-    const { effect, base } = this.state;
+    const { effect, base, category } = this.state;
 
     return (
       <div className={effect ? "post-body effect-on" : "post-body"}>
@@ -91,7 +86,12 @@ class ViewPost extends Component {
               موارد مشابه
             </Divider>
 
-            {this.related(this.props.match.params.id)}
+            <RelatedGrid
+              base={this.state.base}
+              siderPost={true} // this.state.base === "img" || this.state.base === "product"? false:
+              id={this.state.blogId}
+              category={this.state.category}
+            />
           </div>
         </div>
       </div>
@@ -101,7 +101,10 @@ class ViewPost extends Component {
 
 const mapStateToProps = state => {
   return {
-    user: state.user.user
+    user: state.user.user,
+    id: state.blog.id,
+    base: state.post.base,
+    related: state.post.related
   };
 };
 

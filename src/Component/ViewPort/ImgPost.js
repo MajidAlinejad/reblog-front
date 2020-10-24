@@ -29,6 +29,7 @@ import heart from "../../assets/picture/heart.png";
 import { connect } from "react-redux";
 import { isLoggedIn } from "../../Auth/Auth";
 import Slider from "react-slick";
+import { setPosts } from "../../Redux/Action/Post";
 const { TextArea } = Input;
 const { Paragraph } = Typography;
 
@@ -248,11 +249,16 @@ class ImgPost extends Component {
       process.env.REACT_APP_API_URL + "post/" + this.props.id // firstblog
     ).then(
       res =>
-        this.setState({
-          data: res.data,
-          loading: false,
-          tags: res.data.meta.split(",")
-        }),
+        this.setState(
+          {
+            data: res.data,
+            loading: false,
+            tags: res.data.meta.split(",")
+          },
+          () => {
+            this.props.setPosts(res.data);
+          }
+        ),
       window.scrollTo({
         top: 0,
         behavior: "smooth"
@@ -792,6 +798,16 @@ const mapStateToProps = state => {
     user: state.user.user
   };
 };
+const mapDispatchToProps = dispatch => {
+  return {
+    setPosts: payload => {
+      dispatch(setPosts(payload));
+    }
+  };
+};
 
-export default connect(mapStateToProps)(ImgPost);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ImgPost);
 // export default sizeMe()(PaginateGrid);

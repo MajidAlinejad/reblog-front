@@ -28,6 +28,7 @@ import { toggleLike, toggleSave } from "../../GlobalFunc/GlobalFunc";
 import heart from "../../assets/picture/heart.png";
 import { connect } from "react-redux";
 import { isLoggedIn } from "../../Auth/Auth";
+import { setPosts } from "../../Redux/Action/Post";
 const { TextArea } = Input;
 const { Paragraph } = Typography;
 
@@ -235,11 +236,16 @@ class VideoPost extends Component {
   getItems = id => {
     Axios.get(process.env.REACT_APP_API_URL + "post/" + this.props.id).then(
       res =>
-        this.setState({
-          data: res.data,
-          loading: false,
-          tags: res.data.meta.split(",")
-        }),
+        this.setState(
+          {
+            data: res.data,
+            loading: false,
+            tags: res.data.meta.split(",")
+          },
+          () => {
+            this.props.setPosts(res.data);
+          }
+        ),
       window.scrollTo({
         top: 0,
         behavior: "smooth"
@@ -691,5 +697,15 @@ const mapStateToProps = state => {
     user: state.user.user
   };
 };
+const mapDispatchToProps = dispatch => {
+  return {
+    setPosts: payload => {
+      dispatch(setPosts(payload));
+    }
+  };
+};
 
-export default connect(mapStateToProps)(VideoPost);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(VideoPost);

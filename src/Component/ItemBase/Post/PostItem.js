@@ -210,7 +210,7 @@ export default class PostItem extends Component {
               } 8%)`
             }}
           >
-            <Link to={"/post/" + item.id}>
+            <Link to={"/post/" + item.id + `/${item.seo}`}>
               {conf.overlay && (
                 <div className="post-base-overlay">
                   {base === "music" && (
@@ -256,7 +256,7 @@ export default class PostItem extends Component {
                   style={loading ? { opacity: 0 } : { opacity: 1 }}
                   onLoad={this.handleImageLoaded.bind(this)}
                   onError={this.handleImageErrored.bind(this)}
-                  alt="example"
+                  alt={item.title}
                   // src="https://cdn.zoomg.ir/2020/8/fa2f0d22-c463-4c48-932b-82a3bb250ec7.jpg"
                   src={item.thumbnail}
                   // src={item.thumbnailUrl}

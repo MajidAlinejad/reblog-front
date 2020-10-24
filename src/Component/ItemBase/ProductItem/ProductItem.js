@@ -83,7 +83,7 @@ export default class ProductItem extends Component {
     return (
       <React.Fragment>
         <div className="container-base-item-store">
-          <Link to={"/post/" + item.id}>
+          <Link to={"/post/" + item.id + `/${item.seo}`}>
             {item.off && <div className="special-product">{item.off}%</div>}
             <div
               className="grid-product-card"
@@ -107,7 +107,7 @@ export default class ProductItem extends Component {
               >
                 <ColorExtractor getColors={this.getColors} maxColors={4}>
                   <img
-                    alt="example"
+                    alt={item.title}
                     style={loading ? { opacity: 0 } : { opacity: 1 }}
                     className={
                       conf.modern ? "product-img artistic" : "product-img "

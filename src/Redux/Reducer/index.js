@@ -4,6 +4,7 @@ import { combineReducers } from "redux";
 import user from "./User";
 import view from "./View";
 import blog from "./Blog";
+import post from "./Post";
 import stream from "./Stream";
 import filter from "./Filter";
 
@@ -16,7 +17,8 @@ const rootReducer = combineReducers({
   user,
   view,
   stream,
-  filter
+  filter,
+  post
   //   message
 });
 

@@ -29,6 +29,7 @@ import { connect } from "react-redux";
 import { isLoggedIn } from "../../Auth/Auth";
 import { ColorExtractor } from "react-color-extractor";
 import { addStream } from "../../Redux/Action/Stream";
+import { setPosts } from "../../Redux/Action/Post";
 const { TextArea } = Input;
 const { Paragraph } = Typography;
 
@@ -248,11 +249,16 @@ class MusicPost extends Component {
   getItems = id => {
     Axios.get(process.env.REACT_APP_API_URL + "post/" + this.props.id).then(
       res =>
-        this.setState({
-          data: res.data,
-          loading: false,
-          tags: res.data.meta.split(",")
-        }),
+        this.setState(
+          {
+            data: res.data,
+            loading: false,
+            tags: res.data.meta.split(",")
+          },
+          () => {
+            this.props.setPosts(res.data);
+          }
+        ),
       window.scrollTo({
         top: 0,
         behavior: "smooth"
@@ -700,6 +706,9 @@ const mapDispatchToProps = dispatch => {
   return {
     addStream: block => {
       dispatch(addStream(block));
+    },
+    setPosts: payload => {
+      dispatch(setPosts(payload));
     }
   };
 };

@@ -35,15 +35,20 @@ class PaginateList extends Component {
     this.props.getUser();
     this._isMounted &&
       axios
-        .get(
+        .post(
           process.env.REACT_APP_API_URL +
             "posts/" +
             this.props.id +
             `?per_page=${perPage ? perPage : this.state.perPage}&page=${
               pageNumber ? pageNumber : this.state.pageNumber
-            }` +
-            `&cat=${category ? category : ""}` +
-            `&tags=${this.state.tags ? this.state.tags : ""}`
+            }`,
+          {
+            params: this.state.params,
+            category: this.state.category,
+            brands: this.state.brands,
+            tags: this.state.tags,
+            price: this.state.price
+          }
         )
         .then(res =>
           res.data.data[0] &&

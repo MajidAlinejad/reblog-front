@@ -3204,6 +3204,11 @@ user-select: none; /* Standard */
   color: #fff !important;
 }
 
+.category-container .ant-tree .ant-tree-treenode:first-of-type{
+  pointer-events: none !important;
+}
+
+
 .site-tree-search-value {
   color: #1890ff;
 }
@@ -3553,6 +3558,17 @@ cursor: pointer;
 
 .ant-collapse-item.hide{
   display: none;
+}
+
+
+.check.check-special span:last-child span{
+  width: 10px;
+    height: 10px;
+    position: absolute;
+    left: 24px;
+    margin-top: 5px;
+    border-radius: 20px;
+    box-shadow: 0px 0px 3px #0000006b;
 }
 
 /* END OF LIGHTMODE */

@@ -7,10 +7,10 @@ const updateBlog = payload => {
   };
 };
 
-export const getBlog = id => {
+export const getBlog = url => {
   //   let id = 1;
   return dispatch => {
-    axios.get(process.env.REACT_APP_API_URL + "blog/" + id).then(res => {
+    axios.get(process.env.REACT_APP_API_URL + "blog/" + url).then(res => {
       dispatch(updateBlog(res.data));
     });
   };

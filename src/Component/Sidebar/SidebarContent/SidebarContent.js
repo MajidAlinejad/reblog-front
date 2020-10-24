@@ -36,8 +36,9 @@ class SidebarContent extends Component {
     specs: [],
     expandedKeys: [],
     brands: [],
-    filter: [],
     category: null,
+    filter: [],
+    base: "",
     inputValue: 1,
     dataList: [],
     price: [],
@@ -74,6 +75,10 @@ class SidebarContent extends Component {
   };
 
   filterize = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
     this.props.setParams(this.state.filter);
   };
 
@@ -82,8 +87,13 @@ class SidebarContent extends Component {
       //add to
       var obj = {};
       if (this.state.filter[spec]) {
+        let sortedArry = [];
+        sortedArry = [param, ...this.state.filter[spec].param];
+        sortedArry.sort(function(a, b) {
+          return a - b;
+        });
         obj[spec] = {
-          param: [param, ...this.state.filter[spec].param]
+          param: sortedArry
         };
       } else {
         obj[spec] = {
@@ -116,7 +126,8 @@ class SidebarContent extends Component {
     this.props.setPrice(this.state.price);
   };
 
-  getSpec = () => {
+  getSpec = selected => {
+    this._isMounted && this.props.setCategory(selected);
     this._isMounted &&
       axios
         .get(process.env.REACT_APP_API_URL + `speclists/${this.state.category}`)
@@ -135,8 +146,9 @@ class SidebarContent extends Component {
         category: selectedKeys[0]
       },
       () => {
-        this.props.setCategory(selectedKeys[0]);
-        this.getSpec();
+        // if (this.props.base === "product") {
+        this._isMounted && this.getSpec(selectedKeys[0]);
+        // }
       }
     );
     //set category
@@ -201,19 +213,21 @@ class SidebarContent extends Component {
 
   getCategories = () => {
     this._isMounted &&
-      axios.get(process.env.REACT_APP_API_URL + "cats").then(
-        res =>
-          this._isMounted &&
-          this.setState(
-            {
-              data: res.data,
-              loading: false
-            },
-            () => {
-              this._isMounted && this.generateList(res.data);
-            }
-          )
-      );
+      axios
+        .get(process.env.REACT_APP_API_URL + "blogcat/" + this.props.id)
+        .then(
+          res =>
+            this._isMounted &&
+            this.setState(
+              {
+                data: res.data,
+                loading: false
+              },
+              () => {
+                this._isMounted && this.generateList(res.data);
+              }
+            )
+        );
   };
 
   getBrands = () => {
@@ -236,9 +250,35 @@ class SidebarContent extends Component {
 
   componentDidMount() {
     this._isMounted = true;
+    if (this.props.id !== undefined) {
+      this._isMounted && this.getCategories();
+    }
+    if (this.props.base !== undefined) {
+      if (this.props.base === "product") {
+        this._isMounted && this.getBrands();
+        this._isMounted &&
+          this.setState({
+            base: this.props.base
+          });
+      }
+    }
+  }
 
-    this._isMounted && this.getCategories();
-    this._isMounted && this.getBrands();
+  componentDidUpdate(prevProps) {
+    if (prevProps.id !== this.props.id) {
+      this._isMounted && this.getCategories();
+      if (this.props.base === "product") {
+        this._isMounted && this.getBrands();
+      }
+    }
+
+    if (prevProps.base !== this.props.base) {
+      // console.log(prevProps.base, this.props.base);
+      this._isMounted &&
+        this.setState({
+          base: this.props.base
+        });
+    }
   }
 
   componentWillUnmount() {
@@ -252,135 +292,158 @@ class SidebarContent extends Component {
     const { expandedKeys, autoExpandParent, inputValue } = this.state;
     return (
       <div>
-        <Divider className="side-hr" orientation="right">
-          انتخاب دسته
-        </Divider>
-
-        <div className="category-container">
-          <Search
-            style={{ marginBottom: 8 }}
-            placeholder="جستجو در دسته ها"
-            onChange={this.onChange}
-          />
-          <Tree
-            onExpand={this.onExpand}
-            defaultExpandAll={true}
-            showLine={{ showLeafIcon: false }}
-            switcherIcon={<DownOutlined />}
-            expandedKeys={expandedKeys}
-            onSelect={this.onSelect}
-            autoExpandParent={autoExpandParent}
-            treeData={this.loop(this.state.data)}
-          />
-        </div>
-        <Divider className="side-hr" orientation="right">
-          انتخاب برند
-        </Divider>
-
-        <Select
-          showSearch
-          mode="multiple"
-          allowClear
-          className="brand-selector"
-          placeholder="انتخاب برند"
-          optionFilterProp="children"
-          onChange={this.onChangeBrand}
-          filterOption={(input, option) =>
-            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-          }
-        >
-          {this.state.brands.map(brand => {
-            return (
-              <Option key={brand.id} value={brand.name}>
-                {brand.fa_name}
-              </Option>
-            );
-          })}
-        </Select>
-
-        <Button
-          className="brand-btn-filter"
-          block
-          type="primary"
-          onClick={this.setBrand}
-        >
-          اعمال فیلتر برند
-        </Button>
-        <Divider className="side-hr" orientation="right">
-          محدوده قیمت
-        </Divider>
-
-        <Slider
-          min={1000000}
-          max={20000000}
-          step={500000}
-          defaultValue={[1000000, 20000000]}
-          range
-          onChange={this.onChangeSlider}
-          // value={typeof inputValue === "number" ? inputValue : 0}
-        />
-        <Button block type="primary" onClick={this.setPriceRange}>
-          اعمال فیلتر قیمت
-        </Button>
-
-        <hr className="hide-strock" />
-        {!!this.state.specs.length ? (
+        {!!this.state.data.length && (
           <div>
             <Divider className="side-hr" orientation="right">
-              فیلتر های مرتبط
+              انتخاب دسته
             </Divider>
 
-            {this.state.specs.map((spec, index) => {
-              return (
-                <Collapse
-                  className="spec-collapse"
-                  key={spec.id}
-                  // defaultActiveKey={[index + 1]}
-                >
-                  <Collapse.Panel
-                    className="side-collapse"
-                    header={spec.name}
-                    key={index + 1}
-                  >
-                    <hr className="minimal-border" />
-                    <div>
-                      {spec.details.map(param => {
-                        return (
-                          <div key={param.id} className="cat-list">
-                            {/* {param.value.includes(",") ? (
-                              <Checkbox key={param.id}>{param.value}</Checkbox>
-                            ) : (
-                              <Checkbox key={param.id}>{param.value}</Checkbox>
-                            )} */}
-                            <Checkbox
-                              onChange={e => this.check(spec.id, param.id, e)}
-                              key={param.id}
-                            >
-                              {param.value}
-                            </Checkbox>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </Collapse.Panel>
-                </Collapse>
-              );
-            })}
+            <div className="category-container">
+              <Search
+                style={{ marginBottom: 8 }}
+                placeholder="جستجو در دسته ها"
+                onChange={this.onChange}
+              />
+              <Tree
+                onExpand={this.onExpand}
+                defaultExpandAll={true}
+                // showLine={{ showLeafIcon: false }}
+                switcherIcon={<DownOutlined />}
+                // expandedKeys={expandedKeys}
+                onSelect={this.onSelect}
+                autoExpandParent={autoExpandParent}
+                treeData={this.loop(this.state.data)}
+              />
+            </div>
+          </div>
+        )}
 
-            <Button block type="primary" onClick={this.filterize}>
-              اعمال فیلتر های مرتبط
+        {!!this.state.brands.length && (
+          <div>
+            <Divider className="side-hr" orientation="right">
+              انتخاب برند
+            </Divider>
+
+            <Select
+              showSearch
+              mode="multiple"
+              allowClear
+              className="brand-selector"
+              placeholder="انتخاب برند"
+              optionFilterProp="children"
+              onChange={this.onChangeBrand}
+              filterOption={(input, option) =>
+                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+            >
+              {this.state.brands.map(brand => {
+                return (
+                  <Option key={brand.id} value={brand.name}>
+                    {brand.fa_name}
+                  </Option>
+                );
+              })}
+            </Select>
+
+            <Button
+              className="brand-btn-filter"
+              block
+              type="primary"
+              onClick={this.setBrand}
+            >
+              اعمال فیلتر برند
             </Button>
           </div>
-        ) : (
+        )}
+        {this.state.base === "product" && (
           <div>
             <Divider className="side-hr" orientation="right">
-              فیلتر های مرتبط
+              محدوده قیمت
             </Divider>
-            <Empty
-              className="side-empty"
-              description="این دسته فیلتر خاصی ندارد"
+            <Slider
+              min={1000000}
+              max={20000000}
+              step={500000}
+              defaultValue={[1000000, 20000000]}
+              range
+              onChange={this.onChangeSlider}
+              // value={typeof inputValue === "number" ? inputValue : 0}
             />
+            <Button block type="primary" onClick={this.setPriceRange}>
+              اعمال فیلتر قیمت
+            </Button>
           </div>
+        )}
+
+        <hr className="hide-strock" />
+        {!!this.state.data.length && (
+          <React.Fragment>
+            {!!this.state.specs.length ? (
+              <div>
+                <Divider className="side-hr" orientation="right">
+                  فیلتر های مرتبط
+                </Divider>
+
+                {this.state.specs.map((spec, index) => {
+                  return (
+                    <Collapse
+                      className="spec-collapse"
+                      key={spec.id}
+                      // defaultActiveKey={[index + 1]}
+                    >
+                      <Collapse.Panel
+                        className="side-collapse"
+                        header={spec.name}
+                        key={index + 1}
+                      >
+                        <hr className="minimal-border" />
+                        <div>
+                          {spec.details.map(param => {
+                            return (
+                              <div key={param.id} className="cat-list">
+                                <Checkbox
+                                  className={
+                                    param.special
+                                      ? "check check-special"
+                                      : "check"
+                                  }
+                                  onChange={e =>
+                                    this.check(spec.id, param.id, e)
+                                  }
+                                  key={param.id}
+                                >
+                                  {param.value}
+                                  {param.special && (
+                                    <span
+                                      style={{ background: param.special }}
+                                    ></span>
+                                  )}
+                                </Checkbox>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </Collapse.Panel>
+                    </Collapse>
+                  );
+                })}
+
+                <Button block type="primary" onClick={this.filterize}>
+                  اعمال فیلتر های مرتبط
+                </Button>
+              </div>
+            ) : (
+              <div>
+                <Divider className="side-hr" orientation="right">
+                  فیلتر های مرتبط
+                </Divider>
+                <Empty
+                  className="side-empty"
+                  description="این دسته فیلتر خاصی ندارد"
+                />
+              </div>
+            )}
+          </React.Fragment>
         )}
       </div>
     );
@@ -392,6 +455,8 @@ const mapStateToProps = state => {
     category: state.filter.category,
     brands: state.filter.brands,
     params: state.filter.params,
+    id: state.blog.id,
+    base: state.blog.base,
     price: state.filter.price
   };
 };

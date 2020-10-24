@@ -172,13 +172,13 @@ export default class ListItem extends Component {
                 : { background: `none` }
             }
           >
-            <Link to={"/post/" + item.id}>
+            <Link to={"/post/" + item.id + `/${item.seo}`}>
               <img
                 style={loading ? { opacity: 0 } : { opacity: 1 }}
                 onLoad={this.handleImageLoaded.bind(this)}
                 onError={this.handleImageErrored.bind(this)}
                 src={item.thumbnail}
-                alt=""
+                alt={item.title}
               />
             </Link>
           </div>

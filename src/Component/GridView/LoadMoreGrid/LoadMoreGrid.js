@@ -68,7 +68,7 @@ class LoadMoreGrid extends Component {
   };
 
   getItems = (items, pageNumber, category) => {
-    this.L_isMounted &&
+    if (this.L_isMounted && this.props.id !== undefined) {
       axios
         .post(
           process.env.REACT_APP_API_URL +
@@ -103,6 +103,7 @@ class LoadMoreGrid extends Component {
                 loading: false
               })
         );
+    }
   };
 
   onChange = () => {
@@ -243,7 +244,7 @@ class LoadMoreGrid extends Component {
     }
 
     if (prevProps.tags !== this.props.tags) {
-      console.log(this.state.category);
+      // console.log(this.state.category);
       this.L_isMounted &&
         this.setState(
           {
@@ -365,14 +366,16 @@ class LoadMoreGrid extends Component {
             category: null,
             items: 5
           },
-          this.L_isMounted && this.getItems(5, 1)
+          () => this.L_isMounted && this.getItems(5, 1)
         );
     }
   }
 
   componentDidMount() {
     this.L_isMounted = true;
-    this.L_isMounted && this.getItems();
+    if (this.props.id !== undefined) {
+      this.L_isMounted && this.getItems();
+    }
     this.L_isMounted && this.getWidth();
   }
 

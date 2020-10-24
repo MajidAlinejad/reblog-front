@@ -263,7 +263,7 @@ class GridItem extends Component {
             </Popover>
           )}
 
-          <Link to={"/post/" + item.id}>
+          <Link to={"/post/" + item.id + `/${item.seo}`}>
             <div
               className={
                 this.state.imgError ? "img-base-item nopic" : "img-base-item"
@@ -276,7 +276,7 @@ class GridItem extends Component {
             >
               <img
                 className="img-base-cover"
-                alt="example"
+                alt={item.title}
                 style={loading ? { opacity: 0 } : { opacity: 1 }}
                 onLoad={this.handleImageLoaded.bind(this)}
                 onError={this.handleImageErrored.bind(this)}

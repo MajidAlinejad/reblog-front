@@ -64,6 +64,7 @@ import {
 } from "react-share";
 import Countdown from "react-countdown";
 import OpenLightBox from "../GlobalHook/OpenLightBox";
+import { setPosts } from "../../Redux/Action/Post";
 const { TabPane } = Tabs;
 const { Panel } = Collapse;
 var QRCode = require("qrcode.react");
@@ -271,10 +272,10 @@ class ProductPost extends Component {
     this.setState({
       tab: key
     });
-    (key === "2") & !this.state.specs.length &&
-      this.setState({ sloading: true }, () => {
-        this.getSpecs();
-      });
+    // (key === "2") & !this.state.specs.length &&
+    //   this.setState({ sloading: true }, () => {
+    //     this.getSpecs();
+    //   });
   };
 
   onReply = e => {
@@ -347,11 +348,17 @@ class ProductPost extends Component {
   getItems = id => {
     Axios.get(process.env.REACT_APP_API_URL + "post/" + this.props.id).then(
       res =>
-        this.setState({
-          data: res.data,
-          loading: false,
-          tags: res.data.meta.split(",")
-        }),
+        this.setState(
+          {
+            data: res.data,
+            loading: false,
+            tags: res.data.meta.split(",")
+          },
+          () => {
+            this.getSpecs();
+            this.props.setPosts(res.data);
+          }
+        ),
       window.scrollTo({
         top: 0,
         behavior: "smooth"
@@ -400,30 +407,6 @@ class ProductPost extends Component {
     );
   };
 
-  componentDidUpdate(prevProps) {
-    if (isLoggedIn()) {
-      if (prevProps.user !== this.props.user) {
-        this.isLiked();
-        this.isSaved();
-      }
-    }
-
-    if (prevProps.id !== this.props.id) {
-      this.setState(
-        {
-          data: {
-            username: ""
-          },
-          loading: true
-        },
-        this.getItems()
-      );
-      if (isLoggedIn()) {
-        this.isLiked();
-        this.isSaved();
-      }
-    }
-  }
   getColors = colors =>
     this.setState(state => ({ colors: [...state.colors, ...colors] }));
 
@@ -440,6 +423,7 @@ class ProductPost extends Component {
         {
           data: [],
           colors: [],
+          tab: "1",
           tags: [],
           specs: [],
           imageLoaded: false,
@@ -828,10 +812,20 @@ class ProductPost extends Component {
                       </h2>
                       {spec.det_spec.map(sub => {
                         return (
-                          <div className="spec-row">
+                          <div key={sub.id} className="spec-row">
                             <h4 className="spec-h"> {sub.name}</h4>
                             <span className="spec-v">
-                              {sub.details[0].value}
+                              {sub.details.length > 1
+                                ? sub.details.map((det, idx) => {
+                                    return (
+                                      <span>
+                                        {sub.details.length > idx + 1
+                                          ? det.value + " ,"
+                                          : det.value}
+                                      </span>
+                                    );
+                                  })
+                                : sub.details[0] && sub.details[0].value}
                             </span>
                           </div>
                         );
@@ -1022,7 +1016,7 @@ class ProductPost extends Component {
                   </div>
                 </div>
                 <Divider style={{ marginTop: 0 }} />
-                {this.state.Comments.length &&
+                {!!this.state.Comments.length &&
                   this.state.Comments.map(cm => {
                     return (
                       <Comment
@@ -1152,5 +1146,16 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(ProductPost);
+const mapDispatchToProps = dispatch => {
+  return {
+    setPosts: payload => {
+      dispatch(setPosts(payload));
+    }
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ProductPost);
 // export default sizeMe()(PaginateGrid);

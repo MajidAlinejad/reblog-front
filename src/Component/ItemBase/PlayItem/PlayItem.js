@@ -271,11 +271,11 @@ export default class PlayItem extends Component {
             </Popover>
           )}
 
-          <Link to={"/post/" + item.id}>
+          <Link to={"/post/" + item.id+ `/${item.seo}`}>
             <div className="img-base-item">
               <img
                 className="img-base-cover"
-                alt="example"
+                alt={item.title}
                 style={loading ? { opacity: 0 } : { opacity: 1 }}
                 onLoad={this.handleImageLoaded.bind(this)}
                 onError={this.handleImageErrored.bind(this)}

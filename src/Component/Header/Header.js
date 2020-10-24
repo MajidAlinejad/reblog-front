@@ -251,7 +251,7 @@ class Header extends Component {
               return (
                 blog.status === "active" && (
                   <Menu.Item key={i + 3} className="centerize-nav">
-                    <Link to={"/blog/" + blog.id}>
+                    <Link to={"/blog/" + blog.url + `/${blog.seo}`}>
                       {/* <Badge
                         count={1}
                         style={{
