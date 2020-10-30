@@ -12,7 +12,8 @@ import {
   Row,
   Col,
   Button,
-  Empty
+  Empty,
+  Tag
 } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 
@@ -36,13 +37,18 @@ class SidebarContent extends Component {
     specs: [],
     expandedKeys: [],
     brands: [],
+    selectedFilter: [],
     category: null,
     filter: [],
+    allowBrands: true,
     base: "",
     inputValue: 1,
     dataList: [],
     price: [],
     searchValue: "",
+    brandsTags: [],
+    priceTags: [],
+    filterTags: [],
     autoExpandParent: true
   };
 
@@ -82,7 +88,7 @@ class SidebarContent extends Component {
     this.props.setParams(this.state.filter);
   };
 
-  check(spec, param, e) {
+  check(spec, param, e, p) {
     if (e.target.checked) {
       //add to
       var obj = {};
@@ -103,7 +109,8 @@ class SidebarContent extends Component {
       }
 
       this.setState({
-        filter: { ...this.state.filter, ...obj }
+        filter: { ...this.state.filter, ...obj },
+        filterTags: [...this.state.filterTags, p]
       });
     } else {
       var filter = { ...this.state.filter };
@@ -113,8 +120,10 @@ class SidebarContent extends Component {
       } else {
         delete filter[spec];
       }
+
       this.setState({
-        filter: filter
+        filter: filter,
+        filterTags: this.state.filterTags.filter(p => p.id != param)
       });
     }
   }
@@ -248,6 +257,32 @@ class SidebarContent extends Component {
     });
   };
 
+  deleteFilter = () => {
+    this._isMounted &&
+      this.setState(
+        {
+          brandsTags: [],
+          filterTags: [],
+          priceTags: [],
+          selectedBrand: [],
+          price: [],
+          specs: [],
+          selectedFilter: [],
+          filter: [],
+          allowBrands: false
+        },
+        () => {
+          this._isMounted && this.props.setParams([]);
+          this._isMounted && this.props.setPrice([]);
+          this._isMounted && this.props.setBrands([]);
+          this._isMounted && this.getSpec(this.state.category);
+          this.setState({
+            allowBrands: true
+          });
+        }
+      );
+  };
+
   componentDidMount() {
     this._isMounted = true;
     if (this.props.id !== undefined) {
@@ -279,6 +314,33 @@ class SidebarContent extends Component {
           base: this.props.base
         });
     }
+
+    if (prevProps.brands !== this.props.brands) {
+      this._isMounted &&
+        this.setState({
+          brandsTags: this.props.brands
+        });
+    }
+    if (prevProps.price !== this.props.price) {
+      this._isMounted &&
+        this.setState({
+          priceTags: this.props.price
+        });
+    }
+    if (prevProps.category !== this.props.category) {
+      this._isMounted &&
+        this.setState({
+          selectedFilter: [],
+          filterTags: []
+        });
+    }
+
+    if (prevProps.params !== this.props.params) {
+      this._isMounted &&
+        this.setState({
+          selectedFilter: this.state.filterTags
+        });
+    }
   }
 
   componentWillUnmount() {
@@ -292,6 +354,40 @@ class SidebarContent extends Component {
     const { expandedKeys, autoExpandParent, inputValue } = this.state;
     return (
       <div>
+        {(!!this.state.brandsTags.length ||
+          !!this.state.priceTags.length ||
+          !!this.state.selectedFilter.length) && (
+          <React.Fragment>
+            <Divider className="side-hr" orientation="right">
+              فیلتر های انتخاب شده
+            </Divider>
+            {!!this.state.brandsTags.length &&
+              this.state.brandsTags.map(brand => {
+                return <Tag>{brand.children}</Tag>;
+              })}
+            {!!this.state.priceTags.length && (
+              <Tag>
+                از {this.state.priceTags[0]}تومان تا {this.state.priceTags[1]}{" "}
+                تومان
+              </Tag>
+            )}
+
+            {!!this.state.selectedFilter.length &&
+              this.state.selectedFilter.map(filter => {
+                return <Tag>{filter.text}</Tag>;
+              })}
+            <Button
+              className="brand-btn-filter"
+              block
+              danger
+              type="primary"
+              onClick={this.deleteFilter}
+            >
+              حذف تمامی فیلتر ها
+            </Button>
+          </React.Fragment>
+        )}
+
         {!!this.state.data.length && (
           <div>
             <Divider className="side-hr" orientation="right">
@@ -318,7 +414,7 @@ class SidebarContent extends Component {
           </div>
         )}
 
-        {!!this.state.brands.length && (
+        {!!this.state.brands.length && this.state.allowBrands && (
           <div>
             <Divider className="side-hr" orientation="right">
               انتخاب برند
@@ -408,7 +504,13 @@ class SidebarContent extends Component {
                                       : "check"
                                   }
                                   onChange={e =>
-                                    this.check(spec.id, param.id, e)
+                                    this.check(
+                                      spec.id,
+                                      param.id,
+                                      e,
+                                      param,
+                                      spec
+                                    )
                                   }
                                   key={param.id}
                                 >

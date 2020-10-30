@@ -697,6 +697,7 @@ hr {
   min-height: 550px;
 }
 
+
 .stack-grid-comp {
   min-height: 360px;
 }
@@ -3200,6 +3201,30 @@ user-select: none; /* Standard */
   border-radius: 7px;
 }
 
+
+.category-container .ant-tree .ant-tree-node-selected::after{
+  content: '×';
+  font-size: 16px;
+  line-height: 0.9;
+  padding: 5px;
+  display: inline-block;
+  float: left;
+}
+
+.side-menu .ant-tag-rtl{
+  margin-bottom: 8px;
+}
+
+.color-dot{
+  width: 10px;
+  height: 10px;
+  display: inline-flex;
+  vertical-align: middle !important;
+  margin-left: 5px;
+  border-radius: 10px;
+}
+
+
 .category-container .ant-tree .ant-tree-node-content-wrapper.ant-tree-node-selected .site-tree-search-value {
   color: #fff !important;
 }
@@ -3207,6 +3232,9 @@ user-select: none; /* Standard */
 .category-container .ant-tree .ant-tree-treenode:first-of-type{
   pointer-events: none !important;
 }
+
+
+
 
 
 .site-tree-search-value {
@@ -3570,6 +3598,73 @@ cursor: pointer;
     border-radius: 20px;
     box-shadow: 0px 0px 3px #0000006b;
 }
+.control-panel{
+  padding: 8px;
+    background: #fbfbfb;
+    width: calc(100% - 22px) ;
+    border-radius: 12px;
+    margin: 0px 11px 15px 11px;
+    box-shadow: 0 0 7px -4px #727272;
+    display: inline-flex;
+    align-items: center;
+}
+
+
+
+
+.control-panel .ant-radio-group{
+  margin: 0 12px;
+} 
+
+
+.control-panel>span.anticon:first-of-type{
+  margin: 0 12px;
+} 
+
+.control-panel .ant-radio-button-wrapper.ant-radio-button-wrapper-rtl.ant-radio-button-wrapper:first-child{
+  border-right:none
+}
+
+
+.control-panel .ant-radio-group .ant-radio-button-wrapper {
+  margin: 0 5px;
+  border-radius: 11px !important;
+  border: none;
+  border: 1px solid #efefef;
+} 
+
+
+
+.control-panel .ant-radio-group .ant-radio-button-wrapper::before {
+display: none;
+} 
+
+.pr-radio.ant-radio-button-wrapper-checked:not([class*=' ant-radio-button-wrapper-disabled']).ant-radio-button-wrapper:first-child{
+  border-right: none;
+}
+
+.pr-radio.ant-radio-button-wrapper.ant-radio-button-wrapper-rtl.ant-radio-button-wrapper {
+  border-radius: 7px !important;
+  border: 1px solid #e1e1e1;
+  margin-left: 12px;
+}
+
+.pr-radio.ant-radio-button-wrapper-checked{
+  box-shadow: 0px 0px 0px 1px #2d8fff !important;
+
+}
+
+.pr-radio.ant-radio-button-wrapper::before {
+  display: none !important;
+}
+
+.pr-radio.ant-radio-button-wrapper  {
+  background: #fafafa;
+}
+
+
+
+
 
 /* END OF LIGHTMODE */
 
@@ -3796,7 +3891,22 @@ user-select: none; /* Standard */
   }
 }
 
+@media only screen and (max-width: 934px) {
+  .control-panel{
+      display: inline-flex;
+    white-space: nowrap;
+
+  }
+
+  .control-panel .select-order{
+    margin: 0 10px;
+    width: calc(100% - 15px);
+
+}
+}
+
 @media only screen and (max-width: 850px) {
+  
   .grid-product-card .price-grid {
     text-align: center;
     white-space: nowrap;
@@ -3883,6 +3993,16 @@ user-select: none; /* Standard */
 }
 
 @media only screen and (max-width: 700px) {
+  .control-panel{
+      display: inline-flex;
+    white-space: nowrap;
+
+  }
+
+  .control-panel .select-order{
+    width: 100%;
+
+}
   .li-bs-itm.right-section {
     width: 50%;
     padding: 10px;
@@ -4883,6 +5003,59 @@ user-select: none; /* Standard */
   background-color: #363636ee;
 }
 
+.dark-mode .control-panel{
+  background: #5d5d5d;
+  color: #fafafa;
+}
+
+.dark-mode .control-panel .ant-radio-group .ant-radio-button-wrapper{
+  border: 1px solid #8a8a8a;
+    background: #383838;
+    color: #d1d1d1;
+}
+
+
+.dark-mode .control-panel .ant-radio-group .ant-radio-button-wrapper-checked{
+  color: #fff;
+  background: #eeb20b;
+  border-color: #eeb20b;
+}
+
+.dark-mode .control-panel .ant-radio-group .ant-radio-button-wrapper-checked:hover{
+  color: #fff;
+  background: #eeb20b;
+  border-color: #eeb20b;
+}
+
+.dark-mode .pr-radio.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+  z-index: 1;
+  color: #e9af0d;
+  background: #6b6b6b;
+  border: 1px solid #ecb10c !important;
+}
+
+.dark-mode .pr-radio.ant-radio-button-wrapper  {
+  z-index: 1;
+  background: #6b6b6b;
+  border-color: #7e7e7e;
+}
+
+.dark-mode .pr-radio.ant-radio-button-wrapper::before{
+  background-color: #ffffff00 !important;
+}
+
+.dark-mode .pr-radio.ant-radio-button-wrapper.ant-radio-button-wrapper-rtl.ant-radio-button-wrapper {
+  border: 1px solid #7e7e7e ;
+  border-radius: 7px;
+}
+
+.dark-mode .pr-radio.ant-radio-button-wrapper-checked{
+  box-shadow: 0px 0px 2px 0px #ecb10c !important;
+
+}
+
+
+
 
 #SRLLightbox button{
   border-radius: 20px;
@@ -4891,3 +5064,4 @@ user-select: none; /* Standard */
 .css-l3kq4c{
   background-size: contain !important;
 }
+

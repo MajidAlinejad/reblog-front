@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import sizeMe from "react-sizeme";
-import { Spin, Pagination, Divider, Empty } from "antd";
+import { Spin, Pagination, Divider, Empty, Radio } from "antd";
 import Masonry from "react-masonry-css";
 import GridItem from "../../ItemBase/GridItem/GridItem";
 import PostItem from "../../ItemBase/Post/PostItem";
@@ -9,6 +9,7 @@ import PlayItem from "../../ItemBase/PlayItem/PlayItem";
 import { connect } from "react-redux";
 import ProductItem from "../../ItemBase/ProductItem/ProductItem";
 import { getUser } from "../../../Redux/Action/User";
+import { AlignRightOutlined } from "@ant-design/icons";
 
 class PaginateGrid extends Component {
   constructor(props) {
@@ -19,11 +20,15 @@ class PaginateGrid extends Component {
     items: 30,
     hasMore: true,
     current: 1,
-    perPage: 4,
+    perPage: 30,
+    order: "",
     loading: true,
     total: 100,
     category: null,
     tags: [],
+    price: [],
+    brands: [],
+    params: [],
     empty: false,
     data: [],
     pageNumber: 1,
@@ -36,7 +41,7 @@ class PaginateGrid extends Component {
     }
   };
 
-  getItems = (perPage, pageNumber, category) => {
+  getItems = () => {
     this.props.getUser();
     this._isMounted &&
       axios
@@ -44,14 +49,13 @@ class PaginateGrid extends Component {
           process.env.REACT_APP_API_URL +
             "posts/" +
             this.props.id +
-            `?per_page=${perPage ? perPage : this.state.perPage}&page=${
-              pageNumber ? pageNumber : this.state.pageNumber
-            }`,
+            `?per_page=${this.state.perPage}&page=${this.state.pageNumber}`,
           {
             params: this.state.params,
             category: this.state.category,
             brands: this.state.brands,
             tags: this.state.tags,
+            order: this.state.order,
             price: this.state.price
           }
         )
@@ -93,6 +97,19 @@ class PaginateGrid extends Component {
         },
         this.getItems
       );
+  };
+
+  chengeOrder = e => {
+    // console.log(e.target.value);
+    this.setState(
+      {
+        order: e.target.value,
+        loading: true
+      },
+      () => {
+        this.getItems();
+      }
+    );
   };
 
   onShowSizeChange = (current, perPage) => {
@@ -207,16 +224,11 @@ class PaginateGrid extends Component {
             pageNumber: 1,
             items: 5,
             current: 1,
-            perPage: 4,
+            // perPage: 4,
             total: 100
           },
           () => {
-            this._isMounted &&
-              this.getItems(
-                this.state.items,
-                this.state.pageNumber,
-                this.state.category
-              );
+            this._isMounted && this.getItems();
           }
         );
     }
@@ -227,19 +239,65 @@ class PaginateGrid extends Component {
           {
             data: [],
             current: 1,
-            perPage: 4,
+            // perPage: 4,
             total: 100,
             loading: true,
             items: 5,
             category: this.props.category
           },
           () => {
-            this._isMounted &&
-              this.getItems(
-                this.state.items,
-                this.state.pageNumber,
-                this.props.category
-              );
+            this._isMounted && this.getItems();
+          }
+        );
+    }
+
+    if (prevProps.brands !== this.props.brands) {
+      this._isMounted &&
+        this.setState(
+          {
+            data: [],
+            loading: true,
+            // hasMore: true,
+            pageNumber: 1,
+            items: 5,
+            brands: this.props.brands
+          },
+          () => {
+            this._isMounted && this.getItems();
+          }
+        );
+    }
+
+    if (prevProps.params !== this.props.params) {
+      this._isMounted &&
+        this.setState(
+          {
+            data: [],
+            loading: true,
+            // hasMore: true,
+            pageNumber: 1,
+            items: 5,
+            params: this.props.params
+          },
+          () => {
+            this._isMounted && this.getItems();
+          }
+        );
+    }
+
+    if (prevProps.price !== this.props.price) {
+      this._isMounted &&
+        this.setState(
+          {
+            data: [],
+            loading: true,
+            // hasMore: true,
+            pageNumber: 1,
+            items: 5,
+            price: this.props.price
+          },
+          () => {
+            this._isMounted && this.getItems();
           }
         );
     }
@@ -251,13 +309,14 @@ class PaginateGrid extends Component {
             data: [],
             hasMore: true,
             items: 30,
+            order: "",
             current: 1,
             pageNumber: 1,
-            perPage: 4,
+            // perPage: 4,
             total: 100
           },
           () => {
-            this.getItems(4, 1);
+            this.getItems();
           }
         );
     }
@@ -296,67 +355,89 @@ class PaginateGrid extends Component {
           size="large"
         />
         {!this.state.empty ? (
-          <Masonry
-            breakpointCols={this.state.width}
-            className={this.state.className}
-            columnClassName="my-masonry-grid_column"
-          >
-            {this.state.data.map(function(item) {
-              return (
-                <div key={item.id}>
-                  {base === "img" && (
-                    <GridItem
-                      item={item}
-                      base={base}
-                      user={user}
-                      custom={custom}
-                    />
-                  )}
-                  {base === "video" && (
-                    <GridItem
-                      item={item}
-                      base={base}
-                      user={user}
-                      custom={custom}
-                    />
-                  )}
-                  {base === "music" && (
-                    <PlayItem
-                      item={item}
-                      base={base}
-                      user={user}
-                      custom={custom}
-                    />
-                  )}
-                  {base === "podcast" && (
-                    <PlayItem
-                      item={item}
-                      base={base}
-                      user={user}
-                      custom={custom}
-                    />
-                  )}
-                  {base === "post" && (
-                    <PostItem
-                      item={item}
-                      base={base}
-                      user={user}
-                      custom={custom}
-                    />
-                  )}
-                  {base === "product" && (
-                    <ProductItem
-                      item={item}
-                      product={product}
-                      base={base}
-                      user={user}
-                    />
-                  )}
-                  {/* <PostItem item={item} /> */}
-                </div>
-              );
-            })}
-          </Masonry>
+          <React.Fragment>
+            <div className="control-panel">
+              <AlignRightOutlined />
+              مرتب سازی بر اساس :
+              <Radio.Group
+                onChange={this.chengeOrder}
+                defaultValue="expire"
+                buttonStyle="solid"
+              >
+                <Radio.Button value="created_at">جدید ترین</Radio.Button>
+                <Radio.Button value="like">محبوب ترین</Radio.Button>
+                {base === "product" && (
+                  <React.Fragment>
+                    <Radio.Button value="expire">کمترین زمان</Radio.Button>
+                    <Radio.Button value="costly">گران ترین</Radio.Button>
+                    <Radio.Button value="cheap">ارزان ترین</Radio.Button>
+                    <Radio.Button value="off">بیشترین تخفیف</Radio.Button>
+                  </React.Fragment>
+                )}
+              </Radio.Group>
+            </div>
+            <Masonry
+              breakpointCols={this.state.width}
+              className={this.state.className}
+              columnClassName="my-masonry-grid_column"
+            >
+              {this.state.data.map(function(item) {
+                return (
+                  <div key={item.id}>
+                    {base === "img" && (
+                      <GridItem
+                        item={item}
+                        base={base}
+                        user={user}
+                        custom={custom}
+                      />
+                    )}
+                    {base === "video" && (
+                      <GridItem
+                        item={item}
+                        base={base}
+                        user={user}
+                        custom={custom}
+                      />
+                    )}
+                    {base === "music" && (
+                      <PlayItem
+                        item={item}
+                        base={base}
+                        user={user}
+                        custom={custom}
+                      />
+                    )}
+                    {base === "podcast" && (
+                      <PlayItem
+                        item={item}
+                        base={base}
+                        user={user}
+                        custom={custom}
+                      />
+                    )}
+                    {base === "post" && (
+                      <PostItem
+                        item={item}
+                        base={base}
+                        user={user}
+                        custom={custom}
+                      />
+                    )}
+                    {base === "product" && (
+                      <ProductItem
+                        item={item}
+                        product={product}
+                        base={base}
+                        user={user}
+                      />
+                    )}
+                    {/* <PostItem item={item} /> */}
+                  </div>
+                );
+              })}
+            </Masonry>
+          </React.Fragment>
         ) : (
           <Empty description={false} />
         )}
@@ -384,7 +465,10 @@ const mapStateToProps = state => {
     user: state.user.user,
     sidebar: state.view.sidebar,
     tags: state.filter.tags,
-    category: state.filter.category
+    category: state.filter.category,
+    brands: state.filter.brands,
+    params: state.filter.params,
+    price: state.filter.price
   };
 };
 

@@ -114,6 +114,7 @@ class ProductPost extends Component {
     effect: false,
     disliked: false,
     tags: [],
+    pColor: [],
     hide: true,
     value: "",
     reply: "",
@@ -262,7 +263,9 @@ class ProductPost extends Component {
     ).then(res =>
       this.setState({
         specs: res.data,
-        sloading: false
+        sloading: false,
+        pColor: res.data.filter(spec => spec.name === "رنگ")[0].det_spec[0]
+          .details
       })
     );
   };
@@ -664,23 +667,28 @@ class ProductPost extends Component {
                     <span className="pr-right-off">{data.off}% تخفیف</span>
                   </h1>
                   <Divider dashed />
-                  <Radio.Group
-                    className="pr-radio-color"
-                    // onChange={this.onChange} value={this.state.value}
-                  >
-                    <Radio className="pr-radio cream" value={1}>
-                      کرمی
-                    </Radio>
-                    <Radio className="pr-radio blue" value={2}>
-                      آبی
-                    </Radio>
-                    <Radio className="pr-radio red" value={3}>
-                      قرمز
-                    </Radio>
-                    <Radio className="pr-radio lime" value={4}>
-                      لیمویی
-                    </Radio>
-                  </Radio.Group>
+                  {!!this.state.pColor.length && (
+                    <Radio.Group
+                      className="pr-radio-color"
+                      // onChange={this.onChange} value={this.state.value}
+                    >
+                      {this.state.pColor.map(color => {
+                        return (
+                          <Radio.Button
+                            key={color.id}
+                            className="pr-radio"
+                            value={color.value}
+                          >
+                            <span
+                              className="color-dot"
+                              style={{ background: color.special }}
+                            ></span>
+                            {color.text}
+                          </Radio.Button>
+                        );
+                      })}
+                    </Radio.Group>
+                  )}
 
                   <Button
                     className="pr-shop"

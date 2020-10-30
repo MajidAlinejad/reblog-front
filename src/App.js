@@ -21,7 +21,7 @@ import Footer from "./Component/Footer/Footer";
 import Routes from "./Routes/Routes";
 import Lottie from "react-lottie";
 import ReactJkMusicPlayer from "react-jinke-music-player";
-import * as animationData from "./assets/lottie/car.json";
+import * as animationData from "./assets/lottie/cube.json";
 // redux import
 import { getUser } from "./Redux/Action/User";
 import { getNightMode } from "./Redux/Action/View";

@@ -1,15 +1,15 @@
 import React, { Component } from "react";
 import sizeMe from "react-sizeme";
 import axios from "axios";
-import { Divider, Button, Empty } from "antd";
-import { LoadingOutlined } from "@ant-design/icons";
+import { Divider, Button, Empty, Radio, Spin, Select } from "antd";
+import { AlignRightOutlined, LoadingOutlined } from "@ant-design/icons";
 import Masonry from "react-masonry-css";
 import ProductItem from "../../ItemBase/ProductItem/ProductItem";
 import PostItem from "../../ItemBase/Post/PostItem";
 import PlayItem from "../../ItemBase/PlayItem/PlayItem";
 import GridItem from "../../ItemBase/GridItem/GridItem";
 import { connect } from "react-redux";
-
+const { Option } = Select;
 class LoadMoreGrid extends Component {
   constructor(props) {
     super(props);
@@ -24,10 +24,11 @@ class LoadMoreGrid extends Component {
     price: [],
     brands: [],
     params: [],
+    order: "",
     pageNumber: 1,
     category: "",
     tags: [],
-    items: 5,
+    items: 30,
     className: "my-masonry-grid",
     width: {
       default: 5,
@@ -51,7 +52,8 @@ class LoadMoreGrid extends Component {
             category: this.state.category,
             brands: this.state.brands,
             tags: this.state.tags,
-            price: this.state.price
+            price: this.state.price,
+            order: this.state.order
           }
         )
         .then(
@@ -67,22 +69,21 @@ class LoadMoreGrid extends Component {
         );
   };
 
-  getItems = (items, pageNumber, category) => {
+  getItems = () => {
     if (this.L_isMounted && this.props.id !== undefined) {
       axios
         .post(
           process.env.REACT_APP_API_URL +
             "posts/" +
             this.props.id +
-            `?per_page=${items ? items : this.state.items}&page=${
-              pageNumber ? pageNumber : this.state.pageNumber
-            }`,
+            `?per_page=${this.state.items}&page=${this.state.pageNumber}`,
           {
             params: this.state.params,
             category: this.state.category,
             brands: this.state.brands,
             tags: this.state.tags,
-            price: this.state.price
+            price: this.state.price,
+            order: this.state.order
           }
         )
         .then(res =>
@@ -104,6 +105,31 @@ class LoadMoreGrid extends Component {
               })
         );
     }
+  };
+
+  chengeOrder = e => {
+    // console.log(e.target.value);
+    this.setState(
+      {
+        order: e.target.value,
+        loading: true
+      },
+      () => {
+        this.getItems();
+      }
+    );
+  };
+
+  chengeOrderSelect = v => {
+    this.setState(
+      {
+        order: v,
+        loading: true
+      },
+      () => {
+        this.getItems();
+      }
+    );
   };
 
   onChange = () => {
@@ -234,6 +260,7 @@ class LoadMoreGrid extends Component {
     this.L_isMounted &&
       this.setState({
         width: columnWidth,
+        mobile: innerWin < 934 ? true : false,
         className: className
       });
   };
@@ -252,16 +279,11 @@ class LoadMoreGrid extends Component {
             data: [],
             loading: true,
             // hasMore: true,
-            pageNumber: 1,
-            items: 5
+            pageNumber: 1
+            // items: 5
           },
           () => {
-            this.L_isMounted &&
-              this.getItems(
-                this.state.items,
-                this.state.pageNumber,
-                this.state.category
-              );
+            this.L_isMounted && this.getItems();
           }
         );
     }
@@ -275,16 +297,11 @@ class LoadMoreGrid extends Component {
             params: [],
             pageNumber: 1,
             category: null,
-            items: 5,
+            // items: 5,
             category: this.props.category
           },
           () => {
-            this.L_isMounted &&
-              this.getItems(
-                this.state.items,
-                this.state.pageNumber,
-                this.props.category
-              );
+            this.L_isMounted && this.getItems();
           }
         );
     }
@@ -297,16 +314,11 @@ class LoadMoreGrid extends Component {
             loading: true,
             // hasMore: true,
             pageNumber: 1,
-            items: 5,
+            // items: 5,
             brands: this.props.brands
           },
           () => {
-            this.L_isMounted &&
-              this.getItems(
-                this.state.items,
-                this.state.pageNumber,
-                this.state.category
-              );
+            this.L_isMounted && this.getItems();
           }
         );
     }
@@ -319,16 +331,11 @@ class LoadMoreGrid extends Component {
             loading: true,
             // hasMore: true,
             pageNumber: 1,
-            items: 5,
+            // items: 5,
             params: this.props.params
           },
           () => {
-            this.L_isMounted &&
-              this.getItems(
-                this.state.items,
-                this.state.pageNumber,
-                this.state.category
-              );
+            this.L_isMounted && this.getItems();
           }
         );
     }
@@ -341,16 +348,11 @@ class LoadMoreGrid extends Component {
             loading: true,
             // hasMore: true,
             pageNumber: 1,
-            items: 5,
+            // items: 5,
             price: this.props.price
           },
           () => {
-            this.L_isMounted &&
-              this.getItems(
-                this.state.items,
-                this.state.pageNumber,
-                this.state.category
-              );
+            this.L_isMounted && this.getItems();
           }
         );
     }
@@ -361,12 +363,13 @@ class LoadMoreGrid extends Component {
           {
             data: [],
             hasMore: true,
+            order: "",
             empty: null,
             pageNumber: 1,
-            category: null,
-            items: 5
+            category: null
+            // items: 5
           },
-          () => this.L_isMounted && this.getItems(5, 1)
+          () => this.L_isMounted && this.getItems()
         );
     }
   }
@@ -402,73 +405,113 @@ class LoadMoreGrid extends Component {
 
     return (
       <div className="stack-grid">
-        {/* <Spin
+        <Spin
           className="grid-spinner-paginate"
           spinning={this.state.loading}
           size="large"
-        /> */}
+        />
         {!this.state.empty ? (
-          <Masonry
-            breakpointCols={this.state.width}
-            className={this.state.className}
-            columnClassName="my-masonry-grid_column"
-          >
-            {this.state.data.map(function(item) {
-              return (
-                <div key={item.id}>
-                  {base === "img" && (
-                    <GridItem
-                      item={item}
-                      base={base}
-                      user={user}
-                      custom={custom}
-                    />
-                  )}
-                  {base === "video" && (
-                    <GridItem
-                      item={item}
-                      base={base}
-                      user={user}
-                      custom={custom}
-                    />
-                  )}
-                  {base === "music" && (
-                    <PlayItem
-                      item={item}
-                      base={base}
-                      user={user}
-                      custom={custom}
-                    />
-                  )}
-                  {base === "podcast" && (
-                    <PlayItem
-                      item={item}
-                      base={base}
-                      user={user}
-                      custom={custom}
-                    />
-                  )}
-                  {base === "post" && (
-                    <PostItem
-                      item={item}
-                      base={base}
-                      user={user}
-                      custom={custom}
-                    />
-                  )}
+          <React.Fragment>
+            <div className="control-panel">
+              <AlignRightOutlined />
+              مرتب سازی بر اساس :
+              {this.state.mobile ? (
+                <Select
+                  className="select-order"
+                  onChange={this.chengeOrderSelect}
+                >
+                  <Option value="created_at">جدید ترین</Option>
+                  <Option value="like">محبوب ترین</Option>
                   {base === "product" && (
-                    <ProductItem
-                      item={item}
-                      product={product}
-                      base={base}
-                      user={user}
-                    />
+                    <React.Fragment>
+                      <Option value="expire">کمترین زمان</Option>
+                      <Option value="costly">گران ترین</Option>
+                      <Option value="cheap">ارزان ترین</Option>
+                      <Option value="off">بیشترین تخفیف</Option>
+                    </React.Fragment>
                   )}
-                  {/* <PostItem item={item} /> */}
-                </div>
-              );
-            })}
-          </Masonry>
+                </Select>
+              ) : (
+                <Radio.Group
+                  onChange={this.chengeOrder}
+                  defaultValue="expire"
+                  buttonStyle="solid"
+                >
+                  <Radio.Button value="created_at">جدید ترین</Radio.Button>
+                  <Radio.Button value="like">محبوب ترین</Radio.Button>
+                  {base === "product" && (
+                    <React.Fragment>
+                      <Radio.Button value="expire">کمترین زمان</Radio.Button>
+                      <Radio.Button value="costly">گران ترین</Radio.Button>
+                      <Radio.Button value="cheap">ارزان ترین</Radio.Button>
+                      <Radio.Button value="off">بیشترین تخفیف</Radio.Button>
+                    </React.Fragment>
+                  )}
+                </Radio.Group>
+              )}
+            </div>
+            <Masonry
+              breakpointCols={this.state.width}
+              className={this.state.className}
+              columnClassName="my-masonry-grid_column"
+            >
+              {this.state.data.map(function(item) {
+                return (
+                  <div key={item.id}>
+                    {base === "img" && (
+                      <GridItem
+                        item={item}
+                        base={base}
+                        user={user}
+                        custom={custom}
+                      />
+                    )}
+                    {base === "video" && (
+                      <GridItem
+                        item={item}
+                        base={base}
+                        user={user}
+                        custom={custom}
+                      />
+                    )}
+                    {base === "music" && (
+                      <PlayItem
+                        item={item}
+                        base={base}
+                        user={user}
+                        custom={custom}
+                      />
+                    )}
+                    {base === "podcast" && (
+                      <PlayItem
+                        item={item}
+                        base={base}
+                        user={user}
+                        custom={custom}
+                      />
+                    )}
+                    {base === "post" && (
+                      <PostItem
+                        item={item}
+                        base={base}
+                        user={user}
+                        custom={custom}
+                      />
+                    )}
+                    {base === "product" && (
+                      <ProductItem
+                        item={item}
+                        product={product}
+                        base={base}
+                        user={user}
+                      />
+                    )}
+                    {/* <PostItem item={item} /> */}
+                  </div>
+                );
+              })}
+            </Masonry>
+          </React.Fragment>
         ) : (
           <Empty description={false} />
         )}
