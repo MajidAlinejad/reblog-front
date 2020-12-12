@@ -280,7 +280,7 @@ class GridItem extends Component {
                 style={loading ? { opacity: 0 } : { opacity: 1 }}
                 onLoad={this.handleImageLoaded.bind(this)}
                 onError={this.handleImageErrored.bind(this)}
-                src={item.thumbnail}
+                src={process.env.REACT_APP_BASE_URL + item.thumbnail}
               />
               {conf.type && (
                 <div className="img-base-over-icon">

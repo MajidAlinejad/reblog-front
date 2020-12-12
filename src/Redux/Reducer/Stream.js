@@ -15,8 +15,8 @@ const Stream = (state = initialState, actions) => {
         stream: {
           name: actions.payload.title,
           singer: actions.payload.special,
-          cover: actions.payload.img,
-          musicSrc: actions.payload.text
+          cover: process.env.REACT_APP_BASE_URL + actions.payload.img,
+          musicSrc: process.env.REACT_APP_BASE_URL + actions.payload.stream
         }
       };
       return state;

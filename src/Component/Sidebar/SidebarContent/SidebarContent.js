@@ -157,6 +157,7 @@ class SidebarContent extends Component {
       () => {
         // if (this.props.base === "product") {
         this._isMounted && this.getSpec(selectedKeys[0]);
+        this._isMounted && this.getCatBrands(selectedKeys[0]);
         // }
       }
     );
@@ -239,9 +240,21 @@ class SidebarContent extends Component {
         );
   };
 
-  getBrands = () => {
+  // getBrands = cat => {
+  //   this._isMounted &&
+  //     axios.get(process.env.REACT_APP_API_URL + "brands").then(
+  //       res =>
+  //         this._isMounted &&
+  //         this.setState({
+  //           brands: res.data,
+  //           loading: false
+  //         })
+  //     );
+  // };
+
+  getCatBrands = id => {
     this._isMounted &&
-      axios.get(process.env.REACT_APP_API_URL + "brands").then(
+      axios.get(process.env.REACT_APP_API_URL + "catbrands/" + id).then(
         res =>
           this._isMounted &&
           this.setState({
@@ -290,7 +303,7 @@ class SidebarContent extends Component {
     }
     if (this.props.base !== undefined) {
       if (this.props.base === "product") {
-        this._isMounted && this.getBrands();
+        // this._isMounted && this.getBrands();
         this._isMounted &&
           this.setState({
             base: this.props.base
@@ -303,7 +316,7 @@ class SidebarContent extends Component {
     if (prevProps.id !== this.props.id) {
       this._isMounted && this.getCategories();
       if (this.props.base === "product") {
-        this._isMounted && this.getBrands();
+        // this._isMounted && this.getBrands();
       }
     }
 
@@ -374,7 +387,7 @@ class SidebarContent extends Component {
 
             {!!this.state.selectedFilter.length &&
               this.state.selectedFilter.map(filter => {
-                return <Tag>{filter.text}</Tag>;
+                return <Tag key={filter.id}>{filter.text}</Tag>;
               })}
             <Button
               className="brand-btn-filter"

@@ -436,7 +436,7 @@ class ImgPost extends Component {
                     <img
                       className="main-img"
                       alt=""
-                      src={data.img}
+                      src={process.env.REACT_APP_BASE_URL + data.img}
                       style={loading ? { opacity: 0 } : { opacity: 1 }}
                       onLoad={this.handleImageLoaded.bind(this)}
                       onError={this.handleImageErrored.bind(this)}
@@ -445,7 +445,11 @@ class ImgPost extends Component {
                   {this.state.blocks.map(block => {
                     return (
                       <div key={block.id}>
-                        <img className="main-img" alt="" src={block.img} />
+                        <img
+                          className="main-img"
+                          alt=""
+                          src={process.env.REACT_APP_BASE_URL + block.img}
+                        />
                       </div>
                     );
                   })}
@@ -477,7 +481,7 @@ class ImgPost extends Component {
                 <img
                   className="main-img"
                   alt=""
-                  src={data.img}
+                  src={process.env.REACT_APP_BASE_URL + data.img}
                   style={loading ? { opacity: 0 } : { opacity: 1 }}
                   onLoad={this.handleImageLoaded.bind(this)}
                   onError={this.handleImageErrored.bind(this)}

@@ -371,7 +371,7 @@ class MusicPost extends Component {
                 <img
                   className="main-img"
                   alt=""
-                  src={data.thumbnail}
+                  src={process.env.REACT_APP_BASE_URL + data.thumbnail}
                   style={loading ? { opacity: 0 } : { opacity: 1 }}
                   onLoad={this.handleImageLoaded.bind(this)}
                   onError={this.handleImageErrored.bind(this)}
@@ -454,7 +454,7 @@ class MusicPost extends Component {
                     {block.title}
                   </div>
                   <div>{data.title}</div>
-                  <div>{block.special}</div>
+                  <div>{block.text}</div>
                   <div>
                     {moment(block.created_at)
                       .locale("fa")

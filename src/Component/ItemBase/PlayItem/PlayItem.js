@@ -271,7 +271,7 @@ export default class PlayItem extends Component {
             </Popover>
           )}
 
-          <Link to={"/post/" + item.id+ `/${item.seo}`}>
+          <Link to={"/post/" + item.id + `/${item.seo}`}>
             <div className="img-base-item">
               <img
                 className="img-base-cover"
@@ -279,7 +279,7 @@ export default class PlayItem extends Component {
                 style={loading ? { opacity: 0 } : { opacity: 1 }}
                 onLoad={this.handleImageLoaded.bind(this)}
                 onError={this.handleImageErrored.bind(this)}
-                src={item.thumbnail}
+                src={process.env.REACT_APP_BASE_URL + item.thumbnail}
                 // src="https://cps-static.rovicorp.com/3/JPG_500/MI0003/715/MI0003715986.jpg"
               />
               {conf.type && (

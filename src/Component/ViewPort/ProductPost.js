@@ -264,8 +264,9 @@ class ProductPost extends Component {
       this.setState({
         specs: res.data,
         sloading: false,
-        pColor: res.data.filter(spec => spec.name === "رنگ")[0].det_spec[0]
-          .details
+        pColor:
+          res.data.filter(spec => spec.name === "رنگ").length &&
+          res.data.filter(spec => spec.name === "رنگ")[0].det_spec[0].details
       })
     );
   };
@@ -579,12 +580,19 @@ class ProductPost extends Component {
                     className={`product-img ${imageLoaded ? "show" : "hide"}`}
                     onLoad={() => this.setState({ imageLoaded: true })}
                     // src={perfume}
-                    src={data.img ? data.img : "0"}
+                    src={
+                      data.img ? process.env.REACT_APP_BASE_URL + data.img : "0"
+                    }
                   />
                 </ColorExtractor>
                 <div className="pr-alter-img">
                   {this.state.blocks.map(blk => {
-                    return <img key={blk.id} src={blk.special} />;
+                    return (
+                      <img
+                        key={blk.id}
+                        src={process.env.REACT_APP_BASE_URL + blk.special}
+                      />
+                    );
                   })}
                 </div>
               </SRLWrapper>
@@ -677,13 +685,13 @@ class ProductPost extends Component {
                           <Radio.Button
                             key={color.id}
                             className="pr-radio"
-                            value={color.value}
+                            value={color.text}
                           >
                             <span
                               className="color-dot"
                               style={{ background: color.special }}
                             ></span>
-                            {color.text}
+                            {color.value}
                           </Radio.Button>
                         );
                       })}
@@ -788,7 +796,7 @@ class ProductPost extends Component {
                               <img
                                 className="pr-img-review"
                                 alt=""
-                                src={block.img}
+                                src={process.env.REACT_APP_BASE_URL + block.img}
                               />
                             )}
                           </div>
@@ -826,7 +834,7 @@ class ProductPost extends Component {
                               {sub.details.length > 1
                                 ? sub.details.map((det, idx) => {
                                     return (
-                                      <span>
+                                      <span key={idx}>
                                         {sub.details.length > idx + 1
                                           ? det.value + " ,"
                                           : det.value}

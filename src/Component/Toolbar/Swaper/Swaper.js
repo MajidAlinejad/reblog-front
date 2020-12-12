@@ -174,7 +174,6 @@ class Swaper extends Component {
     if (this.props.id !== undefined) {
       this._isMounted && this.getItems(this.props.id);
     }
-
     this.setState({
       optClass: "with-opacity"
     });

@@ -439,7 +439,7 @@ class OriginPost extends Component {
                 <img
                   className="main-img"
                   alt=""
-                  src={data.img}
+                  src={process.env.REACT_APP_BASE_URL + data.img}
                   style={loading ? { opacity: 0 } : { opacity: 1 }}
                   onLoad={this.handleImageLoaded.bind(this)}
                   onError={this.handleImageErrored.bind(this)}
@@ -457,7 +457,11 @@ class OriginPost extends Component {
                     {block.text}
                   </Paragraph>
                   <div className="origin-post-img-container">
-                    <img className="main-img" alt="" src={block.img} />
+                    <img
+                      className="main-img"
+                      alt=""
+                      src={process.env.REACT_APP_BASE_URL + block.img}
+                    />
                   </div>
                 </div>
               );

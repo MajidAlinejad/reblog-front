@@ -433,7 +433,7 @@ class VideoPost extends Component {
               />
 
               <ReactPlayer
-                light={data.img}
+                light={process.env.REACT_APP_BASE_URL + data.img}
                 width="100%"
                 height="400px"
                 pip={false}
@@ -460,7 +460,11 @@ class VideoPost extends Component {
                     {block.text}
                   </Paragraph>
                   <div className="origin-post-img-container">
-                    <img className="main-img" alt="" src={block.img} />
+                    <img
+                      className="main-img"
+                      alt=""
+                      src={process.env.REACT_APP_BASE_URL + block.img}
+                    />
                   </div>
                 </div>
               );

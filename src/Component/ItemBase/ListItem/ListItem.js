@@ -163,7 +163,7 @@ export default class ListItem extends Component {
     const { item } = this.props;
     return (
       <React.Fragment>
-        <div className="li-bs-itm container">
+        <div className="container li-bs-itm">
           <div
             className="li-bs-itm right-section"
             style={
@@ -177,7 +177,7 @@ export default class ListItem extends Component {
                 style={loading ? { opacity: 0 } : { opacity: 1 }}
                 onLoad={this.handleImageLoaded.bind(this)}
                 onError={this.handleImageErrored.bind(this)}
-                src={item.thumbnail}
+                src={process.env.REACT_APP_BASE_URL + item.thumbnail}
                 alt={item.title}
               />
             </Link>

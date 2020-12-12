@@ -115,7 +115,7 @@ export default class ProductItem extends Component {
                     onLoad={this.handleImageLoaded.bind(this)}
                     onError={this.handleImageErrored.bind(this)}
                     // src={perfume}
-                    src={item.thumbnail}
+                    src={process.env.REACT_APP_BASE_URL + item.thumbnail}
                   />
                 </ColorExtractor>
               </div>

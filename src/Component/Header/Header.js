@@ -51,7 +51,7 @@ class Header extends Component {
 
   iconSelector = (i, svgCode) => {
     let svgComponent = () => (
-      <svg width="1em" height="1em" fill="currentColor" viewBox="0 0 1024 1024">
+      <svg width="1em" height="1em" fill="currentColor" viewBox="0 0 512 512">
         <path d={svgCode} />
       </svg>
     );

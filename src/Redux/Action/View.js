@@ -14,7 +14,7 @@ export const toggleSidebar = payload => {
 
 export const getSidebar = () => {
   let hide = localStorage.getItem("sidebarHide");
-  hide = hide === "false" ? false : true;
+  hide = hide === "true" ? true : false;
   // console.log(hide);
   return dispatch => {
     dispatch(updateView(hide));

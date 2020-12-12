@@ -258,7 +258,7 @@ export default class PostItem extends Component {
                   onError={this.handleImageErrored.bind(this)}
                   alt={item.title}
                   // src="https://cdn.zoomg.ir/2020/8/fa2f0d22-c463-4c48-932b-82a3bb250ec7.jpg"
-                  src={item.thumbnail}
+                  src={process.env.REACT_APP_BASE_URL + item.thumbnail}
                   // src={item.thumbnailUrl}
                 />
               </div>

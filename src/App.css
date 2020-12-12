@@ -3663,7 +3663,9 @@ display: none;
 }
 
 
-
+#none{
+  display: none;
+}
 
 
 /* END OF LIGHTMODE */

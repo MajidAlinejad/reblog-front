@@ -261,28 +261,22 @@ class Toolbar extends Component {
                     )}
                   </Col>
                   <Col xs={20} sm={20} md={20} lg={22} xl={22}>
-                    {this.state.searchMode ? (
-                      <div>
-                        <SearchBar />
-                      </div>
-                    ) : (
-                      <div>
-                        <Swaper />
-                      </div>
-                    )}
+                    <div id={!this.state.searchMode ? "none" : ""}>
+                      <SearchBar />
+                    </div>
+                    <div id={this.state.searchMode ? "none" : ""}>
+                      <Swaper />
+                    </div>
                   </Col>
                 </React.Fragment>
               ) : (
                 <Col xs={21} sm={21} md={21} lg={23} xl={23}>
-                  {this.state.searchMode ? (
-                    <div>
-                      <SearchBar />
-                    </div>
-                  ) : (
-                    <div>
-                      <Swaper />
-                    </div>
-                  )}
+                  <div id={!this.state.searchMode ? "none" : ""}>
+                    <SearchBar />
+                  </div>
+                  <div id={this.state.searchMode ? "none" : ""}>
+                    <Swaper />
+                  </div>
                 </Col>
               )}
             </React.Fragment>
@@ -311,28 +305,24 @@ class Toolbar extends Component {
                     )}
                   </Col>
                   <Col xs={21} sm={21} md={21} lg={23} xl={23}>
-                    {this.state.searchMode ? (
-                      <div>
-                        <SearchBar />
-                      </div>
-                    ) : (
-                      <div>
-                        <Swaper />
-                      </div>
-                    )}
+                    <div id={!this.state.searchMode ? "none" : ""}>
+                      <SearchBar />
+                    </div>
+                    <div id={this.state.searchMode ? "none" : ""}>
+                      <Swaper />
+                    </div>
                   </Col>
                 </React.Fragment>
               ) : (
                 <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                  {this.state.searchMode ? (
-                    <div>
-                      <SearchBar />
-                    </div>
-                  ) : (
-                    <div>
-                      <Swaper />
-                    </div>
-                  )}
+                  {/* {this.state.searchMode ? ( */}
+                  <div id={!this.state.searchMode ? "none" : ""}>
+                    <SearchBar />
+                  </div>
+                  <div id={this.state.searchMode ? "none" : ""}>
+                    <Swaper />
+                  </div>
+                  {/* )} */}
                 </Col>
               )}
             </React.Fragment>
