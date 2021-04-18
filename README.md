@@ -1,6 +1,6 @@
 This project was created by `Majid Alinejad`
 this package is 'front-end' part of reblog project kinda a template for site and native react app
-for 'api + admin' visit [Reblog-admin](https://github.com/MajidAlinejad/reblog-front) .
+for 'api + admin' visit [Reblog-admin](https://github.com/MajidAlinejad/reblog-api) .
 
 
 ## Available Scripts
